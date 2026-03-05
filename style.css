@@ -364,4 +364,84 @@ transform:translateY(-5px);
 color:#facc15;
 
 }
+.contact-header{
+
+text-align:center;
+padding:80px 20px;
+
+}
+
+.contact-header h1{
+
+color:#facc15;
+font-size:40px;
+
+}
+
+.contact-container{
+
+display:flex;
+justify-content:center;
+gap:40px;
+padding:60px;
+flex-wrap:wrap;
+
+}
+
+.contact-info{
+
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+width:300px;
+
+}
+
+.contact-form{
+
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+width:300px;
+
+}
+
+.contact-form input,
+.contact-form textarea{
+
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:5px;
+
+}
+
+.contact-form button{
+
+margin-top:15px;
+padding:10px;
+background:#facc15;
+border:none;
+border-radius:5px;
+cursor:pointer;
+
+}
+
+.meeting-section{
+
+text-align:center;
+padding:60px;
+
+}
+
+.meeting-button{
+
+background:#facc15;
+padding:12px 20px;
+border-radius:6px;
+text-decoration:none;
+color:black;
+
+}
 
