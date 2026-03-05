@@ -1,0 +1,68 @@
+body{
+
+margin:0;
+background:#0f172a;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+
+}
+
+.splash-container{
+
+text-align:center;
+
+}
+
+.logo{
+
+width:120px;
+border-radius:20px;
+animation:logoFloat 2s ease-in-out infinite;
+
+}
+
+.title{
+
+font-size:40px;
+margin-top:20px;
+color:#facc15;
+
+}
+
+.tagline{
+
+opacity:0.8;
+margin-top:10px;
+
+}
+
+.loader{
+
+margin-top:30px;
+border:4px solid #1e293b;
+border-top:4px solid #facc15;
+border-radius:50%;
+width:40px;
+height:40px;
+animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+
+}
+
+@keyframes logoFloat{
+
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+
+}
