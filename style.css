@@ -445,3 +445,54 @@ color:black;
 
 }
 
+.login-section{
+
+text-align:center;
+padding:100px 20px;
+
+}
+
+.login-section h1{
+
+font-size:40px;
+color:#facc15;
+
+}
+
+.login-box{
+
+background:#1e293b;
+padding:40px;
+border-radius:10px;
+width:300px;
+margin:auto;
+margin-top:30px;
+
+}
+
+.login-box input{
+
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:5px;
+
+}
+
+.login-box button{
+
+margin-top:15px;
+padding:10px;
+background:#facc15;
+border:none;
+border-radius:5px;
+cursor:pointer;
+
+}
+
+#login-message{
+
+margin-top:10px;
+
+}
