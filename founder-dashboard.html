@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
@@ -16,23 +16,26 @@
 
 </head>
 
+
 <body>
+
+<!-- Navigation Bar -->
 
 <nav>
 
 <div class="logo">
-<img src="images/logo.jpeg">
+<img src="images/logo.jpeg" alt="Naadix Logo">
 </div>
 
 <ul>
-
 <li><a href="home.html">Home</a></li>
 <li><a href="lab.html">Logout</a></li>
-
 </ul>
 
 </nav>
 
+
+<!-- Dashboard Header -->
 
 <section class="dashboard-header">
 
@@ -45,19 +48,30 @@ Personal productivity system for Naadix development
 </section>
 
 
+<!-- Dashboard Grid -->
+
 <section class="dashboard-grid">
 
-    <div class="dashboard-card">
+
+<!-- Research Notes -->
+
+<div class="dashboard-card">
 
 <h2>Research Notes</h2>
 
-<textarea id="notesInput" placeholder="Write your ideas, research notes, or plans here..."></textarea>
+<textarea 
+id="notesInput" 
+placeholder="Write your ideas, research notes, or plans here...">
+</textarea>
 
 <button onclick="saveNotes()">Save Notes</button>
 
 </div>
 
-    <div class="dashboard-card">
+
+<!-- Habit Tracker -->
+
+<div class="dashboard-card">
 
 <h2>Habit Tracker</h2>
 
@@ -73,6 +87,8 @@ Personal productivity system for Naadix development
 </div>
 
 
+<!-- Calendar -->
+
 <div class="dashboard-card">
 
 <h2>Calendar</h2>
@@ -85,11 +101,18 @@ Track important dates, meetings, and deadlines.
 
 </div>
 
+
+<!-- To-Do List -->
+
 <div class="dashboard-card">
 
 <h2>Daily To-Do List</h2>
 
-<input id="taskInput" placeholder="Enter task">
+<input 
+type="text"
+id="taskInput" 
+placeholder="Enter a task"
+>
 
 <button onclick="addTask()">Add Task</button>
 
@@ -97,6 +120,8 @@ Track important dates, meetings, and deadlines.
 
 </div>
 
+
+<!-- Productivity Chart -->
 
 <div class="dashboard-card">
 
@@ -107,21 +132,25 @@ Track important dates, meetings, and deadlines.
 </div>
 
 
+<!-- Vision Board -->
+
 <div class="dashboard-card">
 
 <h2>Vision Board</h2>
 
 <p>
 
-Build AI systems  
-Develop robotics platforms  
-Study physics and mathematics  
+Build AI systems<br>
+Develop robotics platforms<br>
+Study physics and mathematics<br>
 Launch educational technology
 
 </p>
 
 </div>
 
+
+<!-- Goals -->
 
 <div class="dashboard-card">
 
@@ -141,6 +170,8 @@ Launch educational technology
 
 </section>
 
+
+<!-- Dashboard Script -->
 
 <script src="dashboard.js"></script>
 
