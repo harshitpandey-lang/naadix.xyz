@@ -198,3 +198,51 @@ color:#facc15;
 text-decoration:none;
 
 }
+
+.mission-section,
+.vision-section{
+
+padding:80px 20px;
+text-align:center;
+
+}
+
+.mission-section h1,
+.vision-section h1{
+
+color:#facc15;
+font-size:36px;
+
+}
+
+.solutions-section{
+
+padding:80px 20px;
+text-align:center;
+
+}
+
+.solution-grid{
+
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+margin-top:40px;
+
+}
+
+.solution-card{
+
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+width:260px;
+
+}
+
+.solution-card h3{
+
+color:#facc15;
+
+}
