@@ -1,22 +1,57 @@
+// Load tasks when page opens
+window.onload = function(){
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+tasks.forEach(task => addTaskToList(task));
+
+};
+
+
+// Add new task
 function addTask(){
 
-let input=document.getElementById("taskInput");
+let input = document.getElementById("taskInput");
 
-let task=input.value;
+let task = input.value;
 
-if(task==="") return;
+if(task === "") return;
 
-let li=document.createElement("li");
+addTaskToList(task);
 
-li.textContent=task;
-
-document.getElementById("taskList").appendChild(li);
+saveTask(task);
 
 input.value="";
 
 }
 
-const ctx=document.getElementById('productivityChart');
+
+// Add task to list visually
+function addTaskToList(task){
+
+let li = document.createElement("li");
+
+li.textContent = task;
+
+document.getElementById("taskList").appendChild(li);
+
+}
+
+
+// Save task in browser storage
+function saveTask(task){
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+tasks.push(task);
+
+localStorage.setItem("tasks", JSON.stringify(tasks));
+
+}
+
+
+// Productivity chart
+const ctx = document.getElementById('productivityChart');
 
 new Chart(ctx, {
 
