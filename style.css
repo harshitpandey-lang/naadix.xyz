@@ -246,3 +246,78 @@ width:260px;
 color:#facc15;
 
 }
+
+.founder-intro{
+
+text-align:center;
+padding:80px 20px;
+
+}
+
+.founder-intro h1{
+
+font-size:40px;
+color:#facc15;
+
+}
+
+.about-me{
+
+padding:60px 20px;
+text-align:center;
+
+}
+
+.skills{
+
+padding:80px 20px;
+text-align:center;
+
+}
+
+.skills-grid{
+
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+margin-top:30px;
+
+}
+
+.skill-card{
+
+background:#1e293b;
+padding:25px;
+border-radius:10px;
+width:250px;
+
+}
+
+.skill-card h3{
+
+color:#facc15;
+
+}
+
+.certifications{
+
+padding:60px 20px;
+text-align:center;
+
+}
+
+.gallery{
+
+padding:60px 20px;
+text-align:center;
+
+}
+
+.social-links{
+
+padding:60px 20px;
+text-align:center;
+
+}
+
