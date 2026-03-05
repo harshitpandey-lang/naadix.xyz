@@ -553,3 +553,21 @@ border-radius:5px;
 cursor:pointer;
 
 }
+.habit-list{
+
+list-style:none;
+padding:0;
+
+}
+
+.habit-list li{
+
+margin-top:10px;
+
+}
+
+.habit-list input{
+
+margin-right:10px;
+
+}
