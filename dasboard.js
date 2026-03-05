@@ -9,6 +9,32 @@ tasks.forEach(task => addTaskToList(task));
 
 
 // Add new task
+
+// Load saved notes
+window.addEventListener("load", function(){
+
+let savedNotes = localStorage.getItem("researchNotes");
+
+if(savedNotes){
+
+document.getElementById("notesInput").value = savedNotes;
+
+}
+
+});
+
+
+// Save notes
+function saveNotes(){
+
+let notes = document.getElementById("notesInput").value;
+
+localStorage.setItem("researchNotes", notes);
+
+alert("Notes saved!");
+
+}
+
 function addTask(){
 
 let input = document.getElementById("taskInput");
