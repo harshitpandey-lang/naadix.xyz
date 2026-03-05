@@ -147,3 +147,54 @@ text-align:center;
 padding:20px;
 
 }
+
+.headline{
+
+text-align:center;
+padding:60px 20px;
+
+}
+
+.headline h1{
+
+font-size:40px;
+color:#facc15;
+
+}
+
+.news-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+padding:60px;
+
+}
+
+.news-card{
+
+background:#1e293b;
+padding:25px;
+border-radius:10px;
+transition:0.3s;
+
+}
+
+.news-card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.news-card h2{
+
+color:#facc15;
+
+}
+
+.news-card a{
+
+color:#facc15;
+text-decoration:none;
+
+}
