@@ -496,3 +496,60 @@ cursor:pointer;
 margin-top:10px;
 
 }
+.dashboard-header{
+
+text-align:center;
+padding:60px 20px;
+
+}
+
+.dashboard-header h1{
+
+color:#facc15;
+font-size:36px;
+
+}
+
+.dashboard-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:30px;
+padding:40px;
+
+}
+
+.dashboard-card{
+
+background:#1e293b;
+padding:25px;
+border-radius:10px;
+
+}
+
+.dashboard-card h2{
+
+color:#facc15;
+
+}
+
+.dashboard-card input{
+
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:5px;
+
+}
+
+.dashboard-card button{
+
+margin-top:10px;
+padding:10px;
+background:#facc15;
+border:none;
+border-radius:5px;
+cursor:pointer;
+
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Naadix Lab | Founder Dashboard</title>
+
+<link rel="icon" href="images/logo.jpeg">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+<img src="images/logo.jpeg">
+</div>
+
+<ul>
+
+<li><a href="home.html">Home</a></li>
+<li><a href="lab.html">Logout</a></li>
+
+</ul>
+
+</nav>
+
+
+<section class="dashboard-header">
+
+<h1>Founder Dashboard</h1>
+
+<p>
+Personal productivity system for Naadix development
+</p>
+
+</section>
+
+
+<section class="dashboard-grid">
+
+
+<div class="dashboard-card">
+
+<h2>Daily To-Do List</h2>
+
+<input id="taskInput" placeholder="Enter task">
+
+<button onclick="addTask()">Add Task</button>
+
+<ul id="taskList"></ul>
+
+</div>
+
+
+<div class="dashboard-card">
+
+<h2>Productivity Chart</h2>
+
+<canvas id="productivityChart"></canvas>
+
+</div>
+
+
+<div class="dashboard-card">
+
+<h2>Vision Board</h2>
+
+<p>
+
+Build AI systems  
+Develop robotics platforms  
+Study physics and mathematics  
+Launch educational technology
+
+</p>
+
+</div>
+
+
+<div class="dashboard-card">
+
+<h2>Goals</h2>
+
+<ul>
+
+<li>Build robotics prototypes</li>
+<li>Develop AI agents</li>
+<li>Study advanced physics</li>
+<li>Create educational tools</li>
+
+</ul>
+
+</div>
+
+
+</section>
+
+
+<script src="dashboard.js"></script>
+
+</body>
+
+</html>
