@@ -631,3 +631,80 @@ border-radius:5px;
 resize:none;
 
 }
+/* Split-container: full height 100vh, flex layout */
+.split-container {
+  display: flex;
+  height: 100vh;
+  margin-top: 0; /* below navbar */
+}
+
+/* Left half: relative container for overlay and background text */
+.left-half {
+  width: 50%;
+  position: relative;
+  background-color: #111; /* dark background for contrast */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Large background number (pseudo-element alternative) */
+.background-number {
+  position: absolute;
+  font-size: 20rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.05);
+  top: 20%;
+  left: 10%;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* Overlay site title */
+.overlay-title {
+  position: relative;
+  font-size: 3rem;
+  z-index: 2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Gallery label under title */
+.gallery-label {
+  position: relative;
+  font-size: 1.5rem;
+  z-index: 2;
+  letter-spacing: 0.2em;
+  color: #facc15;
+}
+
+/* Right half: two columns of images */
+.right-half {
+  width: 50%;
+  display: flex;
+}
+
+/* Each column scrollable vertically */
+.column {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Image styling and hover effect */
+.column img {
+  width: 100%;
+  display: block;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.column img:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
