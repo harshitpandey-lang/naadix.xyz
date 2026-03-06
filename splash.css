@@ -142,3 +142,35 @@ opacity:1;
 100%{ transform:translateY(0); }
 
 }
+.scroll-text{
+
+margin-top:20px;
+opacity:0.6;
+font-size:14px;
+animation:scrollBlink 2s infinite;
+
+}
+
+@keyframes scrollBlink{
+
+0%{opacity:0.3;}
+50%{opacity:1;}
+100%{opacity:0.3;}
+
+}
+
+/* ZOOM TRANSITION */
+
+.zoomLogo{
+
+transform:scale(15);
+transition:transform 1.5s ease;
+
+}
+
+body.fadeOut{
+
+opacity:0;
+transition:opacity 1s ease;
+
+}
