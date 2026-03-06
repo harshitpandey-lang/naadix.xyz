@@ -163,8 +163,8 @@ animation:scrollBlink 2s infinite;
 
 .zoomLogo{
 
-transform:scale(15);
-transition:transform 1.5s ease;
+transform:scale(20);
+transition:transform 1.8s cubic-bezier(0.22,1,0.36,1);
 
 }
 
@@ -172,5 +172,62 @@ body.fadeOut{
 
 opacity:0;
 transition:opacity 1s ease;
+
+}
+/* Scroll indicator */
+
+.scroll-indicator{
+
+margin-top:30px;
+display:flex;
+justify-content:center;
+
+}
+
+.mouse{
+
+width:26px;
+height:42px;
+
+border:2px solid white;
+border-radius:20px;
+
+position:relative;
+
+}
+
+.wheel{
+
+width:4px;
+height:8px;
+
+background:white;
+
+position:absolute;
+top:8px;
+left:50%;
+transform:translateX(-50%);
+
+border-radius:2px;
+
+animation:scrollWheel 1.5s infinite;
+
+}
+
+@keyframes scrollWheel{
+
+0%{
+opacity:0;
+top:8px;
+}
+
+50%{
+opacity:1;
+}
+
+100%{
+opacity:0;
+top:22px;
+}
 
 }

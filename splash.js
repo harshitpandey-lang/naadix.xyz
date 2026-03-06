@@ -1,12 +1,11 @@
 let logo = document.getElementById("logo");
-
 let triggered = false;
 
-window.addEventListener("wheel", function(event){
+window.addEventListener("scroll", function(){
 
 if(triggered) return;
 
-if(event.deltaY > 0){
+if(window.scrollY > 40){
 
 triggered = true;
 
@@ -14,7 +13,7 @@ logo.classList.add("zoomLogo");
 
 setTimeout(()=>{
 
-document.body.classList.add("fadeOut");
+document.body.style.opacity="0";
 
 },900);
 
@@ -22,7 +21,7 @@ setTimeout(()=>{
 
 window.location.href="home.html";
 
-},1600);
+},1700);
 
 }
 
