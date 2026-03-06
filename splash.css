@@ -1,41 +1,38 @@
 *{
-box-sizing:border-box;
 margin:0;
 padding:0;
+box-sizing:border-box;
 }
 
 body{
 
+font-family:Arial;
 background:#0f172a;
 color:white;
-font-family:Arial;
-
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-
-overflow:hidden;
+overflow-x:hidden;
 
 }
 
-.container{
+/* SPLASH */
 
-width:90%;
+.splash{
+
+height:100vh;
+
 display:flex;
 justify-content:space-between;
 align-items:center;
 
+padding:60px;
+
 }
 
-/* LEFT SIDE */
+/* LEFT */
 
 .left{
 
 display:flex;
 align-items:center;
-
-animation:slideLeft 2s ease;
 
 }
 
@@ -44,40 +41,28 @@ animation:slideLeft 2s ease;
 width:8px;
 height:350px;
 background:#facc15;
+
 margin-right:30px;
 
 }
 
-/* 3D TEXT */
-
-.text3d h1{
+.bigText h1{
 
 font-size:90px;
 font-style:italic;
+
+color:transparent;
+-webkit-text-stroke:2px white;
+
 letter-spacing:4px;
-
-color:white;
-
-text-shadow:
-1px 1px 0 #000,
-2px 2px 0 #000,
-3px 3px 0 #000,
-4px 4px 0 #000,
-5px 5px 0 #000,
-6px 6px 0 #000,
-7px 7px 0 #000,
-8px 8px 10px rgba(0,0,0,0.5);
-
-animation:floatText 3s ease-in-out infinite;
 
 }
 
-/* RIGHT SIDE */
+/* RIGHT */
 
 .right{
 
 text-align:center;
-animation:fadeIn 3s ease;
 
 }
 
@@ -85,9 +70,8 @@ animation:fadeIn 3s ease;
 
 width:150px;
 border-radius:25px;
-margin-bottom:20px;
 
-animation:logoFloat 3s ease-in-out infinite;
+transition:transform 0.4s ease;
 
 }
 
@@ -95,108 +79,31 @@ animation:logoFloat 3s ease-in-out infinite;
 
 font-size:60px;
 color:#facc15;
-text-shadow:4px 4px 0 black;
-
-}
-
-/* ANIMATIONS */
-
-@keyframes slideLeft{
-
-0%{
-transform:translateX(-200px);
-opacity:0;
-}
-
-100%{
-transform:translateX(0);
-opacity:1;
-}
-
-}
-
-@keyframes fadeIn{
-
-0%{
-opacity:0;
-}
-
-100%{
-opacity:1;
-}
-
-}
-
-@keyframes logoFloat{
-
-0%{ transform:translateY(0); }
-50%{ transform:translateY(-15px); }
-100%{ transform:translateY(0); }
-
-}
-
-@keyframes floatText{
-
-0%{ transform:translateY(0); }
-50%{ transform:translateY(-10px); }
-100%{ transform:translateY(0); }
-
-}
-.scroll-text{
 
 margin-top:20px;
-opacity:0.6;
-font-size:14px;
-animation:scrollBlink 2s infinite;
 
 }
 
-@keyframes scrollBlink{
+/* scroll indicator */
 
-0%{opacity:0.3;}
-50%{opacity:1;}
-100%{opacity:0.3;}
+.scrollIndicator{
 
-}
-
-/* ZOOM TRANSITION */
-
-.zoomLogo{
-
-transform:scale(20);
-transition:transform 1.8s cubic-bezier(0.22,1,0.36,1);
-
-}
-
-body.fadeOut{
-
-opacity:0;
-transition:opacity 1s ease;
-
-}
-/* Scroll indicator */
-
-.scroll-indicator{
-
-margin-top:30px;
-display:flex;
-justify-content:center;
-
-}
-
-.mouse{
-
-width:26px;
-height:42px;
+width:25px;
+height:40px;
 
 border:2px solid white;
+
 border-radius:20px;
+
+margin:30px auto;
 
 position:relative;
 
 }
 
-.wheel{
+.scrollIndicator::before{
+
+content:"";
 
 width:4px;
 height:8px;
@@ -204,30 +111,39 @@ height:8px;
 background:white;
 
 position:absolute;
+
 top:8px;
 left:50%;
+
 transform:translateX(-50%);
 
 border-radius:2px;
 
-animation:scrollWheel 1.5s infinite;
+animation:scroll 1.5s infinite;
 
 }
 
-@keyframes scrollWheel{
+@keyframes scroll{
 
-0%{
-opacity:0;
-top:8px;
+0%{opacity:0; top:8px;}
+50%{opacity:1;}
+100%{opacity:0; top:20px;}
+
 }
 
-50%{
-opacity:1;
-}
+/* HOME */
 
-100%{
-opacity:0;
-top:22px;
-}
+.home{
+
+height:100vh;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+background:#020617;
+
+font-size:30px;
 
 }

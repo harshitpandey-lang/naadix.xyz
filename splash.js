@@ -1,28 +1,11 @@
-let logo = document.getElementById("logo");
-let triggered = false;
+let logo = document.getElementById("logo")
 
 window.addEventListener("scroll", function(){
 
-if(triggered) return;
+let scroll = window.scrollY
 
-if(window.scrollY > 40){
+let scale = 1 + scroll/300
 
-triggered = true;
+logo.style.transform = "scale(" + scale + ")"
 
-logo.classList.add("zoomLogo");
-
-setTimeout(()=>{
-
-document.body.style.opacity="0";
-
-},900);
-
-setTimeout(()=>{
-
-window.location.href="home.html";
-
-},1700);
-
-}
-
-});
+})
