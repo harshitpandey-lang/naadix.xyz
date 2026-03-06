@@ -1,0 +1,113 @@
+body{
+font-family:Arial, sans-serif;
+background:#0f172a;
+color:white;
+margin:0;
+}
+
+
+/* NAVBAR */
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+background:#020617;
+}
+
+nav ul{
+display:flex;
+list-style:none;
+}
+
+nav ul li{
+margin-left:25px;
+}
+
+nav ul li a{
+color:white;
+text-decoration:none;
+font-size:18px;
+}
+
+.logo img{
+height:50px;
+}
+
+
+/* HERO */
+
+.hero{
+padding:120px 20px;
+text-align:center;
+max-width:900px;
+margin:auto;
+}
+
+.hero h1{
+font-size:48px;
+color:#facc15;
+margin-bottom:20px;
+}
+
+.hero p{
+font-size:20px;
+line-height:1.6;
+}
+
+
+/* TECHNOLOGY AREA */
+
+.areas{
+padding:80px 40px;
+text-align:center;
+}
+
+.area-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+margin-top:40px;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card h3{
+color:#facc15;
+margin-bottom:10px;
+}
+
+
+/* VISION */
+
+.vision{
+padding:80px 40px;
+text-align:center;
+max-width:900px;
+margin:auto;
+}
+
+.vision h2{
+color:#facc15;
+margin-bottom:20px;
+}
+
+
+/* FOOTER */
+
+footer{
+background:#020617;
+text-align:center;
+padding:20px;
+margin-top:80px;
+}
