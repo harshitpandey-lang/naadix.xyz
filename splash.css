@@ -1,95 +1,144 @@
 *{
 box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
 
-margin:0;
 background:#0f172a;
 color:white;
-font-family:Arial, Helvetica, sans-serif;
-
-display:flex;
-justify-content:center;
-align-items:center;
+font-family:Arial;
 
 height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+
+overflow:hidden;
 
 }
 
-.splash-container{
+.container{
+
+width:90%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+}
+
+/* LEFT SIDE */
+
+.left{
+
+display:flex;
+align-items:center;
+
+animation:slideLeft 2s ease;
+
+}
+
+.line{
+
+width:8px;
+height:350px;
+background:#facc15;
+margin-right:30px;
+
+}
+
+/* 3D TEXT */
+
+.text3d h1{
+
+font-size:90px;
+font-style:italic;
+letter-spacing:4px;
+
+color:white;
+
+text-shadow:
+1px 1px 0 #000,
+2px 2px 0 #000,
+3px 3px 0 #000,
+4px 4px 0 #000,
+5px 5px 0 #000,
+6px 6px 0 #000,
+7px 7px 0 #000,
+8px 8px 10px rgba(0,0,0,0.5);
+
+animation:floatText 3s ease-in-out infinite;
+
+}
+
+/* RIGHT SIDE */
+
+.right{
 
 text-align:center;
+animation:fadeIn 3s ease;
 
 }
 
 .logo{
 
-width:120px;
-border-radius:20px;
-display:block;
-margin:auto;
+width:150px;
+border-radius:25px;
+margin-bottom:20px;
 
-animation:logoFloat 2.5s ease-in-out infinite;
+animation:logoFloat 3s ease-in-out infinite;
 
 }
 
-.title{
+.brand{
 
-font-size:40px;
-margin-top:20px;
+font-size:60px;
 color:#facc15;
+text-shadow:4px 4px 0 black;
 
 }
 
-.tagline{
+/* ANIMATIONS */
 
-opacity:0.8;
-margin-top:10px;
-font-size:16px;
-
-}
-
-.loader{
-
-margin:30px auto;
-
-border:4px solid #1e293b;
-border-top:4px solid #facc15;
-
-border-radius:50%;
-
-width:40px;
-height:40px;
-
-animation:spin 1s linear infinite;
-
-}
-
-@keyframes spin{
+@keyframes slideLeft{
 
 0%{
-transform:rotate(0deg);
+transform:translateX(-200px);
+opacity:0;
 }
 
 100%{
-transform:rotate(360deg);
+transform:translateX(0);
+opacity:1;
+}
+
+}
+
+@keyframes fadeIn{
+
+0%{
+opacity:0;
+}
+
+100%{
+opacity:1;
 }
 
 }
 
 @keyframes logoFloat{
 
-0%{
-transform:translateY(0);
+0%{ transform:translateY(0); }
+50%{ transform:translateY(-15px); }
+100%{ transform:translateY(0); }
+
 }
 
-50%{
-transform:translateY(-12px);
-}
+@keyframes floatText{
 
-100%{
-transform:translateY(0);
-}
+0%{ transform:translateY(0); }
+50%{ transform:translateY(-10px); }
+100%{ transform:translateY(0); }
 
 }
