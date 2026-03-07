@@ -165,6 +165,52 @@ body {
   font-weight: 700;
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #0b1322;
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+button {
+  border: 1px solid #d9b211;
+  background: var(--accent);
+  color: #111;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mini-note {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.stack {
+  display: grid;
+  gap: 10px;
+}
+
 @media (max-width: 900px) {
   .span-3,
   .span-4,

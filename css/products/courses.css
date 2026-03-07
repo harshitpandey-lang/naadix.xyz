@@ -1,0 +1,15 @@
+:root {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --line: #334155;
+  --accent: #facc15;
+  --text: #e2e8f0;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(circle at top right, #1f2a44, var(--bg) 62%); color: var(--text); }
+.container { max-width: 980px; margin: 0 auto; padding: 24px; }
+h1 { margin-top: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.card { background: linear-gradient(180deg, var(--panel), #182233); border: 1px solid var(--line); border-radius: 14px; padding: 14px; text-decoration: none; color: var(--text); }
+a { color: var(--accent); }
+.faq-list details { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
