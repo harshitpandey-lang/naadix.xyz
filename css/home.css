@@ -15,8 +15,11 @@ position:relative;
 
 background:linear-gradient(
 to bottom,
-#24309e 50%,
-#e9e6e6 50%
+#24309e 0%,
+#24309e 46%,
+#8c93cb 50%,
+#e9e6e6 54%,
+#e9e6e6 100%
 );
 
 color:white;
@@ -32,8 +35,16 @@ justify-content:center;
 position:absolute;
 font-size:25rem;
 font-weight:bold;
-
-color:rgba(233,230,230,0.95); /* same as bottom background */
+color:transparent;
+background:linear-gradient(
+to bottom,
+rgba(250,204,21,0.9) 0%,
+rgba(250,204,21,0.9) 50%,
+#e9e6e6 50%,
+#e9e6e6 100%
+);
+-webkit-background-clip:text;
+background-clip:text;
 
 top:20%;
 left:20%;
@@ -42,8 +53,7 @@ pointer-events:none;
 user-select:none;
 z-index:1;
 font-weight:900;
-mix-blend-mode:overlay;
-
+mix-blend-mode:normal;
 }
 
 
