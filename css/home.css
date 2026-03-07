@@ -103,6 +103,9 @@ overflow-y:auto;
 overflow-x:hidden;
 }
 
+.column a {
+display: block;
+}
 
 /* Image style */
 
@@ -112,6 +115,8 @@ display:block;
 margin-bottom:20px;
 border-radius:8px;
 transition:transform 0.3s;
+aspect-ratio: 4 / 3;
+object-fit: cover;
 }
 
 
