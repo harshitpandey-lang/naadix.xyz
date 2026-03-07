@@ -1,0 +1,1 @@
+// Guest location module placeholder.

@@ -1,0 +1,1 @@
+// Vision board module placeholder.
