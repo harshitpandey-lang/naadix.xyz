@@ -1,4 +1,9 @@
 const logo = document.getElementById("logo");
+const scrollIndicator = document.querySelector(".scrollIndicator");
+
+const goToHome = () => {
+  window.location.href = "webpages/home.html";
+};
 
 if (logo) {
   window.addEventListener("scroll", () => {
@@ -7,7 +12,14 @@ if (logo) {
     logo.style.transform = `scale(${scale})`;
 
     if (scrollY > 150) {
-      window.location.href = "webpages/home.html";
+      goToHome();
     }
   });
+
+  logo.addEventListener("click", goToHome);
+}
+
+if (scrollIndicator) {
+  scrollIndicator.addEventListener("click", goToHome);
+  scrollIndicator.addEventListener("touchstart", goToHome, { passive: true });
 }

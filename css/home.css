@@ -1,8 +1,18 @@
+* {
+box-sizing: border-box;
+}
+
+html,
+body {
+margin: 0;
+}
+
 /* Split-container */
 
 .split-container {
 display:flex;
-height:100vh;
+height: calc(100vh - 75px);
+height: calc(100dvh - 75px);
 margin-top:0;
 }
 
@@ -130,6 +140,8 @@ height:45px;
 nav ul{
 display:flex;
 list-style:none;
+padding: 0;
+margin: 0;
 }
 
 nav ul li{
@@ -154,4 +166,78 @@ nav ul li a:hover{
 color:black;
 border-bottom:2px solid #24309e;
 
+}
+
+@media (max-width: 1024px) {
+nav {
+padding: 12px 20px;
+}
+
+nav ul {
+gap: 10px;
+flex-wrap: wrap;
+justify-content: flex-end;
+}
+
+nav ul li {
+margin-left: 0;
+}
+
+nav ul li a {
+letter-spacing: 1px;
+font-size: 0.9rem;
+}
+
+.background-number {
+font-size: 16rem;
+left: 12%;
+}
+
+.overlay-title,
+.gallery-label {
+font-size: 2.2rem;
+}
+}
+
+@media (max-width: 700px) {
+nav {
+align-items: flex-start;
+gap: 10px;
+}
+
+.logo img {
+height: 38px;
+}
+
+nav ul {
+width: 100%;
+justify-content: flex-start;
+}
+
+.split-container {
+height: auto;
+min-height: calc(100vh - 130px);
+min-height: calc(100dvh - 130px);
+}
+
+.left-half,
+.right-half {
+width: 50%;
+}
+
+.background-number {
+font-size: 11rem;
+top: 28%;
+left: 8%;
+}
+
+.overlay-title,
+.gallery-label {
+font-size: 1.5rem;
+letter-spacing: 0.08em;
+}
+
+.column img {
+margin-bottom: 12px;
+}
 }

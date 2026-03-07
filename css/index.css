@@ -26,7 +26,8 @@ background: linear-gradient(
 display: flex;
 justify-content: space-between;
 align-items: center;
-height: 100vh;
+min-height: 100vh;
+min-height: 100dvh;
 padding: 0 60px;
 background: transparent;
 }
@@ -103,13 +104,73 @@ animation: scroll 1.5s infinite;
 /* HOME SECTION */
 
 .home {
-height: 100vh;
+min-height: 100vh;
+min-height: 100dvh;
 background: #020617;
 display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
 font-size: 30px;
+}
+
+@media (max-width: 1024px) {
+.splash {
+padding: 0 30px;
+}
+
+.line {
+height: 250px;
+margin-right: 20px;
+}
+
+.bigText h1 {
+font-size: 64px;
+letter-spacing: 2px;
+}
+
+.brand {
+font-size: 48px;
+}
+}
+
+@media (max-width: 700px) {
+.splash {
+padding: 24px 16px;
+align-items: center;
+gap: 14px;
+}
+
+.line {
+width: 5px;
+height: 170px;
+margin-right: 12px;
+}
+
+.bigText h1 {
+font-size: 34px;
+line-height: 1.1;
+}
+
+.logo {
+width: 90px;
+}
+
+.brand {
+font-size: 30px;
+margin-top: 12px;
+text-shadow: 2px 2px 0 black;
+}
+
+.scrollIndicator {
+margin-top: 18px;
+}
+
+.home {
+font-size: 22px;
+text-align: center;
+padding: 0 16px;
+}
 }
 
 /* ANIMATIONS */
