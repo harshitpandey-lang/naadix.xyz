@@ -127,14 +127,12 @@ body {
   text-transform: uppercase;
 }
 
-.section-nav,
-.file-nav {
+.section-nav {
   display: grid;
   gap: 8px;
 }
 
-.section-nav a,
-.file-nav a {
+.section-nav a {
   text-decoration: none;
   color: var(--text-soft);
   border: 1px solid var(--line);
@@ -151,8 +149,7 @@ body {
   font-weight: 700;
 }
 
-.section-nav a:hover,
-.file-nav a:hover {
+.section-nav a:hover {
   color: #f8fafc;
   border-color: rgba(250, 204, 21, 0.6);
 }
@@ -265,6 +262,57 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
+}
+
+.cert-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.controls button {
+  border: 1px solid var(--line);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.7);
+  color: var(--logo-yellow);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.cert-track {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+}
+
+.cert-track figure {
+  margin: 0;
+  min-width: 280px;
+  background: rgba(2, 6, 23, 0.38);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cert-track img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cert-track figcaption {
+  font-weight: 700;
+  padding: 8px 12px 12px;
 }
 
 .project-card {

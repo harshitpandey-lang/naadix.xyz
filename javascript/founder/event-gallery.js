@@ -9,7 +9,7 @@ const localImages = [
   "../../images/home/img6.jpeg"
 ];
 
-const imageSet = Array.from({ length: 21 }, (_, i) => ({
+const imageSet = Array.from({ length: 72 }, (_, i) => ({
   src: localImages[i % localImages.length],
   title: `Event Photo ${i + 1}`
 }));
