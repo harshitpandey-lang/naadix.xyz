@@ -4,11 +4,20 @@ padding: 0;
 box-sizing: border-box;
 }
 
-body {
+body{
 font-family: Arial, sans-serif;
-background: #0f172a;
 color: white;
 overflow-x: hidden;
+
+/* Gradient background */
+
+background: linear-gradient(
+180deg,
+#3b82f6 0%,
+#1e40af 40%,
+#0f172a 100%
+);
+
 }
 
 /* SPLASH SECTION */
@@ -19,6 +28,7 @@ justify-content: space-between;
 align-items: center;
 height: 100vh;
 padding: 0 60px;
+background: transparent;
 }
 
 /* LEFT SIDE */
