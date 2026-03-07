@@ -1,75 +1,14 @@
-:root {
-  --accent: #f7be2b;
-  --ink: #232323;
-  --panel: #4c4c4c;
-  --paper: #ececec;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--paper);
-  color: var(--ink);
-}
-
-.page-shell {
-  min-height: 100vh;
-  display: flex;
-}
-
-.left-panel {
-  width: 220px;
-  background: linear-gradient(to bottom, var(--panel) 0 38%, var(--accent) 38% 100%);
-  padding: 24px 16px;
-}
-
-.profile {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 4px solid #d8e7f2;
-  margin: 0 auto 16px;
-}
-
-.profile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-nav {
-  display: grid;
-  gap: 10px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #111;
-  text-align: center;
-  font-weight: 800;
-  padding: 8px 4px;
-}
-
-nav .active {
-  background: #111;
-  color: #fff;
-  border-radius: 999px;
-}
+@import url("./founder-theme.css");
 
 .content {
-  flex: 1;
   padding: 24px 30px;
   display: grid;
   gap: 16px;
 }
 
 .card {
-  background: #fff;
+  background: rgba(2, 6, 23, 0.32);
+  border: 1px solid var(--line);
   border-radius: 14px;
   padding: 18px;
 }
@@ -85,7 +24,8 @@ h1, h2 {
 }
 
 .testimonial-grid article {
-  background: #f4f4f4;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px;
   text-align: center;
@@ -106,10 +46,12 @@ h1, h2 {
   margin: 0;
   line-height: 1.5;
   font-size: 0.94rem;
+  color: var(--text-soft);
 }
 
 .lead {
   margin: 0 0 10px;
+  color: var(--text-soft);
 }
 
 .contact-grid {
@@ -119,7 +61,8 @@ h1, h2 {
 }
 
 .contact-grid a {
-  background: #121212;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid var(--line);
   color: #fff;
   border-radius: 12px;
   text-decoration: none;
@@ -129,7 +72,11 @@ h1, h2 {
 }
 
 .contact-grid a strong {
-  color: var(--accent);
+  color: var(--logo-yellow);
+}
+
+.contact-grid a span {
+  color: var(--text-soft);
 }
 
 @media (max-width: 900px) {
@@ -140,19 +87,6 @@ h1, h2 {
 }
 
 @media (max-width: 720px) {
-  .page-shell {
-    flex-direction: column;
-  }
-
-  .left-panel {
-    width: 100%;
-    background: var(--panel);
-  }
-
-  nav a {
-    color: #fff;
-  }
-
   .content {
     padding: 20px;
   }

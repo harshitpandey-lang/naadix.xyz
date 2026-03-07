@@ -1,19 +1,7 @@
-:root {
-  --bg: #111827;
-  --panel: #1f2937;
-  --line: #374151;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --accent: #facc15;
-}
-
-* { box-sizing: border-box; }
+@import url("../founder-theme.css");
 
 body {
-  margin: 0;
-  background: radial-gradient(circle at top right, #1f2a44, var(--bg) 62%);
-  color: var(--text);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
 }
 
 .wrap {
@@ -36,7 +24,7 @@ body {
 }
 
 .badge {
-  background: var(--accent);
+  background: var(--logo-yellow);
   color: #111;
   border-radius: 999px;
   padding: 6px 12px;
@@ -52,9 +40,9 @@ body {
 
 .links a {
   text-decoration: none;
-  color: var(--text);
+  color: var(--text-main);
   border: 1px solid var(--line);
-  background: #1c2535;
+  background: rgba(2, 6, 23, 0.58);
   border-radius: 999px;
   padding: 8px 12px;
   font-weight: 700;
@@ -67,7 +55,7 @@ body {
 }
 
 .card {
-  background: linear-gradient(180deg, var(--panel), #172132);
+  background: rgba(15, 23, 42, 0.82);
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 16px;
@@ -87,7 +75,7 @@ ul {
   line-height: 1.8;
 }
 
-.muted { color: var(--muted); }
+.muted { color: var(--text-soft); }
 
 .progress {
   height: 11px;
@@ -100,7 +88,7 @@ ul {
 .progress span {
   height: 100%;
   display: block;
-  background: linear-gradient(to right, #f59e0b, var(--accent));
+  background: linear-gradient(to right, #f59e0b, var(--logo-yellow));
   width: 0;
   transition: width 700ms ease;
 }
