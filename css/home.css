@@ -9,36 +9,41 @@ margin-top:0;
 
 /* Left half */
 
-.left-half {
-  width: 50%;
-  position: relative;
+.left-half{
+width:50%;
+position:relative;
 
-  background: linear-gradient(
-    to bottom,
-    #24309e 50%,
-    #e9e6e6 50%
-  );
+background:linear-gradient(
+to bottom,
+#24309e 50%,
+#e9e6e6 50%
+);
 
-  color: rgb(217, 230, 117);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
 }
-
 
 /* Background number */
 
-.background-number {
+.background-number{
 position:absolute;
 font-size:25rem;
 font-weight:bold;
-color:rgba(255, 253, 253, 0.565);
+
+color:rgba(233,230,230,0.95); /* same as bottom background */
+
 top:20%;
 left:20%;
+
 pointer-events:none;
 user-select:none;
 z-index:1;
+font-weight:900;
+mix-blend-mode:overlay;
+
 }
 
 
@@ -58,7 +63,7 @@ margin-bottom:1rem;
 
 .gallery-label {
 position:relative;
-font-size:1.5rem;
+font-size:3rem;
 z-index:2;
 letter-spacing:0.2em;
 color:#facc15;
@@ -96,4 +101,35 @@ transition:transform 0.3s;
 .column img:hover {
 transform:scale(1.05);
 cursor:pointer;
+}
+
+.logo img{
+height:45px;
+width:auto;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:12px 40px;
+
+background:white;
+}
+
+nav ul{
+display:flex;
+list-style:none;
+}
+
+nav ul li{
+margin-left:30px;
+}
+
+nav ul li a{
+text-decoration:none;
+font-weight:bold;
+color:#24309e;
+letter-spacing:2px;
 }
