@@ -64,58 +64,78 @@ nav .active {
 .content {
   flex: 1;
   padding: 24px 30px;
-}
-
-h1 {
-  margin: 0 0 8px;
-  font-size: clamp(2rem, 5vw, 3rem);
-}
-
-p {
-  margin: 0 0 16px;
-}
-
-.columns-wrap {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  height: 76vh;
+  gap: 16px;
 }
 
-.gallery-col {
-  overflow-y: auto;
-  display: grid;
-  gap: 12px;
-  padding-right: 4px;
-}
-
-.gallery-item {
+.card {
   background: #fff;
   border-radius: 14px;
-  overflow: hidden;
+  padding: 18px;
 }
 
-.gallery-item img {
-  width: 100%;
-  height: 190px;
+h1, h2 {
+  margin: 0 0 12px;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.testimonial-grid article {
+  background: #f4f4f4;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.testimonial-grid img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
   object-fit: cover;
-  display: block;
 }
 
-.gallery-item p {
+.testimonial-grid h3 {
+  margin: 8px 0 4px;
+}
+
+.testimonial-grid p {
   margin: 0;
-  padding: 8px 10px 12px;
-  font-weight: 700;
+  line-height: 1.5;
+  font-size: 0.94rem;
 }
 
-@media (max-width: 980px) {
-  .columns-wrap {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
+.lead {
+  margin: 0 0 10px;
+}
 
-  .gallery-col {
-    max-height: 70vh;
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.contact-grid a {
+  background: #121212;
+  color: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  padding: 14px;
+  display: grid;
+  gap: 2px;
+}
+
+.contact-grid a strong {
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .testimonial-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -131,5 +151,9 @@ p {
 
   nav a {
     color: #fff;
+  }
+
+  .content {
+    padding: 20px;
   }
 }

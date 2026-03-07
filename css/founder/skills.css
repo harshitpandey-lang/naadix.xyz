@@ -1,0 +1,199 @@
+:root {
+  --accent: #f7be2b;
+  --ink: #232323;
+  --panel: #4c4c4c;
+  --paper: #efefef;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--ink);
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: flex;
+}
+
+.left-panel {
+  width: 220px;
+  background: linear-gradient(to bottom, var(--panel) 0 38%, var(--accent) 38% 100%);
+  padding: 24px 16px;
+}
+
+.profile {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #d8e7f2;
+  margin: 0 auto 16px;
+}
+
+.profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+nav {
+  display: grid;
+  gap: 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #111;
+  text-align: center;
+  font-weight: 800;
+  padding: 8px 4px;
+}
+
+nav .active {
+  background: #111;
+  color: #fff;
+  border-radius: 999px;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 32px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 5vw, 3.1rem);
+}
+
+.subtitle {
+  font-size: 1.12rem;
+  margin: 0 0 12px;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.skills-grid article {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.skills-grid ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.8;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stats div {
+  background: #0f0f0f;
+  color: #fff;
+  border-radius: 12px;
+  text-align: center;
+  padding: 16px 10px;
+}
+
+.stats span {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.stats p {
+  margin: 6px 0 0;
+  font-weight: 600;
+}
+
+.certificates {
+  margin-top: 24px;
+}
+
+.cert-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.controls button {
+  border: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #111;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.cert-track {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+}
+
+.cert-track figure {
+  margin: 0;
+  min-width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cert-track img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.cert-track figcaption {
+  font-weight: 700;
+  padding: 8px 12px 12px;
+}
+
+@media (max-width: 980px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    width: 100%;
+    background: var(--panel);
+  }
+
+  nav a {
+    color: #fff;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}

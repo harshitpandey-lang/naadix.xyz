@@ -40,10 +40,8 @@ justify-content:center;
 position:absolute;
 font-size:25rem;
 font-weight:bold;
-color:transparent;
-background:color:#d2d4e6;
--webkit-background-clip:text;
-background-clip:text;
+color:#ffffff;
+opacity:0.3;
 
 top:20%;
 left:20%;
