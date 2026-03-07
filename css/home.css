@@ -13,13 +13,18 @@ margin-top:0;
 width:50%;
 position:relative;
 
-background:linear-gradient(
-to bottom,
-#24309e 0%,
-#24309e 46%,
-#8c93cb 50%,
-#e9e6e6 54%,
-#e9e6e6 100%
+background: linear-gradient(
+    to bottom,
+    #24309e 0%,
+    #2c37a6 10%,
+    #3f49b3 20%,
+    #5660bf 30%,
+    #7079c8 40%,
+    #8c93cb 50%,
+    #b0b4d8 60%,
+    #d2d4e6 70%,
+    #f0f0f5 85%,
+    #ffffff 100%
 );
 
 color:white;
@@ -36,13 +41,7 @@ position:absolute;
 font-size:25rem;
 font-weight:bold;
 color:transparent;
-background:linear-gradient(
-to bottom,
-rgba(250,204,21,0.9) 0%,
-rgba(250,204,21,0.9) 50%,
-#e9e6e6 50%,
-#e9e6e6 100%
-);
+background:color(srgb rgb(255, 255, 255));
 -webkit-background-clip:text;
 background-clip:text;
 
