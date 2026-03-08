@@ -32,3 +32,18 @@ if (certTrack && certPrev && certNext) {
     certTrack.scrollBy({ left: 320, behavior: "smooth" });
   });
 }
+
+const horizontalTracks = [...document.querySelectorAll(".cert-track, .project-grid, .gallery-grid")];
+
+horizontalTracks.forEach((track) => {
+  track.addEventListener(
+    "wheel",
+    (event) => {
+      if (Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+      if (track.scrollWidth <= track.clientWidth) return;
+      event.preventDefault();
+      track.scrollBy({ left: event.deltaY, behavior: "smooth" });
+    },
+    { passive: false }
+  );
+});

@@ -10,4 +10,15 @@ if (certTrack && certPrev && certNext) {
   certNext.addEventListener("click", () => {
     certTrack.scrollBy({ left: 320, behavior: "smooth" });
   });
+
+  certTrack.addEventListener(
+    "wheel",
+    (event) => {
+      if (Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+      if (certTrack.scrollWidth <= certTrack.clientWidth) return;
+      event.preventDefault();
+      certTrack.scrollBy({ left: event.deltaY, behavior: "smooth" });
+    },
+    { passive: false }
+  );
 }

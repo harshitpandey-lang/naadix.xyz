@@ -103,12 +103,16 @@ body {
 
 .nav-pills {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   margin-bottom: 14px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-behavior: smooth;
 }
 
 .nav-pills a {
+  flex: 0 0 auto;
   color: var(--text);
   border: 1px solid var(--line);
   background: var(--panel-soft);
@@ -122,6 +126,20 @@ body {
   color: #111;
   background: var(--accent);
   border-color: #eab308;
+}
+
+.nav-pills::-webkit-scrollbar {
+  height: 8px;
+}
+
+.nav-pills::-webkit-scrollbar-thumb {
+  background: rgba(250, 204, 21, 0.7);
+  border-radius: 999px;
+}
+
+.nav-pills::-webkit-scrollbar-track {
+  background: #0b1322;
+  border-radius: 999px;
 }
 
 .btn-link {
@@ -209,6 +227,33 @@ button {
 .stack {
   display: grid;
   gap: 10px;
+}
+
+.scroll-y {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+.scroll-y::-webkit-scrollbar,
+.scroll-x::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scroll-y::-webkit-scrollbar-thumb,
+.scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(250, 204, 21, 0.65);
+  border-radius: 999px;
+}
+
+.scroll-y::-webkit-scrollbar-track,
+.scroll-x::-webkit-scrollbar-track {
+  background: #0b1322;
+  border-radius: 999px;
 }
 
 @media (max-width: 900px) {

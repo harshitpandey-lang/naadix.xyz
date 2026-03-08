@@ -259,9 +259,12 @@ h2 {
 }
 
 .project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
   gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  padding-bottom: 10px;
 }
 
 .cert-head {
@@ -316,6 +319,8 @@ h2 {
 }
 
 .project-card {
+  flex: 0 0 clamp(220px, 28vw, 280px);
+  scroll-snap-align: start;
   text-decoration: none;
   border-radius: 12px;
   overflow: hidden;
@@ -326,7 +331,7 @@ h2 {
 
 .project-card img {
   width: 100%;
-  height: 146px;
+  height: 160px;
   object-fit: cover;
 }
 
@@ -337,16 +342,40 @@ h2 {
 }
 
 .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  padding-bottom: 10px;
 }
 
 .gallery-grid img {
-  width: 100%;
+  flex: 0 0 clamp(220px, 28vw, 300px);
   height: 180px;
   object-fit: cover;
   border-radius: 10px;
+  scroll-snap-align: start;
+}
+
+.cert-track::-webkit-scrollbar,
+.project-grid::-webkit-scrollbar,
+.gallery-grid::-webkit-scrollbar {
+  height: 9px;
+}
+
+.cert-track::-webkit-scrollbar-thumb,
+.project-grid::-webkit-scrollbar-thumb,
+.gallery-grid::-webkit-scrollbar-thumb {
+  background: rgba(250, 204, 21, 0.65);
+  border-radius: 999px;
+}
+
+.cert-track::-webkit-scrollbar-track,
+.project-grid::-webkit-scrollbar-track,
+.gallery-grid::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.45);
+  border-radius: 999px;
 }
 
 .contact-wrap {
@@ -400,10 +429,6 @@ h2 {
   .contact-wrap {
     grid-template-columns: 1fr;
   }
-
-  .gallery-grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 560px) {
@@ -420,6 +445,6 @@ h2 {
   }
 
   .gallery-grid {
-    grid-template-columns: 1fr;
+    gap: 8px;
   }
 }
