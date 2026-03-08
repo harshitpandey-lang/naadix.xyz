@@ -2,7 +2,7 @@ const logo = document.getElementById("logo");
 const scrollIndicator = document.querySelector(".scrollIndicator");
 
 const goToHome = () => {
-  window.location.href = "webpages/home.html";
+  window.location.href = "/webpages/home.html";
 };
 
 if (logo) {
