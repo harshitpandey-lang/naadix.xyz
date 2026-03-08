@@ -1,6 +1,8 @@
-const CACHE_NAME = "naadix-lab-v1";
+const CACHE_NAME = "naadix-lab-v2";
+const LAB_SCOPE = new URL(self.registration.scope);
+const LAB_HOME = new URL("home-lab.html", LAB_SCOPE).pathname;
 const OFFLINE_URLS = [
-  "/webpages/lab/home-lab.html",
+  LAB_HOME,
   "/css/lab/lab-theme.css",
   "/css/lab/home-lab.css",
   "/javascript/lab/auth.js",
@@ -41,7 +43,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
           return response;
         })
-        .catch(() => caches.match("/webpages/lab/home-lab.html"));
+        .catch(() => caches.match(LAB_HOME));
     })
   );
 });

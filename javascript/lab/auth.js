@@ -15,10 +15,12 @@
 
   const storage = window.sessionStorage;
   const path = window.location.pathname.replace(/\\/g, "/").toLowerCase();
-  const isLabPage = path.includes("/webpages/lab/");
+  const baseMatch = path.match(/^(.*?\/(?:webpages\/lab|lab))(?:\/|$)/);
+  const labBasePath = baseMatch ? baseMatch[1] : null;
+  const isLabPage = Boolean(labBasePath);
   if (!isLabPage) return;
 
-  const isHomeLab = path.endsWith("/home-lab.html") || path.endsWith("/lab/");
+  const isHomeLab = path.endsWith("/home-lab.html") || path.endsWith("/lab/") || path.endsWith("/lab");
   const requiredRole = path.includes("/founder-dashboard/")
     ? "founder"
     : path.includes("/family-dashboard/")
@@ -65,7 +67,7 @@
   };
 
   if (requiredRole && !isAuthorized(requiredRole)) {
-    window.location.href = "../home-lab.html";
+    window.location.href = `${labBasePath}/home-lab.html`;
     return;
   }
 
@@ -77,7 +79,7 @@
     logoutBtn.textContent = `Logout (${getUsername() || getRole()})`;
     logoutBtn.addEventListener("click", () => {
       clearRole();
-      window.location.href = "../home-lab.html";
+      window.location.href = `${labBasePath}/home-lab.html`;
     });
     topbar.appendChild(logoutBtn);
   }
@@ -89,7 +91,7 @@
     if (!document.querySelector('link[rel="manifest"]')) {
       const manifest = document.createElement("link");
       manifest.rel = "manifest";
-      manifest.href = "/webpages/lab/manifest.webmanifest";
+      manifest.href = `${labBasePath}/manifest.webmanifest`;
       head.appendChild(manifest);
     }
 
@@ -102,7 +104,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/webpages/lab/sw-lab.js").catch(() => {});
+        navigator.serviceWorker.register(`${labBasePath}/sw-lab.js`).catch(() => {});
       });
     }
   };
