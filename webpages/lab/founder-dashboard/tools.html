@@ -17,6 +17,10 @@
       <article class="panel span-4">
         <h3>Pomodoro Timer</h3>
         <p class="kpi" id="timerLabel">25:00</p>
+        <p class="mini-note" id="timerStatus">Ready for a 25-minute focus sprint.</p>
+        <div class="form-grid">
+          <input id="timerMinutes" type="number" min="1" max="180" value="25" aria-label="Focus minutes">
+        </div>
         <div class="inline">
           <button id="startTimer" type="button">Start</button>
           <button id="resetTimer" class="secondary" type="button">Reset</button>
@@ -26,6 +30,12 @@
       <article class="panel span-4">
         <h3>Quick Notes</h3>
         <textarea id="quickNote" rows="7" placeholder="Capture fast ideas..."></textarea>
+        <div class="inline">
+          <button id="copyNote" type="button">Copy</button>
+          <button id="exportNote" class="secondary" type="button">Export .txt</button>
+          <button id="clearNote" class="secondary" type="button">Clear</button>
+        </div>
+        <p class="mini-note" id="noteMeta">Not saved yet.</p>
       </article>
 
       <article class="panel span-4">
@@ -37,6 +47,31 @@
           <button id="calcRun" type="button">Calculate</button>
         </div>
         <p class="mini-note" id="calcOut">Result: --</p>
+      </article>
+
+      <article class="panel span-6">
+        <h3>Task Sprint Board</h3>
+        <form id="taskForm" class="form-grid">
+          <input id="taskInput" placeholder="Task title" maxlength="120" required>
+          <select id="taskPriority">
+            <option value="high">High</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <button type="submit">Add Task</button>
+        </form>
+        <p class="mini-note" id="taskSummary">0 tasks</p>
+        <ul id="taskList" class="task-list"></ul>
+      </article>
+
+      <article class="panel span-6">
+        <h3>Productivity Tool Finder</h3>
+        <div class="form-grid">
+          <input id="toolSearch" placeholder="Search by name, tag, or use-case" aria-label="Search tools">
+          <select id="toolCategory"></select>
+        </div>
+        <p class="mini-note" id="toolCount">0 tools</p>
+        <div id="toolResults" class="tool-results"></div>
       </article>
 
       <article class="panel span-12">

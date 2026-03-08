@@ -1,12 +1,12 @@
 const localImages = [
-  "../../images/home/home.jpeg",
-  "../../images/home/mission.jpeg",
-  "../../images/home/img1.jpeg",
-  "../../images/home/img2.jpeg",
-  "../../images/home/img3.jpeg",
-  "../../images/home/img4.jpeg",
-  "../../images/home/img5.jpeg",
-  "../../images/home/img6.jpeg"
+  "../../images/home.jpeg",
+  "../../images/mission.jpeg",
+  "../../images/img1.jpeg",
+  "../../images/img2.jpeg",
+  "../../images/img3.jpeg",
+  "../../images/img4.jpeg",
+  "../../images/img5.jpeg",
+  "../../images/img6.jpeg"
 ];
 
 const imageSet = Array.from({ length: 72 }, (_, i) => ({

@@ -29,6 +29,7 @@
 
   const getRole = () => storage.getItem(AUTH_ROLE_KEY);
   const getUsername = () => storage.getItem(AUTH_USER_KEY);
+  const getAuthTime = () => Number(storage.getItem(AUTH_TIME_KEY) || 0) || 0;
   const setRole = (role, username) => {
     storage.setItem(AUTH_ROLE_KEY, role);
     storage.setItem(AUTH_USER_KEY, username || role);
@@ -43,7 +44,7 @@
   const isAuthorized = (role) => getRole() === role;
 
   const login = (username, password, forcedRole) => {
-    const uname = String(username || "").trim();
+    const uname = String(username || "").trim().toLowerCase();
     const pass = String(password || "");
     const role = forcedRole || uname;
 
@@ -113,6 +114,7 @@
     login,
     getRole,
     getUsername,
+    getAuthTime,
     setRole,
     clearRole,
     isAuthorized,

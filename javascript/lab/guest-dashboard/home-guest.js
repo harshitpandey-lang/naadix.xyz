@@ -3,7 +3,7 @@ const docs = document.getElementById("guestDocs");
 
 if (gallery) {
   const items = [
-    { src: "../../../images/index/logo.jpeg", alt: "Naadix" },
+    { src: "../../../images/logo.jpeg", alt: "Naadix" },
     { src: "../../../coaching-master/images/coach_1_sm.jpg", alt: "Workshop" },
     { src: "../../../coaching-master/images/coach_2_sm.jpg", alt: "Training" },
     { src: "../../../coaching-master/images/coach_3_sm.jpg", alt: "Events" }
