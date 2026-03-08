@@ -1,98 +1,44 @@
 const auth = window.NaadixAuth;
-const roleButtons = document.querySelectorAll(".card-grid .span-4 .btn-link");
-const conceptPanel = document.querySelector(".card-grid .span-12");
+const forms = document.querySelectorAll("form[data-role-login]");
+const sessionLabel = document.getElementById("sessionLabel");
+const logoutBtn = document.getElementById("logoutBtn");
 
-const getRoleFromHref = (href) => {
-  if (href.includes("founder-dashboard")) return "founder";
-  if (href.includes("family-dashboard")) return "family";
-  if (href.includes("guest-dashboard")) return "guest";
-  return null;
+const refreshSession = () => {
+  if (!auth || !sessionLabel) return;
+  const role = auth.getRole();
+  const username = auth.getUsername();
+  sessionLabel.textContent = role
+    ? `Signed in as ${username} (${role}).`
+    : "No active session.";
 };
 
-const buildAccessPanel = () => {
-  if (!conceptPanel || !auth) return null;
-  const wrap = document.createElement("div");
-  wrap.className = "form-grid";
-  wrap.innerHTML = `
-    <select id="labRole">
-      <option value="founder">Founder</option>
-      <option value="family">Family</option>
-      <option value="guest">Guest</option>
-    </select>
-    <input id="labPassword" type="password" placeholder="Enter role password">
-    <button id="labLogin">Authenticate Role</button>
-    <button id="labLogout" type="button">Logout</button>
-  `;
-  const status = document.createElement("p");
-  status.className = "mini-note";
-  status.id = "labAuthStatus";
-  conceptPanel.appendChild(wrap);
-  conceptPanel.appendChild(status);
-  return { wrap, status };
-};
+forms.forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!auth) return;
 
-const accessUi = buildAccessPanel();
-if (accessUi && auth) {
-  const roleSelect = accessUi.wrap.querySelector("#labRole");
-  const passInput = accessUi.wrap.querySelector("#labPassword");
-  const loginBtn = accessUi.wrap.querySelector("#labLogin");
-  const logoutBtn = accessUi.wrap.querySelector("#labLogout");
-  const status = accessUi.status;
+    const role = form.getAttribute("data-role-login");
+    const status = form.querySelector("[data-auth-status]");
+    const username = (form.querySelector('[name="username"]') || {}).value;
+    const password = (form.querySelector('[name="password"]') || {}).value;
 
-  const refreshStatus = () => {
-    const activeRole = auth.getRole();
-    status.textContent = activeRole
-      ? `Current authenticated role: ${activeRole}`
-      : "No active role session. Authenticate to enter dashboards.";
-  };
-
-  loginBtn.addEventListener("click", () => {
-    const role = roleSelect.value;
-    const pass = passInput.value;
-    if (auth.ROLE_PASSWORDS[role] === pass) {
-      auth.setRole(role);
-      passInput.value = "";
-      refreshStatus();
+    const result = auth.login(username, password, role);
+    if (!result.ok) {
+      if (status) status.textContent = result.message;
       return;
     }
-    status.textContent = "Invalid role password. Try again.";
-  });
 
-  logoutBtn.addEventListener("click", () => {
-    auth.clearRole();
-    refreshStatus();
-  });
-
-  refreshStatus();
-}
-
-roleButtons.forEach((button) => {
-  button.addEventListener("click", (event) => {
-    const href = button.getAttribute("href") || "";
-    const role = getRoleFromHref(href);
-    if (!role) return;
-    if (!auth || !auth.isAuthorized(role)) {
-      event.preventDefault();
-      if (accessUi) {
-        accessUi.status.textContent = `Authenticate as ${role} to open this dashboard.`;
-        const roleSelect = accessUi.wrap.querySelector("#labRole");
-        if (roleSelect) roleSelect.value = role;
-      }
-      return;
-    }
-    localStorage.setItem("naadixLab:lastRole", role);
-    localStorage.setItem("naadixLab:lastPath", href);
+    if (status) status.textContent = "Login successful. Redirecting...";
+    refreshSession();
+    window.location.href = result.redirect;
   });
 });
 
-if (conceptPanel && auth) {
-  const lastPath = localStorage.getItem("naadixLab:lastPath");
-  const lastRole = localStorage.getItem("naadixLab:lastRole");
-  if (lastPath && lastRole && auth.isAuthorized(lastRole)) {
-    const quick = document.createElement("a");
-    quick.className = "btn-link";
-    quick.href = lastPath;
-    quick.textContent = `Continue Last Session (${lastRole})`;
-    conceptPanel.appendChild(quick);
-  }
+if (logoutBtn && auth) {
+  logoutBtn.addEventListener("click", () => {
+    auth.clearRole();
+    refreshSession();
+  });
 }
+
+refreshSession();

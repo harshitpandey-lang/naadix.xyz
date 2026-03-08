@@ -8,21 +8,30 @@
 </head>
 <body>
   <div class="shell">
-    <header class="topbar"><h1>Spiritual Dashboard</h1><span class="badge">Inner Growth</span></header>
-    <nav class="nav-pills"><a href="home-founder.html">Home</a><a href="calendar.html">Calendar</a><a href="vision.html">Vision</a><a href="health.html">Health</a><a href="goals.html">Goals</a><a href="education.html">Education</a><a href="finance.html">Finance</a><a class="active" href="spiritual.html">Spiritual</a><a href="tools.html">Tools</a></nav>
+    <header class="topbar"><h1>Spiritual Practice</h1><span class="badge">Inner Growth</span></header>
+    <nav class="nav-pills">
+      <a href="home-founder.html">Home</a><a href="calendar.html">Calendar</a><a href="vision.html">Vision</a><a href="goals.html">Goals</a><a href="education.html">Education</a><a href="finance.html">Finance</a><a href="health.html">Health</a><a class="active" href="spiritual.html">Spiritual</a><a href="tools.html">Tools</a><a href="../home-lab.html">Lab Home</a>
+    </nav>
+
     <section class="card-grid">
-      <article class="panel span-4"><h3>Meditation</h3><p class="kpi">18 min</p><p class="muted">Daily streak: 21</p></article>
-      <article class="panel span-4"><h3>Scripture Study</h3><p class="kpi">4 chapters</p><p class="muted">Bhagavad Gita</p></article>
-      <article class="panel span-4"><h3>Temple Visits</h3><p class="kpi">2/week</p><p class="muted">Consistency goal</p></article>
-      <article class="panel span-12"><h3>Reflection Journal</h3><ul class="list"><li>Gratitude note</li><li>Day review</li><li>Next intention</li></ul></article>
+      <article class="panel span-6">
+        <h3>Daily Spiritual Activities</h3>
+        <form id="spiritualForm" class="stack">
+          <label><input type="checkbox" value="meditation"> Meditation</label>
+          <label><input type="checkbox" value="scripture"> Scripture reading</label>
+          <label><input type="checkbox" value="reflection"> Reflection journal</label>
+        </form>
+        <p class="mini-note" id="spiritualProgressLabel">Completion: 0%</p>
+      </article>
+      <article class="panel span-6">
+        <h3>Reflection Journal</h3>
+        <textarea id="spiritualJournal" rows="9" placeholder="Write gratitude, observations, and next intention."></textarea>
+      </article>
     </section>
   </div>
-    <script src="../../../javascript/lab/auth.js"></script>
-  <script src="../../../javascript/lab/founder-dashboard/spiritual.js"></script></body>
+
+  <script src="../../../javascript/lab/auth.js"></script>
+  <script src="../../../javascript/lab/lab-common.js"></script>
+  <script src="../../../javascript/lab/founder-dashboard/spiritual.js"></script>
+</body>
 </html>
-
-
-
-
-
-

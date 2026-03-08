@@ -1,45 +1,23 @@
-const guestCalPanel = document.querySelector(".panel");
-const guestCalBody = document.querySelector(".table tbody");
-const guestCalKey = "naadixLab:guestCalendar";
+const CAL_KEY = "naadixLab:founderCalendarEvents";
+const body = document.getElementById("guestCalendarBody");
 
-if (guestCalPanel && guestCalBody) {
-  const form = document.createElement("div");
-  form.className = "form-grid";
-  form.innerHTML = `
-    <input id="guestDate" placeholder="Date">
-    <input id="guestTask" placeholder="Task">
-    <select id="guestPriority">
-      <option value="High">High</option>
-      <option value="Medium">Medium</option>
-      <option value="Low">Low</option>
-    </select>
-    <button id="guestTaskAdd">Add Task</button>
-  `;
-  guestCalPanel.appendChild(form);
+const readRows = () => {
+  try {
+    return JSON.parse(localStorage.getItem(CAL_KEY) || "[]");
+  } catch {
+    return [];
+  }
+};
 
-  const render = (rows) => {
-    if (!rows.length) return;
-    guestCalBody.innerHTML = "";
-    rows.forEach((row) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${row.date}</td><td>${row.task}</td><td>${row.priority}</td>`;
-      guestCalBody.appendChild(tr);
-    });
-  };
+const rows = readRows().sort((a, b) => `${a.date} ${a.time || "23:59"}`.localeCompare(`${b.date} ${b.time || "23:59"}`));
+body.innerHTML = "";
 
-  render(JSON.parse(localStorage.getItem(guestCalKey) || "[]"));
-
-  form.querySelector("#guestTaskAdd").addEventListener("click", () => {
-    const row = {
-      date: form.querySelector("#guestDate").value.trim(),
-      task: form.querySelector("#guestTask").value.trim(),
-      priority: form.querySelector("#guestPriority").value
-    };
-    if (!row.date || !row.task) return;
-    const rows = JSON.parse(localStorage.getItem(guestCalKey) || "[]");
-    rows.push(row);
-    localStorage.setItem(guestCalKey, JSON.stringify(rows));
-    render(rows);
-    form.querySelectorAll("input").forEach((i) => (i.value = ""));
-  });
+if (!rows.length) {
+  body.innerHTML = '<tr><td colspan="4">No shared events available.</td></tr>';
 }
+
+rows.forEach((row) => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${row.date}</td><td>${row.time || "---"}</td><td>${row.title}</td><td>${row.category}</td>`;
+  body.appendChild(tr);
+});

@@ -1,42 +1,52 @@
-const familyLocationTable = document.querySelector(".table tbody");
-const familyLocationPanel = document.querySelector(".panel");
-const familyLocationKey = "naadixLab:familyLocations";
+const LOCATION_KEY = "naadixLab:founderLocation";
 
-if (familyLocationPanel && familyLocationTable) {
-  const form = document.createElement("div");
-  form.className = "form-grid";
-  form.innerHTML = `
-    <input id="memberName" placeholder="Member name">
-    <input id="memberArea" placeholder="Current area">
-    <input id="memberTime" placeholder="Updated time">
-    <button id="addMember">Add / Update</button>
-  `;
-  familyLocationPanel.appendChild(form);
+const mapFrame = document.getElementById("locationMap");
+const locationMeta = document.getElementById("locationMeta");
+const locationTimestamp = document.getElementById("locationTimestamp");
+const refreshBtn = document.getElementById("refreshLocation");
+const shareBtn = document.getElementById("shareBtn");
 
-  const render = (rows) => {
-    if (!rows.length) return;
-    familyLocationTable.innerHTML = "";
-    rows.forEach((row) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${row.member}</td><td>${row.area}</td><td>${row.time}</td>`;
-      familyLocationTable.appendChild(tr);
-    });
-  };
+const renderLocation = () => {
+  const raw = localStorage.getItem(LOCATION_KEY);
+  if (!raw) {
+    locationMeta.textContent = "Founder location unavailable.";
+    locationTimestamp.textContent = "--";
+    return;
+  }
 
-  const saved = JSON.parse(localStorage.getItem(familyLocationKey) || "[]");
-  render(saved);
+  try {
+    const loc = JSON.parse(raw);
+    const { latitude, longitude, accuracy, timestamp } = loc;
+    const ts = new Date(timestamp).toLocaleString();
+    const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude - 0.01}%2C${latitude - 0.01}%2C${longitude + 0.01}%2C${latitude + 0.01}&layer=mapnik&marker=${latitude}%2C${longitude}`;
+    mapFrame.src = mapUrl;
+    locationMeta.textContent = `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}, Accuracy: ${Math.round(accuracy || 0)}m`;
+    locationTimestamp.textContent = ts;
+  } catch {
+    locationMeta.textContent = "Invalid location data.";
+    locationTimestamp.textContent = "--";
+  }
+};
 
-  form.querySelector("#addMember").addEventListener("click", () => {
-    const row = {
-      member: form.querySelector("#memberName").value.trim(),
-      area: form.querySelector("#memberArea").value.trim(),
-      time: form.querySelector("#memberTime").value.trim()
-    };
-    if (!row.member || !row.area || !row.time) return;
-    const rows = JSON.parse(localStorage.getItem(familyLocationKey) || "[]");
-    rows.push(row);
-    localStorage.setItem(familyLocationKey, JSON.stringify(rows));
-    render(rows);
-    form.querySelectorAll("input").forEach((i) => (i.value = ""));
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    renderLocation();
   });
 }
+
+if (shareBtn) {
+  shareBtn.addEventListener("click", async () => {
+    const message = `Please share your status. Location checked at ${new Date().toLocaleString()}.`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: message });
+        return;
+      } catch {
+        // Fallback handled below.
+      }
+    }
+    window.location.href = `sms:+910000000000?body=${encodeURIComponent(message)}`;
+  });
+}
+
+renderLocation();

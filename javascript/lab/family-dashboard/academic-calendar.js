@@ -1,45 +1,76 @@
-const acadTable = document.querySelector(".table tbody");
-const acadPanel = document.querySelector(".panel");
-const acadKey = "naadixLab:familyAcademic";
+const FAMILY_KEY = "naadixLab:familyImportantDates";
+const FOUNDER_CAL_KEY = "naadixLab:founderCalendarEvents";
 
-if (acadPanel && acadTable) {
-  const form = document.createElement("div");
-  form.className = "form-grid";
-  form.innerHTML = `
-    <input id="acadDate" placeholder="Date">
-    <input id="acadEvent" placeholder="Event">
-    <select id="acadType">
-      <option value="Exam">Exam</option>
-      <option value="Meeting">Meeting</option>
-      <option value="Holiday">Holiday</option>
-    </select>
-    <button id="acadAdd">Add Date</button>
-  `;
-  acadPanel.appendChild(form);
+const form = document.getElementById("familyDateForm");
+const body = document.getElementById("familyAcademicBody");
 
-  const render = (rows) => {
-    if (!rows.length) return;
-    acadTable.innerHTML = "";
-    rows.forEach((row) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${row.date}</td><td>${row.event}</td><td>${row.type}</td>`;
-      acadTable.appendChild(tr);
-    });
-  };
+const read = (key) => {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "[]");
+  } catch {
+    return [];
+  }
+};
 
-  render(JSON.parse(localStorage.getItem(acadKey) || "[]"));
+const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-  form.querySelector("#acadAdd").addEventListener("click", () => {
-    const row = {
-      date: form.querySelector("#acadDate").value.trim(),
-      event: form.querySelector("#acadEvent").value.trim(),
-      type: form.querySelector("#acadType").value
-    };
-    if (!row.date || !row.event) return;
-    const rows = JSON.parse(localStorage.getItem(acadKey) || "[]");
-    rows.push(row);
-    localStorage.setItem(acadKey, JSON.stringify(rows));
-    render(rows);
-    form.querySelectorAll("input").forEach((i) => (i.value = ""));
+const render = () => {
+  const familyDates = read(FAMILY_KEY).map((item) => ({ ...item, source: "Family" }));
+  const founderDates = read(FOUNDER_CAL_KEY)
+    .filter((item) => ["Exam", "Vacation", "Meeting"].includes(item.category))
+    .map((item) => ({
+      id: item.id,
+      date: item.date,
+      event: item.title,
+      type: item.category,
+      source: "Founder Calendar",
+      readonly: true
+    }));
+
+  const rows = [...familyDates, ...founderDates].sort((a, b) => a.date.localeCompare(b.date));
+  body.innerHTML = "";
+
+  rows.forEach((row) => {
+    const tr = document.createElement("tr");
+    const action = row.readonly
+      ? "<span class=\"mini-note\">Locked</span>"
+      : `<button type=\"button\" class=\"secondary\" data-delete=\"${row.id}\">Delete</button>`;
+    tr.innerHTML = `
+      <td>${row.date}</td>
+      <td>${row.event}</td>
+      <td>${row.type}</td>
+      <td>${row.source}</td>
+      <td>${action}</td>
+    `;
+    body.appendChild(tr);
   });
+};
+
+if (form) {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const date = document.getElementById("familyDate").value;
+    const entry = document.getElementById("familyEvent").value.trim();
+    const type = document.getElementById("familyType").value;
+    if (!date || !entry) return;
+
+    const rows = read(FAMILY_KEY);
+    rows.push({ id: `fam-${Date.now()}`, date, event: entry, type });
+    save(FAMILY_KEY, rows);
+    form.reset();
+    render();
+  });
+
+  body.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLButtonElement)) return;
+    const id = target.getAttribute("data-delete");
+    if (!id) return;
+
+    const rows = read(FAMILY_KEY).filter((row) => row.id !== id);
+    save(FAMILY_KEY, rows);
+    render();
+  });
+
+  render();
 }

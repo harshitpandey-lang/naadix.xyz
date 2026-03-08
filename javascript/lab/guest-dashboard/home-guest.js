@@ -1,13 +1,36 @@
-const guestOverview = document.querySelector(".card-grid .span-6");
-const guestNoteKey = "naadixLab:guestOverview";
+const gallery = document.getElementById("guestGallery");
+const docs = document.getElementById("guestDocs");
 
-if (guestOverview) {
-  const area = document.createElement("textarea");
-  area.rows = 5;
-  area.placeholder = "Add guest dashboard overview or latest collaboration status...";
-  area.value = localStorage.getItem(guestNoteKey) || "";
-  area.addEventListener("input", () => {
-    localStorage.setItem(guestNoteKey, area.value);
+if (gallery) {
+  const items = [
+    { src: "../../../images/index/logo.jpeg", alt: "Naadix" },
+    { src: "../../../coaching-master/images/coach_1_sm.jpg", alt: "Workshop" },
+    { src: "../../../coaching-master/images/coach_2_sm.jpg", alt: "Training" },
+    { src: "../../../coaching-master/images/coach_3_sm.jpg", alt: "Events" }
+  ];
+
+  items.forEach((item) => {
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = item.alt;
+    gallery.appendChild(img);
   });
-  guestOverview.appendChild(area);
+}
+
+if (docs) {
+  const links = [
+    { name: "Program Overview", href: "https://naadix.xyz" },
+    { name: "Workshop Notes", href: "https://docs.google.com" },
+    { name: "Event Slides", href: "https://drive.google.com" }
+  ];
+
+  links.forEach((link) => {
+    const a = document.createElement("a");
+    a.className = "chip";
+    a.href = link.href;
+    a.target = "_blank";
+    a.rel = "noreferrer";
+    a.textContent = link.name;
+    docs.appendChild(a);
+  });
 }

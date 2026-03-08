@@ -1,37 +1,49 @@
-const habitPanel = document.querySelector(".card-grid .span-12");
-const healthKey = "naadixLab:healthChecklist";
+const HEALTH_KEY = "naadixLab:healthStateV2";
+const healthForm = document.getElementById("healthForm");
+const healthScore = document.getElementById("healthScore");
+const healthChart = document.getElementById("healthChart");
 
-if (habitPanel) {
-  const checklist = document.createElement("div");
-  checklist.className = "stack";
-  checklist.innerHTML = `
-    <label><input type="checkbox" data-item="sleep"> Slept at least 7 hours</label>
-    <label><input type="checkbox" data-item="exercise"> Workout completed</label>
-    <label><input type="checkbox" data-item="meditation"> Meditation done</label>
-    <label><input type="checkbox" data-item="hydration"> Hydration target met</label>
-    <p class="mini-note" id="healthScore"></p>
-  `;
-  habitPanel.appendChild(checklist);
+const readState = () => {
+  try {
+    return JSON.parse(localStorage.getItem(HEALTH_KEY) || "{}");
+  } catch {
+    return {};
+  }
+};
 
-  const state = JSON.parse(localStorage.getItem(healthKey) || "{}");
-  const boxes = checklist.querySelectorAll('input[type="checkbox"]');
-  const scoreEl = checklist.querySelector("#healthScore");
+const saveState = (state) => localStorage.setItem(HEALTH_KEY, JSON.stringify(state));
 
-  const updateScore = () => {
-    let done = 0;
-    boxes.forEach((box) => {
-      if (box.checked) done += 1;
-    });
-    scoreEl.textContent = `Daily habit completion: ${Math.round((done / boxes.length) * 100)}%`;
-  };
-
-  boxes.forEach((box) => {
-    box.checked = Boolean(state[box.dataset.item]);
-    box.addEventListener("change", () => {
-      state[box.dataset.item] = box.checked;
-      localStorage.setItem(healthKey, JSON.stringify(state));
-      updateScore();
-    });
+const render = () => {
+  const state = readState();
+  const checks = Array.from(healthForm.querySelectorAll('input[type="checkbox"]'));
+  checks.forEach((box) => {
+    box.checked = Boolean(state[box.value]);
   });
-  updateScore();
+
+  const done = checks.filter((box) => box.checked).length;
+  const score = checks.length ? Math.round((done / checks.length) * 100) : 0;
+  healthScore.textContent = `${score}%`;
+
+  healthChart.innerHTML = "";
+  checks.forEach((box) => {
+    const row = document.createElement("div");
+    row.className = "chart-bar";
+    row.innerHTML = `
+      <span>${box.value}</span>
+      <div class="chart-bar-track"><span style="width:${box.checked ? 100 : 10}%"></span></div>
+      <strong>${box.checked ? "Done" : "Pending"}</strong>
+    `;
+    healthChart.appendChild(row);
+  });
+};
+
+if (healthForm) {
+  healthForm.addEventListener("change", () => {
+    const checks = Array.from(healthForm.querySelectorAll('input[type="checkbox"]'));
+    const state = checks.reduce((acc, box) => ({ ...acc, [box.value]: box.checked }), {});
+    saveState(state);
+    render();
+  });
+
+  render();
 }

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Founder Dashboard | Naadix Lab</title>
-  <link rel="icon" href="../../../images/index/logo.jpeg">
   <link rel="stylesheet" href="../../../css/lab/founder-dashboard/home-founder.css">
 </head>
 <body>
@@ -17,10 +16,10 @@
       <a class="active" href="home-founder.html">Home</a>
       <a href="calendar.html">Calendar</a>
       <a href="vision.html">Vision</a>
-      <a href="health.html">Health</a>
       <a href="goals.html">Goals</a>
       <a href="education.html">Education</a>
       <a href="finance.html">Finance</a>
+      <a href="health.html">Health</a>
       <a href="spiritual.html">Spiritual</a>
       <a href="tools.html">Tools</a>
       <a href="../home-lab.html">Lab Home</a>
@@ -28,34 +27,52 @@
     <p class="muted" id="nowLabel"></p>
 
     <section class="card-grid">
-      <article class="panel span-3 scroll-y"><h3>Daily Tasks</h3><ul class="list"><li>Product Sprint</li><li>Physics revision</li><li>Client call</li></ul></article>
-      <article class="panel span-3 scroll-y"><h3>Upcoming</h3><ul class="list"><li>Hackathon prep</li><li>Prototype demo</li><li>Mentor sync</li></ul></article>
-      <article class="panel span-3"><h3>Goal Progress</h3><p class="kpi">68%</p><p class="muted">Quarter execution</p></article>
-      <article class="panel span-3"><h3>Productivity</h3><p class="kpi">8.4/10</p><p class="muted">Weekly score</p></article>
+      <article class="panel span-4">
+        <h3>Calendar</h3>
+        <p class="mini-note">Monthly events, deadlines, and table view.</p>
+        <a class="btn-link" href="calendar.html">Open Calendar</a>
+      </article>
+      <article class="panel span-4">
+        <h3>To-Do List</h3>
+        <form class="form-grid" id="todoForm">
+          <input id="todoTitle" placeholder="Task title" required>
+          <select id="todoCategory">
+            <option>Study</option>
+            <option>Project</option>
+            <option>Health</option>
+            <option>Spiritual</option>
+            <option>Admin</option>
+          </select>
+          <button type="submit">Add Task</button>
+        </form>
+        <div class="stack scroll-y" id="todoList"></div>
+      </article>
+      <article class="panel span-4">
+        <h3>Vision Board</h3>
+        <p class="mini-note">Capture long-term focus and mission notes.</p>
+        <a class="btn-link" href="vision.html">Open Vision</a>
+      </article>
 
-      <article class="panel span-6 scroll-y">
-        <h3>Quick Access</h3>
-        <div class="chips">
-          <a class="chip" href="calendar.html">Schedule</a>
-          <a class="chip" href="goals.html">Major Goals</a>
-          <a class="chip" href="finance.html">Runway</a>
-          <a class="chip" href="tools.html">Toolkit</a>
-        </div>
+      <article class="panel span-3"><h3>Goals</h3><p class="kpi" id="goalMetric">0%</p><p class="mini-note">Average progress</p></article>
+      <article class="panel span-3"><h3>Education</h3><p class="kpi" id="educationMetric">0%</p><p class="mini-note">Learning completion</p></article>
+      <article class="panel span-3"><h3>Finance</h3><p class="kpi" id="financeMetric">Rs 0</p><p class="mini-note">Net balance</p></article>
+      <article class="panel span-3"><h3>Health</h3><p class="kpi" id="healthMetric">0%</p><p class="mini-note">Habit completion</p></article>
+
+      <article class="panel span-6">
+        <h3>Spiritual</h3>
+        <p class="mini-note">Meditation, scripture reading, and reflection tracker.</p>
+        <a class="btn-link" href="spiritual.html">Open Spiritual</a>
       </article>
       <article class="panel span-6">
-        <h3>Notes</h3>
-        <p class="muted">Single control center for startup + life operations.</p>
+        <h3>Tools</h3>
+        <p class="mini-note">Pomodoro, notes, calculator, and links.</p>
+        <a class="btn-link" href="tools.html">Open Tools</a>
       </article>
     </section>
   </div>
+
   <script src="../../../javascript/lab/auth.js"></script>
   <script src="../../../javascript/lab/lab-common.js"></script>
   <script src="../../../javascript/lab/founder-dashboard/home-founder.js"></script>
 </body>
 </html>
-
-
-
-
-
-

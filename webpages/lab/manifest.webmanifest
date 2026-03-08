@@ -1,0 +1,22 @@
+{
+  "name": "Naadix Lab",
+  "short_name": "NaadixLab",
+  "start_url": "/webpages/lab/home-lab.html",
+  "scope": "/webpages/lab/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "Founder, family, and guest dashboard platform for Naadix.",
+  "icons": [
+    {
+      "src": "/images/index/logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/images/index/logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

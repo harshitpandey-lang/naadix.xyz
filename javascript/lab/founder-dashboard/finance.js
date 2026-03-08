@@ -1,45 +1,92 @@
-const financePanel = document.querySelector(".card-grid .span-12");
-const financeKey = "naadixLab:financeEntries";
+const FINANCE_KEY = "naadixLab:financeEntriesV2";
+const financeForm = document.getElementById("financeForm");
+const financeList = document.getElementById("financeList");
+const financeChart = document.getElementById("financeChart");
 
-if (financePanel) {
-  const entryForm = document.createElement("div");
-  entryForm.className = "form-grid";
-  entryForm.innerHTML = `
-    <select id="finType">
-      <option value="Income">Income</option>
-      <option value="Expense">Expense</option>
-      <option value="Investment">Investment</option>
-    </select>
-    <input id="finAmount" type="number" placeholder="Amount">
-    <input id="finNote" placeholder="Note">
-    <button id="finAdd">Add Entry</button>
-  `;
-  const list = document.createElement("div");
-  list.className = "stack";
-  financePanel.appendChild(entryForm);
-  financePanel.appendChild(list);
+const incomeValue = document.getElementById("incomeValue");
+const expenseValue = document.getElementById("expenseValue");
+const savingsValue = document.getElementById("savingsValue");
+const investmentValue = document.getElementById("investmentValue");
 
-  const render = () => {
-    const entries = JSON.parse(localStorage.getItem(financeKey) || "[]");
-    list.innerHTML = "";
-    entries.slice(-6).reverse().forEach((item) => {
-      const line = document.createElement("p");
-      line.className = "mini-note";
-      line.textContent = `${item.type}: Rs ${item.amount} - ${item.note}`;
-      list.appendChild(line);
+const readEntries = () => {
+  try {
+    return JSON.parse(localStorage.getItem(FINANCE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+};
+
+const saveEntries = (entries) => localStorage.setItem(FINANCE_KEY, JSON.stringify(entries));
+
+const totalByType = (entries, type) => entries
+  .filter((entry) => entry.type === type)
+  .reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
+
+const render = () => {
+  const entries = readEntries();
+  const income = totalByType(entries, "income");
+  const expense = totalByType(entries, "expense");
+  const savings = totalByType(entries, "savings");
+  const investment = totalByType(entries, "investment");
+
+  incomeValue.textContent = `Rs ${income}`;
+  expenseValue.textContent = `Rs ${expense}`;
+  savingsValue.textContent = `Rs ${savings}`;
+  investmentValue.textContent = `Rs ${investment}`;
+
+  const stats = [
+    { label: "Income", value: income },
+    { label: "Expense", value: expense },
+    { label: "Savings", value: savings },
+    { label: "Investment", value: investment }
+  ];
+  const max = Math.max(1, ...stats.map((item) => item.value));
+
+  financeChart.innerHTML = "";
+  stats.forEach((item) => {
+    const width = Math.round((item.value / max) * 100);
+    const row = document.createElement("div");
+    row.className = "chart-bar";
+    row.innerHTML = `
+      <span>${item.label}</span>
+      <div class="chart-bar-track"><span style="width:${width}%"></span></div>
+      <strong>Rs ${item.value}</strong>
+    `;
+    financeChart.appendChild(row);
+  });
+
+  financeList.innerHTML = "";
+  entries.slice().reverse().slice(0, 20).forEach((entry) => {
+    const line = document.createElement("div");
+    line.className = "inline";
+    line.innerHTML = `
+      <span class="chip">${entry.type}</span>
+      <span>Rs ${entry.amount}</span>
+      <span class="mini-note">${entry.note}</span>
+    `;
+    financeList.appendChild(line);
+  });
+};
+
+if (financeForm) {
+  financeForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const type = document.getElementById("financeType").value;
+    const amount = Number(document.getElementById("financeAmount").value);
+    const note = document.getElementById("financeNote").value.trim();
+
+    if (Number.isNaN(amount) || amount <= 0 || !note) return;
+
+    const entries = readEntries();
+    entries.push({
+      id: `fin-${Date.now()}`,
+      type,
+      amount,
+      note,
+      createdAt: new Date().toISOString()
     });
-  };
-
-  entryForm.querySelector("#finAdd").addEventListener("click", () => {
-    const type = entryForm.querySelector("#finType").value;
-    const amount = Number(entryForm.querySelector("#finAmount").value);
-    const note = entryForm.querySelector("#finNote").value.trim();
-    if (!amount || !note) return;
-    const entries = JSON.parse(localStorage.getItem(financeKey) || "[]");
-    entries.push({ type, amount, note });
-    localStorage.setItem(financeKey, JSON.stringify(entries));
-    entryForm.querySelector("#finAmount").value = "";
-    entryForm.querySelector("#finNote").value = "";
+    saveEntries(entries);
+    financeForm.reset();
     render();
   });
 
