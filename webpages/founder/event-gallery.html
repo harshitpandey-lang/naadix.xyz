@@ -6,24 +6,25 @@
   <title>Event Gallery | naadiX</title>
   <link rel="icon" href="../../images/logo.jpeg">
   <link rel="stylesheet" href="../../css/founder/event-gallery.css">
+  <link rel="stylesheet" href="../../css/shared-navbar.css">
 </head>
 <body>
-  <header class="global-nav">
-    <div class="logo-wrap">
-      <img src="../../images/logo.jpeg" alt="Naadix logo">
-      <span>naadiX Founder</span>
+  <nav class="standard-nav">
+    <div class="logo">
+      <img src="../../images/logo.jpeg" alt="Naadix Logo">
     </div>
-    <nav class="mission-tabs">
-      <a href="../home.html">HOME</a>
-      <a href="../mission.html">MISSION</a>
-      <a href="../products/home-product.html">PRODUCTS</a>
-      <a href="intro.html" class="active">FOUNDER</a>
-      <a href="event-gallery.html">EVENTS</a>
-      <a href="../contact-us.html">CONTACT</a>
-      <a href="projects/home-projects.html">PROJECTS</a>
-      <a href="../FAQ.html">FAQ</a>
-    </nav>
-  </header>
+    <ul>
+      <li><a href="../home.html">HOME</a></li>
+      <li><a href="../mission.html">MISSION</a></li>
+      <li><a href="../products/home-product.html">PRODUCTS</a></li>
+      <li><a href="intro.html">FOUNDER</a></li>
+      <li><a href="../lab/home-lab.html">LAB</a></li>
+      <li><a href="event-gallery.html" class="active" aria-current="page">EVENTS</a></li>
+      <li><a href="../contact-us.html">CONTACT</a></li>
+      <li><a href="projects/home-projects.html">PROJECTS</a></li>
+      <li><a href="../FAQ.html">FAQ</a></li>
+    </ul>
+  </nav>
 
   <div class="page-shell">
     <aside class="left-panel">
@@ -41,14 +42,14 @@
 
     <main class="content">
       <h1>EVENT GALLERY</h1>
-      <p>Three-column scrollable gallery with compact vertical columns. Replace these image links with your event photos.</p>
-      <section class="columns-wrap">
-        <div class="gallery-col" id="colA"></div>
-        <div class="gallery-col" id="colB"></div>
-        <div class="gallery-col" id="colC"></div>
+      <p>Event images are shown in a static wrapping layout so they keep their original proportions instead of being forced into equal cards.</p>
+      <section class="events">
+        <img src="../../images/event.jpeg" alt="Event photo 1">
+        <img src="../../images/mission.jpeg" alt="Event photo 2">
+        <img src="../../images/projects.jpeg" alt="Event photo 3">
+        <img src="../../images/lab.jpeg" alt="Event photo 4">
       </section>
     </main>
   </div>
-  <script src="../../javascript/founder/event-gallery.js"></script>
 </body>
 </html>

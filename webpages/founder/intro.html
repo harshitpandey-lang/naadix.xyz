@@ -6,24 +6,25 @@
   <title>Founder Intro | naadiX</title>
   <link rel="icon" href="../../images/logo.jpeg">
   <link rel="stylesheet" href="../../css/founder/intro.css">
+  <link rel="stylesheet" href="../../css/shared-navbar.css">
 </head>
 <body>
-  <header class="global-nav">
-    <div class="logo-wrap">
-      <img src="../../images/logo.jpeg" alt="Naadix logo">
-      <span>naadiX Founder</span>
+  <nav class="standard-nav">
+    <div class="logo">
+      <img src="../../images/logo.jpeg" alt="Naadix Logo">
     </div>
-    <nav class="mission-tabs">
-      <a href="../home.html">HOME</a>
-      <a href="../mission.html">MISSION</a>
-      <a href="../products/home-product.html">PRODUCTS</a>
-      <a href="intro.html" class="active">FOUNDER</a>
-      <a href="event-gallery.html">EVENTS</a>
-      <a href="../contact-us.html">CONTACT</a>
-      <a href="projects/home-projects.html">PROJECTS</a>
-      <a href="../FAQ.html">FAQ</a>
-    </nav>
-  </header>
+    <ul>
+      <li><a href="../home.html">HOME</a></li>
+      <li><a href="../mission.html">MISSION</a></li>
+      <li><a href="../products/home-product.html">PRODUCTS</a></li>
+      <li><a href="intro.html" class="active" aria-current="page">FOUNDER</a></li>
+      <li><a href="../lab/home-lab.html">LAB</a></li>
+      <li><a href="event-gallery.html">EVENTS</a></li>
+      <li><a href="../contact-us.html">CONTACT</a></li>
+      <li><a href="projects/home-projects.html">PROJECTS</a></li>
+      <li><a href="../FAQ.html">FAQ</a></li>
+    </ul>
+  </nav>
 
   <div class="page-shell">
     <aside class="side-panel">
@@ -84,76 +85,72 @@
       </section>
 
       <section class="section" id="certificates">
-        <div class="cert-head">
-          <h2>Certificates Centre</h2>
-          <div class="controls">
-            <button id="certPrev" aria-label="Previous certificates">Prev</button>
-            <button id="certNext" aria-label="Next certificates">Next</button>
-          </div>
-        </div>
+        <h2>Certificates</h2>
         <p class="section-copy">
           Verified learning and execution tracks from design, web engineering, automation,
           and product systems.
         </p>
-        <p class="section-copy">Tip: use mouse wheel, trackpad, or Prev/Next controls to move sideways.</p>
-        <div class="cert-track" id="certTrack">
-          <figure><img src="../../images/img1.jpeg" alt="Certificate 01"><figcaption>Certification 01</figcaption></figure>
-          <figure><img src="../../images/img2.jpeg" alt="Certificate 02"><figcaption>Certification 02</figcaption></figure>
-          <figure><img src="../../images/img3.jpeg" alt="Certificate 03"><figcaption>Certification 03</figcaption></figure>
-          <figure><img src="../../images/img4.jpeg" alt="Certificate 04"><figcaption>Certification 04</figcaption></figure>
-          <figure><img src="../../images/img5.jpeg" alt="Certificate 05"><figcaption>Certification 05</figcaption></figure>
-          <figure><img src="../../images/img6.jpeg" alt="Certificate 06"><figcaption>Certification 06</figcaption></figure>
-          <figure><img src="../../images/home.jpeg" alt="Certificate 07"><figcaption>Certification 07</figcaption></figure>
-          <figure><img src="../../images/lab.jpeg" alt="Certificate 08"><figcaption>Certification 08</figcaption></figure>
+        <div class="certificate-scroll">
+          <img src="../../images/img1.jpeg" alt="Certificate 01">
+          <img src="../../images/img2.jpeg" alt="Certificate 02">
+          <img src="../../images/img3.jpeg" alt="Certificate 03">
+          <img src="../../images/img4.jpeg" alt="Certificate 04">
+          <img src="../../images/img5.jpeg" alt="Certificate 05">
+          <img src="../../images/img6.jpeg" alt="Certificate 06">
         </div>
       </section>
 
       <section class="section" id="projects">
         <h2>Projects Portfolio</h2>
-        <div class="project-grid">
-          <a class="project-card" href="projects/website.html"><img src="../../images/img1.jpeg" alt="Website"><span>Website Platform</span></a>
-          <a class="project-card" href="projects/content-gen-agent.html"><img src="../../images/img2.jpeg" alt="Content Generator"><span>Content Gen Agent</span></a>
-          <a class="project-card" href="projects/affiliate-agent.html"><img src="../../images/img3.jpeg" alt="Affiliate Agent"><span>Affiliate Agent</span></a>
-          <a class="project-card" href="projects/technogrow.html"><img src="../../images/img4.jpeg" alt="TechnoGrow"><span>TechnoGrow</span></a>
-          <a class="project-card" href="projects/rover.html"><img src="../../images/img5.jpeg" alt="Rover"><span>Rover Automation</span></a>
-          <a class="project-card" href="projects/game.html"><img src="../../images/img6.jpeg" alt="Game"><span>Game Experience</span></a>
+        <p class="section-copy">This portfolio now scrolls sideways so the cards stay readable across desktop and mobile widths.</p>
+        <div class="project-scroll">
+          <a class="project-card" href="projects/website.html"><img src="../../images/img1.jpeg" alt="Website platform"><h3>Website Platform</h3></a>
+          <a class="project-card" href="projects/content-gen-agent.html"><img src="../../images/img2.jpeg" alt="Content generator"><h3>Content Gen Agent</h3></a>
+          <a class="project-card" href="projects/affiliate-agent.html"><img src="../../images/img3.jpeg" alt="Affiliate agent"><h3>Affiliate Agent</h3></a>
+          <a class="project-card" href="projects/technogrow.html"><img src="../../images/img4.jpeg" alt="TechnoGrow"><h3>TechnoGrow</h3></a>
+          <a class="project-card" href="projects/rover.html"><img src="../../images/img5.jpeg" alt="Rover automation"><h3>Rover Automation</h3></a>
+          <a class="project-card" href="projects/game.html"><img src="../../images/img6.jpeg" alt="Game experience"><h3>Game Experience</h3></a>
         </div>
       </section>
 
       <section class="section" id="gallery">
         <h2>Event Gallery</h2>
-        <p class="section-copy">Scrollable gallery strip to keep the page compact while showcasing more event visuals.</p>
-        <div class="gallery-grid">
+        <p class="section-copy">Event images stay at their natural proportions inside a static wrapping gallery.</p>
+        <div class="event-gallery">
           <img src="../../images/event.jpeg" alt="Event photo 1">
           <img src="../../images/mission.jpeg" alt="Event photo 2">
           <img src="../../images/projects.jpeg" alt="Event photo 3">
           <img src="../../images/lab.jpeg" alt="Event photo 4">
-          <img src="../../images/founder.jpeg" alt="Event photo 5">
-          <img src="../../images/faq.jpeg" alt="Event photo 6">
         </div>
       </section>
 
       <section class="section" id="contact">
-        <h2>Contact and Testimonials</h2>
-        <div class="contact-wrap">
+        <h2>Contact</h2>
+        <p class="section-copy">Testimonials now scroll sideways, and the direct contact block stays as the final section on the page.</p>
+        <div class="testimonial-scroll">
           <article class="testimonial">
-            <img src="../../images/logo.jpeg" alt="Naadix logo">
-            <p>"High ownership, clear communication, and excellent execution quality."</p>
-            <strong>Client One</strong>
+            <p>Great teaching experience with practical explanations and structured delivery.</p>
+            <strong>Student Feedback</strong>
           </article>
           <article class="testimonial">
-            <img src="../../images/logo.jpeg" alt="Naadix logo">
-            <p>"Built a complete workflow with practical detail and professional polish."</p>
-            <strong>Client Two</strong>
+            <p>Excellent robotics course with clear execution steps and strong project guidance.</p>
+            <strong>Workshop Participant</strong>
           </article>
-          <article class="contact-card">
-            <h3>Direct Channels</h3>
-            <a href="mailto:you@example.com">you@example.com</a>
-            <a href="tel:+910000000000">+91 00000 00000</a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn Profile</a>
-            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub Profile</a>
+          <article class="testimonial">
+            <p>Professional communication, strong ownership, and a reliable build process.</p>
+            <strong>Client Review</strong>
           </article>
         </div>
+        <article class="contact-card">
+          <h3>Direct Channels</h3>
+          <p>Email: <a href="mailto:hello@naadix.xyz">hello@naadix.xyz</a></p>
+          <p>Phone: <a href="tel:+910000000000">+91 00000 00000</a></p>
+          <div class="contact-links">
+            <a href="https://linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+          </div>
+        </article>
       </section>
     </main>
   </div>

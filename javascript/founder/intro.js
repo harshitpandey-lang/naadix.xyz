@@ -19,21 +19,7 @@ if (sectionLinks.length && sections.length) {
   sections.forEach((section) => observer.observe(section));
 }
 
-const certTrack = document.getElementById("certTrack");
-const certPrev = document.getElementById("certPrev");
-const certNext = document.getElementById("certNext");
-
-if (certTrack && certPrev && certNext) {
-  certPrev.addEventListener("click", () => {
-    certTrack.scrollBy({ left: -320, behavior: "smooth" });
-  });
-
-  certNext.addEventListener("click", () => {
-    certTrack.scrollBy({ left: 320, behavior: "smooth" });
-  });
-}
-
-const horizontalTracks = [...document.querySelectorAll(".cert-track, .project-grid, .gallery-grid")];
+const horizontalTracks = [...document.querySelectorAll(".certificate-scroll, .project-scroll, .testimonial-scroll")];
 
 horizontalTracks.forEach((track) => {
   track.addEventListener(

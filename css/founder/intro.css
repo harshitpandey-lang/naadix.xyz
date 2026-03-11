@@ -21,6 +21,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-main);
   background: linear-gradient(
@@ -33,69 +34,18 @@ body {
   );
 }
 
-.global-nav {
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  background: rgba(2, 6, 23, 0.92);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(10px);
-}
-
-.logo-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 24px 4px;
-}
-
-.logo-wrap img {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-}
-
-.logo-wrap span {
-  color: #f8fafc;
-  font-weight: 700;
-}
-
-.mission-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 10px 24px 14px;
-}
-
-.mission-tabs a {
-  text-decoration: none;
-  color: #e2e8f0;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  font-weight: 700;
-}
-
-.mission-tabs a:hover,
-.mission-tabs a.active {
-  color: #0f172a;
-  background: var(--logo-yellow);
-}
-
 .page-shell {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px minmax(0, 1fr);
   gap: 18px;
   padding: 18px;
 }
 
 .side-panel {
   position: sticky;
-  top: 112px;
+  top: 18px;
   align-self: start;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -133,19 +83,19 @@ body {
 }
 
 .section-nav a {
-  text-decoration: none;
-  color: var(--text-soft);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px 10px;
-  font-size: 13px;
   background: rgba(15, 23, 42, 0.45);
+  color: var(--text-soft);
+  font-size: 13px;
+  text-decoration: none;
 }
 
 .section-nav a.active {
+  border-color: transparent;
   background: var(--logo-yellow);
   color: #0f172a;
-  border-color: transparent;
   font-weight: 700;
 }
 
@@ -184,38 +134,34 @@ body {
 
 h1 {
   margin: 0 0 12px;
-  line-height: 1.2;
   font-size: clamp(2rem, 4vw, 3rem);
-}
-
-.lead {
-  margin: 0 0 16px;
-  color: var(--text-soft);
-}
-
-.cta {
-  display: inline-block;
-  text-decoration: none;
-  background: var(--logo-yellow);
-  color: #0f172a;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 10px 16px;
-}
-
-.hero-image img {
-  width: 100%;
-  height: 310px;
-  object-fit: cover;
-  border-radius: 12px;
+  line-height: 1.2;
 }
 
 h2 {
   margin-top: 0;
 }
 
+.lead,
 .section-copy {
   color: var(--text-soft);
+}
+
+.cta {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: var(--logo-yellow);
+  color: #0f172a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 310px;
+  border-radius: 12px;
+  object-fit: cover;
 }
 
 .info-grid {
@@ -226,9 +172,9 @@ h2 {
 
 .info-grid article,
 .stats div {
-  background: rgba(2, 6, 23, 0.32);
   border: 1px solid var(--line);
   border-radius: 12px;
+  background: rgba(2, 6, 23, 0.32);
 }
 
 .info-grid article {
@@ -253,164 +199,136 @@ h2 {
 }
 
 .stats span {
+  color: var(--logo-yellow);
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--logo-yellow);
 }
 
-.project-grid {
+.certificate-scroll {
   display: flex;
-  gap: 12px;
   overflow-x: auto;
-  scroll-behavior: smooth;
-  scroll-snap-type: x proximity;
-  padding-bottom: 10px;
+  gap: 20px;
+  padding: 20px 0 4px;
 }
 
-.cert-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.controls {
-  display: flex;
-  gap: 8px;
-}
-
-.controls button {
-  border: 1px solid var(--line);
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: rgba(2, 6, 23, 0.7);
-  color: var(--logo-yellow);
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.cert-track {
-  margin-top: 12px;
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding-bottom: 8px;
-}
-
-.cert-track figure {
-  margin: 0;
-  min-width: 280px;
-  background: rgba(2, 6, 23, 0.38);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.cert-track img {
-  width: 100%;
-  height: auto;
+.certificate-scroll img {
   display: block;
+  height: 200px;
+  width: auto;
+  border-radius: 10px;
 }
 
-.cert-track figcaption {
-  font-weight: 700;
-  padding: 8px 12px 12px;
+.project-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 30px;
+  padding: 8px 0 10px;
 }
 
 .project-card {
-  flex: 0 0 clamp(220px, 28vw, 280px);
-  scroll-snap-align: start;
-  text-decoration: none;
-  border-radius: 12px;
+  display: block;
+  min-width: 250px;
+  max-width: 280px;
   overflow: hidden;
   border: 1px solid var(--line);
+  border-radius: 12px;
   background: rgba(2, 6, 23, 0.4);
   color: #f8fafc;
+  text-decoration: none;
 }
 
 .project-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-}
-
-.project-card span {
   display: block;
-  padding: 10px;
-  font-weight: 600;
-}
-
-.gallery-grid {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scroll-snap-type: x proximity;
-  padding-bottom: 10px;
-}
-
-.gallery-grid img {
-  flex: 0 0 clamp(220px, 28vw, 300px);
+  width: 100%;
   height: 180px;
   object-fit: cover;
-  border-radius: 10px;
-  scroll-snap-align: start;
 }
 
-.cert-track::-webkit-scrollbar,
-.project-grid::-webkit-scrollbar,
-.gallery-grid::-webkit-scrollbar {
+.project-card h3 {
+  margin: 0;
+  padding: 14px;
+  font-size: 1rem;
+}
+
+.event-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.event-gallery img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 400px;
+  border-radius: 12px;
+}
+
+.testimonial-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 6px 0 10px;
+}
+
+.testimonial {
+  min-width: 300px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.34);
+  padding: 20px;
+}
+
+.testimonial p {
+  margin: 0 0 12px;
+  color: var(--text-soft);
+}
+
+.contact-card {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.34);
+  padding: 18px;
+}
+
+.contact-card h3,
+.contact-card p {
+  margin: 0;
+}
+
+.contact-card a,
+.contact-links a {
+  color: #bfdbfe;
+  text-decoration: none;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.certificate-scroll::-webkit-scrollbar,
+.project-scroll::-webkit-scrollbar,
+.testimonial-scroll::-webkit-scrollbar {
   height: 9px;
 }
 
-.cert-track::-webkit-scrollbar-thumb,
-.project-grid::-webkit-scrollbar-thumb,
-.gallery-grid::-webkit-scrollbar-thumb {
+.certificate-scroll::-webkit-scrollbar-thumb,
+.project-scroll::-webkit-scrollbar-thumb,
+.testimonial-scroll::-webkit-scrollbar-thumb {
   background: rgba(250, 204, 21, 0.65);
   border-radius: 999px;
 }
 
-.cert-track::-webkit-scrollbar-track,
-.project-grid::-webkit-scrollbar-track,
-.gallery-grid::-webkit-scrollbar-track {
+.certificate-scroll::-webkit-scrollbar-track,
+.project-scroll::-webkit-scrollbar-track,
+.testimonial-scroll::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.45);
   border-radius: 999px;
-}
-
-.contact-wrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-}
-
-.testimonial,
-.contact-card {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(2, 6, 23, 0.34);
-  padding: 14px;
-}
-
-.testimonial img {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-}
-
-.testimonial p {
-  color: var(--text-soft);
-  margin: 10px 0;
-}
-
-.contact-card {
-  display: grid;
-  gap: 8px;
-}
-
-.contact-card a {
-  text-decoration: none;
-  color: #bfdbfe;
 }
 
 @media (max-width: 1080px) {
@@ -425,26 +343,22 @@ h2 {
 
 @media (max-width: 820px) {
   .hero,
-  .info-grid,
-  .contact-wrap {
+  .info-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 560px) {
-  .mission-tabs {
-    padding: 8px 12px 12px;
-  }
-
-  .logo-wrap {
-    padding: 10px 12px 4px;
-  }
-
   .section {
     padding: 18px;
   }
 
-  .gallery-grid {
-    gap: 8px;
+  .certificate-scroll img,
+  .event-gallery img {
+    max-width: 100%;
+  }
+
+  .project-card {
+    min-width: 220px;
   }
 }
