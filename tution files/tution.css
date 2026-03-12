@@ -1,0 +1,364 @@
+:root {
+  --page-bg: #f4efe3;
+  --surface: rgba(255, 252, 245, 0.88);
+  --surface-strong: #fffaf0;
+  --line: rgba(69, 52, 28, 0.12);
+  --text: #2c2217;
+  --muted: #6f5a43;
+  --accent: #d79f25;
+  --accent-deep: #8b5e1a;
+  --shadow: 0 24px 60px rgba(63, 44, 15, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(215, 159, 37, 0.25), transparent 30%),
+    linear-gradient(160deg, #f6f0de 0%, #efe6cf 48%, #f9f5eb 100%);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+textarea,
+a {
+  font: inherit;
+}
+
+.planner-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 48px;
+}
+
+.planner-header,
+.hero-section,
+.overview-section,
+.workspace-section {
+  backdrop-filter: blur(16px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.planner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-radius: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand img {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 2px solid rgba(215, 159, 37, 0.35);
+}
+
+.brand-kicker,
+.eyebrow,
+.section-tag {
+  display: block;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--accent-deep);
+}
+
+.brand strong {
+  display: block;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+  font-size: 1.32rem;
+}
+
+.home-link,
+.primary-action,
+.secondary-action,
+.nav-button,
+.save-button {
+  border: 0;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.home-link,
+.secondary-action {
+  padding: 12px 18px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(69, 52, 28, 0.12);
+}
+
+.planner-main {
+  margin-top: 24px;
+  display: grid;
+  gap: 24px;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.9fr);
+  gap: 24px;
+  padding: 28px;
+  border-radius: 32px;
+}
+
+.hero-copy h1,
+.hero-card h2,
+.overview-card h2,
+.section-heading h2 {
+  margin: 0;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+}
+
+.hero-copy h1 {
+  margin-top: 10px;
+  font-size: clamp(2.1rem, 4vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.hero-text,
+.section-caption,
+.overview-card p,
+.hero-card p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.hero-actions,
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-actions {
+  margin-top: 22px;
+}
+
+.primary-action,
+.save-button {
+  padding: 12px 20px;
+  color: #fff8e8;
+  background: linear-gradient(135deg, var(--accent-deep), var(--accent));
+  box-shadow: 0 14px 28px rgba(139, 94, 26, 0.26);
+}
+
+.primary-action:hover,
+.secondary-action:hover,
+.home-link:hover,
+.nav-button:hover,
+.save-button:hover {
+  transform: translateY(-1px);
+}
+
+.hero-card {
+  align-self: stretch;
+  padding: 22px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(245, 231, 198, 0.9));
+  border: 1px solid rgba(215, 159, 37, 0.24);
+}
+
+.hero-card img {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 18px;
+  border-radius: 28px;
+  object-fit: cover;
+}
+
+.overview-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 22px;
+  border-radius: 28px;
+}
+
+.overview-card {
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--surface-strong);
+  border: 1px solid rgba(215, 159, 37, 0.18);
+}
+
+.workspace-section {
+  padding: 22px;
+  border-radius: 32px;
+}
+
+.planner-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.nav-button {
+  padding: 10px 16px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(69, 52, 28, 0.08);
+}
+
+.nav-button.active {
+  color: #fff8e8;
+  background: linear-gradient(135deg, #a36b1e, #d79f25);
+  box-shadow: 0 12px 24px rgba(139, 94, 26, 0.2);
+}
+
+.page {
+  display: none;
+  padding: 6px 0 0;
+}
+
+.page.active {
+  display: block;
+}
+
+.section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.section-caption {
+  margin: 0;
+  max-width: 520px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.day {
+  min-height: 132px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 238, 218, 0.92));
+  border: 1px solid rgba(215, 159, 37, 0.2);
+  box-shadow: 0 16px 28px rgba(81, 58, 18, 0.08);
+}
+
+.day-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+.day-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.field-label {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+textarea {
+  width: 100%;
+  min-height: 280px;
+  resize: vertical;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(69, 52, 28, 0.15);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+  line-height: 1.65;
+  box-shadow: inset 0 1px 3px rgba(44, 34, 23, 0.04);
+}
+
+textarea:focus {
+  outline: 2px solid rgba(215, 159, 37, 0.35);
+  outline-offset: 2px;
+}
+
+.save-status {
+  align-self: center;
+  min-height: 24px;
+  color: var(--accent-deep);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 900px) {
+  .hero-section,
+  .overview-section {
+    grid-template-columns: 1fr;
+  }
+
+  .planner-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .planner-shell {
+    width: min(100% - 20px, 1180px);
+    padding-top: 16px;
+  }
+
+  .planner-header,
+  .hero-section,
+  .overview-section,
+  .workspace-section {
+    border-radius: 22px;
+  }
+
+  .hero-section,
+  .workspace-section {
+    padding: 18px;
+  }
+
+  .calendar-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 460px) {
+  .calendar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy h1 {
+    font-size: 1.9rem;
+  }
+}

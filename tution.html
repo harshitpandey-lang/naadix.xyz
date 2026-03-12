@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naadix Tuition Planner</title>
+  <link rel="icon" href="images/logo.jpeg">
+  <link rel="stylesheet" href="tution files/tution.css">
+</head>
+<body>
+  <div class="planner-shell">
+    <header class="planner-header">
+      <a class="brand" href="index.html" aria-label="Go to Naadix home page">
+        <img src="images/logo.jpeg" alt="Naadix logo">
+        <div>
+          <span class="brand-kicker">Naadix</span>
+          <strong>Tuition Planner</strong>
+        </div>
+      </a>
+      <a class="home-link" href="c.html">Main Naadix Page</a>
+    </header>
+
+    <main class="planner-main">
+      <section class="hero-section">
+        <div class="hero-copy">
+          <p class="eyebrow">Study Management</p>
+          <h1>Plan tuition work with a cleaner Naadix dashboard.</h1>
+          <p class="hero-text">
+            Track topics, upcoming exams, leave notes, and monthly study flow in one place.
+            The layout below is wired directly to the local CSS and JS files for this page.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-action" type="button" data-page-target="calendar">Open Calendar</button>
+            <button class="secondary-action" type="button" data-page-target="topics">Open Topics</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <img src="images/logo.jpeg" alt="Naadix emblem">
+          <h2>Naadix Focus</h2>
+          <p>Consistent learning, clearer revision planning, and simple batch coordination.</p>
+        </div>
+      </section>
+
+      <section class="overview-section" aria-label="Planner highlights">
+        <article class="overview-card">
+          <h2>Monthly Calendar</h2>
+          <p>Break the month into visible learning targets and class checkpoints.</p>
+        </article>
+        <article class="overview-card">
+          <h2>Topic Log</h2>
+          <p>Keep chapter coverage and pending concepts written down in one place.</p>
+        </article>
+        <article class="overview-card">
+          <h2>Exam Notes</h2>
+          <p>Track test dates, revision status, and important reminders.</p>
+        </article>
+      </section>
+
+      <section class="workspace-section">
+        <nav class="planner-nav" aria-label="Planner sections">
+          <button class="nav-button active" type="button" data-page-target="calendar">Calendar</button>
+          <button class="nav-button" type="button" data-page-target="topics">Topics</button>
+          <button class="nav-button" type="button" data-page-target="exams">Exams</button>
+          <button class="nav-button" type="button" data-page-target="leaves">Leaves</button>
+          <button class="nav-button" type="button" data-page-target="notes">Notes</button>
+        </nav>
+
+        <div class="page-wrap">
+          <section class="page active" id="calendar" aria-labelledby="calendar-title">
+            <div class="section-heading">
+              <div>
+                <p class="section-tag">Planner View</p>
+                <h2 id="calendar-title">Monthly Study Calendar</h2>
+              </div>
+              <p class="section-caption">A simple 31-day academic view for class planning and revision tracking.</p>
+            </div>
+            <div class="calendar-grid" id="calendarGrid" aria-live="polite"></div>
+          </section>
+
+          <section class="page" id="topics" aria-labelledby="topics-title">
+            <div class="section-heading">
+              <div>
+                <p class="section-tag">Teaching Record</p>
+                <h2 id="topics-title">Topics Covered</h2>
+              </div>
+              <p class="section-caption">Write completed chapters, pending work, and classroom focus areas.</p>
+            </div>
+            <label class="field-label" for="topicText">Topics and chapter notes</label>
+            <textarea id="topicText" rows="12" placeholder="Example: Algebra equations completed, geometry revision pending..."></textarea>
+            <div class="section-actions">
+              <button class="save-button" type="button" data-save-target="topics">Save Topics</button>
+              <span class="save-status" data-status-for="topics"></span>
+            </div>
+          </section>
+
+          <section class="page" id="exams" aria-labelledby="exams-title">
+            <div class="section-heading">
+              <div>
+                <p class="section-tag">Assessment</p>
+                <h2 id="exams-title">Exam Schedule</h2>
+              </div>
+              <p class="section-caption">Keep test dates, syllabus coverage, and revision checkpoints visible.</p>
+            </div>
+            <label class="field-label" for="examText">Exam plan</label>
+            <textarea id="examText" rows="12" placeholder="Example: Unit test on Monday, revision worksheet on Saturday..."></textarea>
+            <div class="section-actions">
+              <button class="save-button" type="button" data-save-target="exams">Save Exams</button>
+              <span class="save-status" data-status-for="exams"></span>
+            </div>
+          </section>
+
+          <section class="page" id="leaves" aria-labelledby="leaves-title">
+            <div class="section-heading">
+              <div>
+                <p class="section-tag">Attendance</p>
+                <h2 id="leaves-title">Leave Tracker</h2>
+              </div>
+              <p class="section-caption">Record class holidays, student absences, and rescheduling notes.</p>
+            </div>
+            <label class="field-label" for="leaveText">Leave information</label>
+            <textarea id="leaveText" rows="12" placeholder="Example: Friday class shifted to Sunday due to school event..."></textarea>
+            <div class="section-actions">
+              <button class="save-button" type="button" data-save-target="leaves">Save Leaves</button>
+              <span class="save-status" data-status-for="leaves"></span>
+            </div>
+          </section>
+
+          <section class="page" id="notes" aria-labelledby="notes-title">
+            <div class="section-heading">
+              <div>
+                <p class="section-tag">General Record</p>
+                <h2 id="notes-title">Extra Notes</h2>
+              </div>
+              <p class="section-caption">Keep parent updates, material reminders, and custom planning notes here.</p>
+            </div>
+            <label class="field-label" for="notesText">General notes</label>
+            <textarea id="notesText" rows="12" placeholder="Example: Print worksheets, send practice sheet, confirm next batch time..."></textarea>
+            <div class="section-actions">
+              <button class="save-button" type="button" data-save-target="notes">Save Notes</button>
+              <span class="save-status" data-status-for="notes"></span>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="tution files/tution.js" defer></script>
+</body>
+</html>
