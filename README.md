@@ -53,7 +53,7 @@ No dependency installation is required for these commands. check runs syntax che
 | scripts/build.mjs              | Public allowlist, redirects, SEO, social PNG and verification copies                                                     |
 | scripts/serve.mjs              | Artifact-only local server with real 404 responses                                                                       |
 
-Company email is confirmed from the previous README. GitHub links to this repository rather than claiming a separately verified profile. LinkedIn is null in site/data.mjs; add the exact verified URL there and it will appear in the site and command menu.
+Company email and the founder's LinkedIn profile are confirmed. GitHub links to this repository rather than claiming a separately verified profile. Founder links are centralized in `site/data.mjs` and appear in the site footer, founder page and command menu.
 
 ## Contact behavior and privacy
 
@@ -87,4 +87,4 @@ A future HQ migration needs a private repo/app, server-side authorization, a sto
 
 The automated tests and browser smoke tests cover all public routes, mobile overflow/menu, capability expansion, human checkpoint inspection, simulator changes, scanner handoff, inquiry validation, command search, 404 and internal exclusion. Browser scenarios are in tests/browser-home.js and tests/browser-contact.js for use with agent-browser eval --stdin after opening the preview; they do not send mail.
 
-Remaining external decisions: configure a real submission backend if desired; supply a verified LinkedIn URL; confirm the hosting pipeline publishes dist; migrate HQ to a private app; and add case studies only when real evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.
+Remaining external decisions: configure a real submission backend if desired; confirm the hosting pipeline publishes dist; migrate HQ to a private app; and add case studies only when real evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.

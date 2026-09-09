@@ -4,7 +4,7 @@ export const company = {
   founder: "Harshit Pandey",
   email: "harshitpandey3519@gmail.com",
   github: "https://github.com/harshitpandey-lang/naadix.xyz",
-  linkedin: null, // Add the verified founder profile URL when available.
+  linkedin: "https://www.linkedin.com/in/harshit-pandey-digital/",
   tagline: "Intelligence, engineered.",
   description:
     "NaadiX designs AI agents, automations and intelligent systems that help businesses improve operations and build AI-native workflows.",
