@@ -1,0 +1,14 @@
+{
+  "name": "naadix-public-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check scripts/build.mjs && node --check site/assets/app.js && node --check site/assets/network.js && node --check site/assets/contact.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
