@@ -1,152 +1,34 @@
-# Naadix.xyz
+# NaadiX
 
-Naadix is a technology and research platform focused on exploring and building intelligent systems in Artificial Intelligence, Robotics, Embedded Systems, and Education Technology.
+NaadiX is a founder-led AI consultancy and intelligent systems company. We design practical AI agents, automations, integrations and custom systems that reduce repetitive work and improve operations. **NaadiX Labs** retains the company's experimental work in AI, robotics, embedded systems and prototypes.
 
-The goal of Naadix is to create tools, systems, and knowledge platforms that empower individuals to learn deeply, build innovative technology, and solve real-world problems.
+## Architecture
 
----
+This is a dependency-free static site designed for Cloudflare static-assets deployment (`wrangler.jsonc`). The public homepage is `index.html`; its visual system and responsive layout are in `styles.css`; interactions, the canvas-based Intelligence Core, scanner, and inquiry flow are in `script.js`.
 
-## Vision
+Existing Lab dashboards and older projects remain in their current directories and are not linked from the public homepage. Search-engine verification files, `CNAME`, and deployment configuration are preserved.
 
-To build an ecosystem where intelligence, technology, and learning merge to create systems that expand human potential.
+## Run locally and deploy
 
-Naadix aims to bridge the gap between:
+Open `index.html` using a local static server. For Cloudflare development:
 
-- Learning and building
-- Research and real-world technology
-- Students and innovation
+```sh
+npx wrangler dev
+```
 
----
+Deploy using the existing Cloudflare pipeline, or `npx wrangler deploy` after authenticating. The asset directory is this repository root.
 
-## Mission
+## Edit content and links
 
-Naadix is dedicated to developing and exploring technologies in:
+- Homepage copy, capabilities, Labs projects, and founder content: `index.html`
+- Contact email: search for `harshitpandey3519@gmail.com` in `index.html`
+- Colors, typography, responsive layout: `styles.css`
+- Scanner recommendations and interactions: `script.js`
 
-- Artificial Intelligence
-- Robotics
-- Embedded Systems
-- Educational Technology
-- Software Systems
+LinkedIn and GitHub are intentionally omitted until verified URLs are available.
 
-The platform is designed to share projects, research insights, and technological experiments.
+## Inquiry form and analytics
 
----
+The inquiry form validates in the browser and prepares a mailto draft. Visitors must open and send that draft in their email app; the site does not claim delivery. Its submit handler is isolated in `script.js`; replace it with a secure server-side endpoint or webhook for direct submission. Never add credentials to browser code.
 
-## Current Projects
-
-### Smart Solar Rover
-A robotics rover powered by solar energy and controlled using an ESP32 microcontroller.  
-The project explores wireless communication, embedded systems, and autonomous robotics.
-
-### AI Social Media Agent
-An agentic AI system capable of generating and publishing social media content automatically across platforms.
-
-### Doom Fall
-A browser-based survival game built using HTML, CSS, and JavaScript.
-
-### Future Robotics Systems
-Exploration of intelligent robotics systems combining sensors, AI, and embedded electronics.
-
----
-
-## Website Structure
-
-The Naadix website contains several sections designed to present technology work and research:
-
-- **Home** – Technology updates and project highlights  
-- **Mission** – Vision and goals of the Naadix platform  
-- **Founder** – Information about the founder and work philosophy  
-- **Projects** – Technology projects and experiments  
-- **Contact** – Communication and collaboration opportunities  
-- **Naadix Lab** – Private productivity and research workspace
-
----
-
-## Naadix Lab
-
-Naadix Lab is a private workspace integrated into the website that includes:
-
-- Personal productivity dashboard
-- Research notes system
-- Task management
-- Habit tracking
-- Project planning
-- Technology experimentation
-
-This system is designed to function as a personal operating system for productivity and research.
-
----
-
-## Technologies Used
-
-The current website and projects use:
-
-- HTML
-- CSS
-- JavaScript
-- Chart.js
-- GitHub
-- Cloudflare
-
-Future systems may include:
-
-- AI APIs
-- Embedded hardware systems
-- Robotics platforms
-- Cloud infrastructure
-
----
-
-## Founder
-
-Naadix was founded by **Harshit Pandey**, a technology enthusiast focused on:
-
-- Artificial Intelligence
-- Robotics
-- Physics and Mathematics
-- Embedded Systems
-- Education Technology
-
-The long-term goal is to build technology platforms that help people learn, create, and innovate.
-
----
-
-## Future Goals
-
-Naadix aims to expand into:
-
-- Advanced AI systems
-- Robotics platforms
-- Educational tools for STEM learning
-- Open technology research
-- Intelligent software systems
-
----
-
-## Repository Purpose
-
-This repository contains the source code for the Naadix website.
-
-It serves as:
-
-- A technology portfolio
-- A research documentation platform
-- A development base for future systems
-
----
-
-## License
-
-This project is open for educational and research purposes.
-
----
-
-## Contact
-
-For collaboration or discussions related to technology and innovation:
-
-**Email:** harshitpandey3519@gmail.com
-
----
-
-"Building Intelligence and Technology"
+No tracking is enabled by default. CTA, scanner, and form event hooks can be connected to a privacy-appropriate analytics provider later.
