@@ -1,0 +1,2 @@
+import Link from "next/link";
+export function ProfileFooter({ name }: { name: string }) { return <footer className="bg-[#0a1924] py-8 text-white/70"><div className="container flex flex-col justify-between gap-5 text-sm sm:flex-row sm:items-center"><div><p className="font-black tracking-[.18em] text-white">NAADIX</p><p className="mt-1">{name}</p></div><div className="flex items-center gap-5"><span>© {new Date().getFullYear()}</span><Link className="text-white transition hover:text-[#8cbde0]" href="/login">Personal HQ</Link></div></div></footer>; }

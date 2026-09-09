@@ -1,0 +1,3 @@
+import type { Language } from "@/src/types/profile";
+import { SectionHeading } from "./section-heading";
+export function LanguagesSection({ languages }: { languages: Language[] }) { return <section className="section container"><SectionHeading eyebrow="05 / Languages" title="Communication across contexts." /><div className="grid border-y border-[var(--line)] sm:grid-cols-3">{languages.map((language) => <div key={language.name} className="py-6 sm:border-r sm:px-7 sm:first:pl-0 sm:last:border-0"><h3 className="text-lg font-bold">{language.name}</h3><p className="mt-1 text-sm text-[var(--muted)]">{language.proficiency}</p></div>)}</div></section>; }

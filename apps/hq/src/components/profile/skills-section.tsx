@@ -1,0 +1,3 @@
+import type { Skill } from "@/src/types/profile";
+import { SectionHeading } from "./section-heading";
+export function SkillsSection({ skills }: { skills: Skill[] }) { return <section id="skills" className="section rule"><div className="container"><SectionHeading eyebrow="04 / Skills" title="Current focus areas." /><div className="grid gap-4 md:grid-cols-3">{skills.map((skill, index) => <div key={skill.name} className="card group p-6 transition hover:-translate-y-1 hover:shadow-lg"><p className="text-xs font-bold text-[var(--accent)]">0{index + 1}</p><h3 className="mt-10 text-2xl font-semibold tracking-tight">{skill.name}</h3></div>)}</div></div></section>; }

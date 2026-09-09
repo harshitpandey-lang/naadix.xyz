@@ -1,0 +1,4 @@
+import { ExternalLink, Mail } from "lucide-react";
+import type { SocialLink } from "@/src/types/profile";
+const icons = { linkedin: ExternalLink, email: Mail };
+export function SocialLinks({ links, compact = false }: { links: SocialLink[]; compact?: boolean }) { return <div className="flex flex-wrap gap-3">{links.map((link) => { const Icon = icons[link.icon]; return <a key={link.name} href={link.url} target={link.icon === "linkedin" ? "_blank" : undefined} rel={link.icon === "linkedin" ? "noreferrer" : undefined} className={`inline-flex items-center gap-2 border border-[var(--line)] bg-white px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] ${compact ? "rounded-full" : "rounded-md"}`}><Icon size={16} aria-hidden="true" />{link.name}</a>; })}</div>; }

@@ -1,0 +1,1 @@
+export function SectionHeading({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) { return <header className="mb-12"><p className="eyebrow">{eyebrow}</p><h2 className="section-title">{title}</h2>{intro && <p className="section-intro mt-5">{intro}</p>}</header>; }

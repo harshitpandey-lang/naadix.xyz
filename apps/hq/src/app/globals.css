@@ -1,0 +1,257 @@
+﻿@import "tailwindcss";
+
+:root {
+  --ink: #14212d;
+  --muted: #687686;
+  --paper: #f8f8f6;
+  --surface: #ffffff;
+  --line: #dce2e6;
+  --accent: #2563a6;
+  --navy: #102536;
+
+  /* Naadix HQ */
+  --hq: #0f1416;
+  --hq-panel: #151c1f;
+  --hq-panel-soft: #192124;
+  --hq-panel-hover: #1d282c;
+  --hq-line: #29363a;
+  --hq-line-soft: #222d30;
+  --hq-muted: #8b9a9d;
+  --hq-muted-strong: #aab6b8;
+  --hq-cream: #f1ece2;
+  --hq-white: #fbfbfa;
+  --hq-accent: #8cbde0;
+  --hq-accent-soft: rgba(140, 189, 224, 0.12);
+  --hq-green: #79bd8d;
+  --hq-yellow: #d8b56a;
+  --hq-red: #d98282;
+  --hq-sidebar: #111719;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist), Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--hq-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(140, 189, 224, 0.22);
+}
+
+/* ----------------------------------------------------------
+   PUBLIC SITE
+---------------------------------------------------------- */
+
+.container {
+  width: min(1120px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.section {
+  padding: 6.5rem 0;
+  scroll-margin-top: 5rem;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.section-title {
+  margin: 0.65rem 0 0;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+}
+
+.section-intro {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 37rem;
+}
+
+.rule {
+  border-top: 1px solid var(--line);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+/* ----------------------------------------------------------
+   HQ SCROLLBAR
+---------------------------------------------------------- */
+
+.hq-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.hq-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hq-scroll::-webkit-scrollbar-thumb {
+  background: #2b383c;
+  border-radius: 999px;
+}
+
+.hq-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3a4a4f;
+}
+
+/* ----------------------------------------------------------
+   HQ SURFACES
+---------------------------------------------------------- */
+
+.hq-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(140, 189, 224, 0.035),
+      transparent 28rem
+    ),
+    var(--hq);
+  color: var(--hq-white);
+}
+
+.hq-panel {
+  background: var(--hq-panel);
+  border: 1px solid var(--hq-line);
+}
+
+.hq-panel-soft {
+  background: var(--hq-panel-soft);
+  border: 1px solid var(--hq-line-soft);
+}
+
+.hq-divider {
+  border-color: var(--hq-line);
+}
+
+.hq-muted {
+  color: var(--hq-muted);
+}
+
+.hq-muted-strong {
+  color: var(--hq-muted-strong);
+}
+
+.hq-cream {
+  color: var(--hq-cream);
+}
+
+/* ----------------------------------------------------------
+   HQ INTERACTIONS
+---------------------------------------------------------- */
+
+.hq-hover {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.hq-hover:hover {
+  background: var(--hq-panel-hover);
+  border-color: #344348;
+}
+
+.hq-hover-lift:hover {
+  transform: translateY(-1px);
+}
+
+.hq-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 2.3rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.45rem;
+  color: var(--hq-muted);
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.hq-nav-item:hover {
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--hq-white);
+}
+
+.hq-nav-item[data-active="true"] {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--hq-white);
+}
+
+/* ----------------------------------------------------------
+   HQ CONTENT
+---------------------------------------------------------- */
+
+.hq-content {
+  width: min(100%, 1320px);
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+
+.hq-content-narrow {
+  width: min(100%, 1040px);
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+
+/* ----------------------------------------------------------
+   HQ MOBILE
+---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .section {
+    padding: 4.5rem 0;
+  }
+
+  .hq-content,
+  .hq-content-narrow {
+    padding: 1rem;
+  }
+}

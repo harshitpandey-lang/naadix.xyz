@@ -311,6 +311,24 @@
     align-items: center;
     gap: 14px;
   }
+  .hq-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font: 10px/1 var(--mono);
+    letter-spacing: .1em;
+    transition: color .2s, border-color .2s, box-shadow .2s;
+  }
+  .hq-link:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+    color: var(--text-primary);
+  }
   .command-trigger,
   #menu-toggle {
     background: none;
