@@ -1,1 +1,0 @@
-// Affiliate agent module ready.

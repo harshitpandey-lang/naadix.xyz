@@ -1,91 +1,94 @@
 # NaadiX — Intelligence, engineered.
 
-NaadiX is an early, founder-led AI consultancy and intelligent systems company. It helps organizations identify, design and build useful AI systems: strategy, agents, workflow automation, custom applications, integrations and knowledge systems.
+NaadiX is a founder-led AI consultancy and intelligent systems company. This repository contains the public website and the private Founder HQ.
 
-## Three distinct layers
+## Current architecture
 
-- **NaadiX:** the public business website and its capability demonstrations.
-- **NaadiX Labs:** public AI concepts and experiments in agentic interfaces, research agents, and workflow intelligence, labeled by maturity.
-- **NaadiX HQ:** a private Supabase-authenticated Founder Operating System generated into `/hq/` and served by the same Cloudflare Worker.
+| Layer | Current system |
+| --- | --- |
+| Source | GitHub and local development in VS Code |
+| Frontend hosting | Cloudflare Worker `naadix` serving the generated `dist/` directory |
+| Public site | `https://naadix.xyz/` |
+| Private HQ | `https://naadix.xyz/hq/` |
+| Authentication and database | Supabase project `bynkxhfzbityeufqllxi` |
 
-Read [the full repository audit](docs/repository-audit.md) for classification, source evidence and security findings. In particular, the old browser-side dashboard passwords are disclosed credentials, not real authentication. Do not reuse them. Public build exclusion does not erase Git history or clear personal browser storage.
+Vercel is no longer part of the production architecture. The former `naadix-hq` Vercel project and the obsolete Next.js HQ source have been removed.
 
-## Architecture
+The HQ is a static browser client under `site/hq/`. It uses Supabase email/password authentication, a publishable browser key, direct REST requests, and owner-scoped row-level security. No service-role key or database credential belongs in source or `dist/`.
 
-A small dependency-free Node static generator renders semantic HTML from reusable templates and centralized content. Native browser modules add interaction. No React/Next.js migration was needed to deliver these routes or interactions. Node 20+ is required; Node 22 is used in CI.
+## Repository layout
 
-Only **dist/** is a deployable website. It is rebuilt from an explicit allowlist. Do not deploy the repository root: it contains archived pages and internal source. Old root index.html/styles.css/script.js/404.html are retained under archive/first-redesign; the new homepage is generated into dist/index.html.
+```text
+.
+├── docs/                 Architecture, audits, verification, and retained data notes
+├── images/               Unique original legacy source images; not deployed
+├── scripts/              Static build and local artifact server
+├── site/
+│   ├── assets/           Shared public assets
+│   └── hq/               Static Founder HQ client
+├── supabase/migrations/  Preserved HQ schema and RLS history
+├── tests/                Node and browser verification
+├── package.json
+├── wrangler.jsonc
+└── README.md
+```
 
-Public routes: /, /capabilities/, /solutions/, /method/, /labs/, /labs/content-agent/, /labs/affiliate-agent/, /labs/workflow-intelligence/, /founder/, /contact/, /faq/, /privacy/. Private routes: /hq/, /hq/dashboard/, /hq/projects/, /hq/calendar/, /hq/goals/. Clean directory URLs work without a SPA fallback. Missing routes return the custom 404. Older public routes get HTML redirects and Cloudflare 301 rules; obsolete courses and internal tools are intentionally not routed into the public experience.
-
-The Intelligence Network is a perspective-projected 3D topology using Canvas2D. It has labeled system nodes, data pulses, scroll connection states, gentle rotation and pointer response. This avoids a WebGL/runtime dependency and large textures. SVG remains if Canvas or module loading fails. Animation pauses offscreen, on hidden tabs, when manually paused and for reduced motion; mobile caps rendering resolution. No WebGL is required.
+Only `dist/` is deployable. The build recreates it from an explicit allowlist; do not deploy the repository root. Generated `dist/`, Wrangler state, Vercel local state, test output, dependencies, and local environment files are ignored by Git.
 
 ## Local development
+
+Node.js 20 or newer is required.
 
 ```sh
 npm run dev
 ```
 
-Builds and serves only dist at http://127.0.0.1:4174/. Rebuild after source edits; the preview server serves updated output. There is no automatic hot reload. Set PORT to change the port.
+This builds and serves `dist/` at `http://127.0.0.1:4174/`. Rebuild after source edits; there is no hot reload.
+
+Run the full local verification sequence with:
 
 ```sh
 npm run check
-npm run build
 npm test
+npm run build
+git diff --check
 ```
 
-No dependency installation is required for these commands. check runs syntax checks; there is no separate lint dependency. Tests check generated routes/assets, metadata, verification file integrity, public artifact isolation, recommendation rules and brief creation.
+No dependency installation is currently required. The project uses Node's standard library for generation and tests.
 
-## Source map / editing
+## Production routes
 
-| File                           | Purpose                                                                                                                  |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| site/data.mjs                  | Company/domain/email/founder/social URLs, navigation, capabilities, solutions, Labs, FAQ, method and simulator workflows |
-| site/templates.mjs             | Reusable page sections, layout, inquiry markup and page registry                                                         |
-| site/assets/site.css           | Design tokens, typography, layouts, motion and responsive rules                                                          |
-| site/assets/naadix-logo.png    | Official supplied NaadiX logo artwork, used for the site mark and browser icons                                           |
-| site/assets/app.js             | Navigation, command palette, diagrams, simulator, scanner and restrained cursor                                          |
-| site/assets/network.js         | Lazy-loaded Canvas network and motion lifecycle                                                                          |
-| site/assets/assessment.js      | Deterministic recommendation rules                                                                                       |
-| site/assets/contact.js         | Five-step inquiry, validation, context, copy/download and draft state                                                    |
-| site/assets/contact-service.js | Submission integration boundary; currently local email brief preparation                                                 |
-| site/assets/analytics.js       | No-op analytics adapter; no tracking provider or IDs installed                                                           |
-| scripts/build.mjs              | Public allowlist, redirects, SEO, social PNG and verification copies                                                     |
-| scripts/serve.mjs              | Artifact-only local server with real 404 responses                                                                       |
-| site/hq/                       | Static Founder HQ browser client, Supabase Auth/REST adapter and responsive private UI                                  |
+Public routes include `/`, `/capabilities/`, `/solutions/`, `/method/`, `/labs/`, `/founder/`, `/contact/`, `/faq/`, and `/privacy/`.
 
-Company email and the founder's LinkedIn profile are confirmed. GitHub links to this repository rather than claiming a separately verified profile. Founder links are centralized in `site/data.mjs` and appear in the site footer, founder page and command menu.
+Private routes are:
 
-## Contact behavior and privacy
+- `/hq/`
+- `/hq/dashboard/`
+- `/hq/projects/`
+- `/hq/calendar/`
+- `/hq/goals/`
 
-The five steps cover interest, organization, workflow, stage and contact/consent. Native constraints are checked at each step. Back/edit preserve answers. The scanner stores context only after the visitor chooses to discuss it, in sessionStorage with a one-hour validity window; the form offers removal. Blocked storage falls back to manual entry.
-
-No backend receives inquiries. The final action prepares a mailto link, a preview, clipboard copy and text download. Nothing is declared sent or received. The visitor must send the email using their chosen app. Long drafts may exceed an email client's URL limit; copy and download are provided. No-JavaScript visitors use the direct email link; the submit button is disabled until initialization.
-
-To enable direct submissions, replace the service boundary with a same-origin server endpoint or a configured form provider. Validate and sanitize on the server, enforce allowed origins, add rate limiting and spam checks, limit payload length, and return a documented acceptance response. Credentials belong in server-side environment settings. The current honeypot is only an interface strategy, not server-side spam protection. Add delivery/error tests and update the privacy page before enabling collection. Supabase, Resend, Formspree, Notion, Sheets, HubSpot or webhooks can sit behind that adapter; none is configured by default.
+The build also emits compatibility redirects for previous public URLs and a narrowly scoped retirement service worker for old NaadiX Lab caches. It does not ship the retired dashboards or their browser-side credentials.
 
 ## Deployment
 
-### Cloudflare Workers / Pages
+Verify, build, and deploy to the existing Cloudflare Worker:
 
-Run npm run build, then use npx wrangler deploy for Workers. wrangler.jsonc retains the original worker name, compatibility date and flags; assets.directory now points to dist with 404-page handling. Set the connected pipeline build command to npm run build. Cloudflare Pages can use the same build command and dist output. Keep the existing domain association. Do not upload the source root.
+```sh
+npm run check
+npm test
+npm run build
+npx wrangler deploy
+```
 
-See [Cloudflare static assets](https://developers.cloudflare.com/workers/static-assets/) for host configuration. The generated _headers and _redirects support Cloudflare; GitHub Pages does not apply those files as HTTP policy.
+The Worker name and static asset directory are defined in `wrangler.jsonc`. Keep the existing `naadix.xyz` Cloudflare domain association. Do not upload the source root, alter DNS as part of a normal deployment, or reintroduce Vercel configuration.
 
-### GitHub Pages
+## Supabase
 
-.github/workflows/pages.yml builds, checks and uploads only dist, then deploys using the official Pages artifact workflow. In repository Settings → Pages, select GitHub Actions as the publishing source. Preserve the existing naadix.xyz custom domain. Do not use branch-root publishing. The workflow needs Pages enabled and environment permissions.
+The active project is `bynkxhfzbityeufqllxi`. Its browser-safe configuration is in `site/hq/config.js`; privileged keys must never be added there.
 
-CNAME, the Google verification HTML, Bing XML and ownership TXT are copied byte-for-byte. sitemap.xml, robots.txt, canonicals, OpenGraph/Twitter metadata, original PNG social art, favicon and Organization/WebSite schema are generated. Every substantive public page has a unique title/description and one H1. Compatibility redirects are not in the sitemap.
+Schema history is preserved under `supabase/migrations/`. These migrations define the HQ tables, grants, triggers, and owner-scoped RLS policies. Review and link the CLI to the active project before applying any future migration.
 
-## Preserved source and HQ migration
+The unused `public.posts` table has RLS enabled and no policy. Current source does not reference it. Do not invent a policy or delete the table until its origin and any external consumers are understood.
 
-webpages/, javascript/, css/, images/, c.html, tution.html and tution files remain source material. They are never copied wholesale. Existing coaching-master deletions are unrelated and were left untouched. The original Lab manifest/service worker remains in source. A narrowly scoped retirement worker is generated at its old URL to delete only naadix-lab-* caches and unregister; it does not publish dashboards or delete localStorage records. Previously installed offline clients may retain cached content until they reconnect and the worker updates.
-
-Founder HQ uses browser Supabase Auth with a `founder` login alias, local session persistence, password recovery, direct Supabase REST operations and owner-scoped RLS. Only the Supabase publishable key is shipped. See [the Supabase security audit](docs/supabase-security-audit.md).
-
-## Verification and remaining decisions
-
-The automated tests and browser smoke tests cover all public routes, mobile overflow/menu, capability expansion, human checkpoint inspection, simulator changes, scanner handoff, inquiry validation, command search, 404 and internal exclusion. Browser scenarios are in tests/browser-home.js and tests/browser-contact.js for use with agent-browser eval --stdin after opening the preview; they do not send mail.
-
-Remaining external actions: configure a real public inquiry backend if desired; enable leaked-password protection in Supabase Auth; deploy the built `dist` artifact to the existing `naadix` Worker; add case studies only when evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.
+See [the Supabase security audit](docs/supabase-security-audit.md), [the repository audit](docs/repository-audit.md), and [verification notes](docs/verification.md).

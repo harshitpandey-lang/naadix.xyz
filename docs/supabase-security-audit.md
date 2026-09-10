@@ -2,18 +2,20 @@
 
 ## Active project
 
-The static Founder HQ uses only the publishable browser key for project `bynkxhfzbityeufqllxi`. No service role key, secret key, database password, or server credential is shipped in `dist`.
+The static Founder HQ uses only the publishable browser key for project `bynkxhfzbityeufqllxi`. No service-role key, secret key, database password, connection string, or server credential is shipped in `dist/`.
 
-## HQ tables
+The inactive legacy project is `pzgmgxsszcuikhtomtcu`. The local Supabase CLI exposes a supported `projects delete` command, but no Supabase account access token is available in this environment. No deletion was attempted and the active project was not modified. Permanent removal of the inactive project must be completed from an authenticated Supabase dashboard or CLI session after re-verifying its project reference.
 
-The checked migrations define owner-scoped RLS for the HQ tables. Direct records use `user_id = auth.uid()` for SELECT and DELETE, and both `USING` and `WITH CHECK` for UPDATE. INSERT policies use `WITH CHECK user_id = auth.uid()`. Project items and actions inherit ownership through their parent project owner policy.
+## HQ tables and migrations
 
-The static client sends `user_id` only when creating records; RLS remains the security boundary and filters every browser request at the database layer.
+The preserved migrations are in `supabase/migrations/`. They define owner-scoped RLS for the HQ tables. Direct records use `user_id = auth.uid()` for SELECT and DELETE, both `USING` and `WITH CHECK` for UPDATE, and `WITH CHECK` for INSERT. Project items and actions inherit access through their parent project's owner.
+
+The static client sends `user_id` only when creating records. RLS remains the authorization boundary and filters every browser request.
 
 ## `posts`
 
-The repository does not reference `public.posts` in the public site, static HQ, or current Next.js HQ feature code. No access policy was invented for an unused table. Before removing it from Supabase, confirm no external integration depends on it, then remove it through a reviewed database migration.
+The repository does not reference `public.posts` in the public site or static HQ. No policy was invented for this unused table. Before removing it, confirm that no external integration depends on it and understand its origin; then use a reviewed database migration.
 
-## Remaining Supabase dashboard action
+## Remaining dashboard action
 
-Supabase's leaked-password protection setting is a project-level Auth configuration, not something this static repository can safely enable. Enable leaked-password protection in the active project's Auth security settings before treating the advisor warning as resolved.
+Leaked-password protection is a Supabase Auth project setting. Enable it in the active project's Auth security settings if the project advisor still reports it. This cleanup did not change Auth, tables, policies, or any active-project data.

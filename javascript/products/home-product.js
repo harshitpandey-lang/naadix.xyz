@@ -1,1 +1,0 @@
-// Products home module ready.

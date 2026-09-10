@@ -125,7 +125,6 @@ export const labs = [
     tech: "Interaction design · JavaScript · Agent architecture",
     state:
       "A public interaction prototype. It demonstrates interface thinking, not a deployed client system.",
-    source: "webpages/founder/projects/content-gen-agent.html",
   },
   {
     slug: "affiliate-agent",
@@ -138,7 +137,6 @@ export const labs = [
     tech: "Retrieval concepts · Workflow design · Evaluation",
     state:
       "A documented experiment derived from earlier research-agent concepts. No production deployment or commercial result is claimed.",
-    source: "webpages/founder/projects/affiliate-agent.html",
   },
   {
     slug: "workflow-intelligence",

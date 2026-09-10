@@ -8,7 +8,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const out = resolve(root, "dist");
 if (out !== join(root, "dist"))
   throw Error("Refusing an unexpected output directory");
-// Only generated output is replaced. Historical source is never copied wholesale.
+// Only generated output is replaced.
 await rm(out, { recursive: true, force: true });
 await mkdir(join(out, "assets"), { recursive: true });
 const emit = async (path, body) => {

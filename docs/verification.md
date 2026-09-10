@@ -1,16 +1,38 @@
-# Verification — 9 September 2026
+# Verification — 10 September 2026
 
-- Production build: 12 substantive public pages, 23 compatibility redirects, custom 404 and static assets.
-- Syntax checks: passed for build and browser entry modules.
-- Automated tests: 5 passed; generated routes/local assets, metadata/H1, ownership-byte integrity, internal artifact exclusion, assessment rules and mailto brief generation.
-- Browser: Edge through agent-browser. Homepage and contact walkthroughs passed. No JavaScript runtime errors in the normal walkthrough.
-- Layouts: all 12 routes at 320, 768 and 1440 pixels; 36 checks passed with no horizontal overflow.
-- Interactions: mobile menu, capability expansion, human checkpoint, simulator selection, command search, four scanner inputs, scanner handoff, all five inquiry stages, required/URL/email checks, consent, draft generation and editing.
-- Reduced motion: control correctly disabled; consecutive Canvas frames identical.
-- Module-failure fallback: all JS asset requests blocked; server-rendered heading and SVG fallback present with visible computed styles.
-- Isolation: old dashboard and auth URLs return 404 from artifact server; no credentials or internal dashboard source in dist.
-- Verification files: CNAME, Google, Bing and ownership TXT byte-identical to source.
+## Local checks
 
-Preview: http://127.0.0.1:4174/ while npm run dev is running. Browser scenario sources are retained under tests/. They use example information and never send an email.
+The required checks passed both before and after final cleanup:
 
-No claim of a measured Lighthouse score, full assistive-technology certification, server-side inquiry delivery or live production deployment is made. Production host behavior should be checked after the artifact is deployed. Previously installed Lab service workers require a reconnect/update to retire; source exclusion does not remove old Git history or browser records.
+- `npm run check`
+- `npm test`: 10 tests passed, 0 failed
+- `npm run build`: 12 public pages, 23 compatibility redirects, and ownership files generated
+- `git diff --check`: passed; Git reported only expected LF-to-CRLF checkout warnings
+
+The tests cover static HQ routes and assets, browser Supabase auth boundaries, the absence of privileged browser credentials and Vercel dependencies, public route metadata and local links, ownership-file integrity, the public information architecture, sitemap contents, artifact isolation, scanner behavior, and email-brief preservation.
+
+## Artifact and security
+
+The final `dist/` hash manifest matched the pre-cleanup build byte-for-byte across all 68 generated files. Cleanup changed repository organization and documentation only; production assets did not change, so the Cloudflare Worker was not redeployed.
+
+Credential-pattern scans covered current repository files and `dist/` for service-role markers, Supabase secret-key prefixes, service-role variable names, database URLs, PostgreSQL password phrases, and Vercel tokens. No privileged credential was found. The only repository pattern-name match is the automated denylist assertion in `tests/hq.test.mjs`; `dist/` had no matches. A Supabase publishable key remains intentionally present in browser output.
+
+## Live site
+
+All required production URLs returned HTTP 200 after cleanup:
+
+- `https://naadix.xyz/`
+- `https://naadix.xyz/founder/`
+- `https://naadix.xyz/hq/`
+- `https://naadix.xyz/hq/dashboard/`
+- `https://naadix.xyz/hq/projects/`
+- `https://naadix.xyz/hq/calendar/`
+- `https://naadix.xyz/hq/goals/`
+
+Production authentication had already been verified before cleanup. The static HQ client and generated artifact were unchanged, and no Supabase Auth, database, RLS, Cloudflare DNS, or domain-registration setting was modified.
+
+## External cleanup
+
+The Vercel project inspected as `naadix/naadix-hq` with project ID `prj_bLLmbSf5RAhXiSiNUCQyz3bl9UYd`. It was permanently removed, and a scoped project listing then returned no projects under `naadix`.
+
+The inactive Supabase project `pzgmgxsszcuikhtomtcu` was not modified because the local CLI had no authenticated access token. The active project `bynkxhfzbityeufqllxi` was not modified.

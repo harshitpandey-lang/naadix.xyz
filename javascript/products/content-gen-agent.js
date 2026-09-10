@@ -1,1 +1,0 @@
-// Content gen module ready.
