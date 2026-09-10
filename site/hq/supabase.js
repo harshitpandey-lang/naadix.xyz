@@ -91,7 +91,10 @@ export const supabase = {
     const session = readSession();
     if (!session) throw new Error("Your session has expired.");
     const params = new URLSearchParams({ select });
-    for (const [key, value] of Object.entries(filters)) params.set(key, value);
+    for (const [key, value] of Object.entries(filters)) {
+      if (Array.isArray(value)) value.forEach((entry) => params.append(key, entry));
+      else params.set(key, value);
+    }
     if (order) params.set("order", order);
     if (limit) params.set("limit", String(limit));
     const response = await fetch(`${HQ_CONFIG.supabaseUrl}/rest/v1/${table}?${params}`, { headers: headers(session) });

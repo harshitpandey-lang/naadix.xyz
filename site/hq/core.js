@@ -1,0 +1,184 @@
+export const PROJECT_STATUSES = ["PLANNED", "ACTIVE", "PAUSED", "COMPLETED", "ARCHIVED"];
+export const PROJECT_CATEGORIES = ["Company", "Client", "Internal tools", "Research", "AI & Automation"];
+export const GOAL_TYPES = ["task", "duration", "quantity"];
+export const EVENT_CATEGORIES = ["College", "Study", "Project", "Personal", "Other"];
+
+export const esc = (value) => String(value ?? "").replace(/[&<>\"]/g, (character) => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+})[character]);
+
+export const normalize = (value) => String(value ?? "").trim().toLowerCase();
+
+export function slugify(value) {
+  const base = normalize(value).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project";
+  return `${base}-${crypto.randomUUID().slice(0, 6)}`;
+}
+
+export function projectMatches(project, { query = "", status = "ALL" } = {}) {
+  const statusMatch = status === "ALL" || project.status === status;
+  const haystack = normalize([project.name, project.short_description, project.category, project.notes].join(" "));
+  return statusMatch && (!normalize(query) || haystack.includes(normalize(query)));
+}
+
+export function goalMatches(goal, { query = "", state = "ACTIVE", type = "ALL" } = {}, today = new Date()) {
+  const textMatch = !normalize(query) || normalize([goal.title, goal.description, goal.unit].join(" ")).includes(normalize(query));
+  const typeMatch = type === "ALL" || goal.goal_type === type;
+  const due = goal.due_date ? parseDateKey(goal.due_date) : null;
+  const soon = due && !goal.completed && due >= startOfDay(today) && due <= addDays(startOfDay(today), 7);
+  const stateMatch = state === "ALL" || (state === "COMPLETED" ? goal.completed : state === "DUE_SOON" ? soon : !goal.completed);
+  return textMatch && typeMatch && stateMatch;
+}
+
+export function startOfDay(value = new Date()) {
+  const date = new Date(value);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+export function addDays(value, amount) {
+  const date = new Date(value);
+  date.setDate(date.getDate() + amount);
+  return date;
+}
+
+export function parseDateKey(key) {
+  const [year, month, day] = String(key).slice(0, 10).split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+export function dateKey(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+}
+
+export function startOfWeek(value) {
+  const date = startOfDay(value);
+  const mondayOffset = (date.getDay() + 6) % 7;
+  return addDays(date, -mondayOffset);
+}
+
+export function calendarDays(anchor, mode = "month", today = new Date()) {
+  const focus = new Date(anchor);
+  const first = mode === "week" ? startOfWeek(focus) : startOfWeek(new Date(focus.getFullYear(), focus.getMonth(), 1));
+  const count = mode === "week" ? 7 : 42;
+  return Array.from({ length: count }, (_, index) => {
+    const date = addDays(first, index);
+    return {
+      date,
+      key: dateKey(date),
+      day: date.getDate(),
+      isToday: dateKey(date) === dateKey(today),
+      isCurrentMonth: date.getMonth() === focus.getMonth(),
+    };
+  });
+}
+
+export function formatDate(value, options = { month: "short", day: "numeric", year: "numeric" }) {
+  if (!value) return "—";
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(String(value)) ? parseDateKey(value) : new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat(undefined, options).format(date);
+}
+
+export function formatDateTime(value) {
+  return formatDate(value, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+export function localInputValue(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+export function itemOccursOn(item, key, field) {
+  return dateKey(item[field]) === key;
+}
+
+const text = (values, name) => String(values[name] ?? "").trim();
+const numberOrNull = (value) => value === "" || value == null ? null : Number(value);
+
+export function validateProject(values) {
+  const cleaned = {
+    name: text(values, "name"),
+    short_description: text(values, "short_description") || null,
+    category: text(values, "category"),
+    status: text(values, "status") || "PLANNED",
+    priority: numberOrNull(values.priority) ?? 3,
+    progress: numberOrNull(values.progress) ?? 0,
+    deadline: text(values, "deadline") || null,
+    github_url: text(values, "github_url") || null,
+    notes: text(values, "notes") || null,
+    overview: text(values, "overview") || null,
+  };
+  const errors = [];
+  if (!cleaned.name) errors.push("Project name is required.");
+  if (!cleaned.category) errors.push("Choose a project category.");
+  if (!PROJECT_STATUSES.includes(cleaned.status)) errors.push("Choose a supported project status.");
+  if (!Number.isInteger(cleaned.priority) || cleaned.priority < 1 || cleaned.priority > 5) errors.push("Priority must be from 1 to 5.");
+  if (!Number.isFinite(cleaned.progress) || cleaned.progress < 0 || cleaned.progress > 100) errors.push("Progress must be from 0 to 100.");
+  if (cleaned.github_url) {
+    try { new URL(cleaned.github_url); } catch { errors.push("Primary link must be a valid URL."); }
+  }
+  return { valid: errors.length === 0, errors, values: cleaned };
+}
+
+export function validateGoal(values) {
+  const type = text(values, "goal_type") || "task";
+  const target = numberOrNull(values.target_value);
+  const cleaned = {
+    title: text(values, "title"),
+    description: text(values, "description") || null,
+    goal_type: type,
+    target_value: type === "task" ? null : target,
+    unit: type === "task" ? null : text(values, "unit") || null,
+    due_date: text(values, "due_date"),
+    scheduled_start: text(values, "scheduled_start") || null,
+    scheduled_end: text(values, "scheduled_end") || null,
+  };
+  const errors = [];
+  if (!cleaned.title) errors.push("Goal title is required.");
+  if (!GOAL_TYPES.includes(type)) errors.push("Choose a supported goal type.");
+  if (!cleaned.due_date || Number.isNaN(parseDateKey(cleaned.due_date).getTime())) errors.push("A valid due date is required.");
+  if (type !== "task" && (!Number.isFinite(target) || target <= 0)) errors.push("A positive target is required for measurable goals.");
+  if (type !== "task" && !cleaned.unit) errors.push("Add a unit for the target.");
+  if (cleaned.scheduled_start && Number.isNaN(new Date(cleaned.scheduled_start).getTime())) errors.push("Scheduled start is invalid.");
+  if (cleaned.scheduled_end && Number.isNaN(new Date(cleaned.scheduled_end).getTime())) errors.push("Scheduled end is invalid.");
+  if (cleaned.scheduled_start && cleaned.scheduled_end && new Date(cleaned.scheduled_end) <= new Date(cleaned.scheduled_start)) errors.push("Scheduled end must be after the start.");
+  if (!cleaned.scheduled_start && cleaned.scheduled_end) errors.push("Add a scheduled start before the end.");
+  if (cleaned.scheduled_start) cleaned.scheduled_start = new Date(cleaned.scheduled_start).toISOString();
+  if (cleaned.scheduled_end) cleaned.scheduled_end = new Date(cleaned.scheduled_end).toISOString();
+  return { valid: errors.length === 0, errors, values: cleaned };
+}
+
+export function validateEvent(values) {
+  const cleaned = {
+    title: text(values, "title"),
+    description: text(values, "description") || null,
+    start_at: text(values, "start_at"),
+    end_at: text(values, "end_at"),
+    all_day: values.all_day === true || values.all_day === "on",
+    location: text(values, "location") || null,
+    category: text(values, "category") || null,
+  };
+  const errors = [];
+  const start = new Date(cleaned.start_at);
+  const end = new Date(cleaned.end_at);
+  if (!cleaned.title) errors.push("Event title is required.");
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) errors.push("Valid start and end times are required.");
+  else if (!cleaned.all_day && end <= start) errors.push("Event end must be after the start.");
+  if (cleaned.category && !EVENT_CATEGORIES.includes(cleaned.category)) errors.push("Choose a supported event category.");
+  if (!errors.some((error) => error.includes("start and end"))) {
+    cleaned.start_at = start.toISOString();
+    cleaned.end_at = end.toISOString();
+  }
+  return { valid: errors.length === 0, errors, values: cleaned };
+}
+
+export function completionPayload(completed, now = new Date()) {
+  return { completed: Boolean(completed), completed_at: completed ? now.toISOString() : null };
+}
