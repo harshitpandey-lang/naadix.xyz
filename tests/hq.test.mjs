@@ -26,6 +26,8 @@ test("HQ runtime has one Supabase auth model and no privileged browser secret", 
   ];
   const source = (await Promise.all(files.map((file) => readFile(resolve(hq, file), "utf8")))).join("\n");
   assert.match(source, /signInWithPassword/);
+  assert.match(source, /FOUNDER_ID = "founder"/);
+  assert.match(source, /Founder ID or email/);
   assert.match(source, /auth\.getUser\(\)/);
   assert.doesNotMatch(source, /service[_-]?role|SUPABASE_SECRET|CEO_PORTAL/i);
   const env = await readFile(resolve(hq, ".env.example"), "utf8");

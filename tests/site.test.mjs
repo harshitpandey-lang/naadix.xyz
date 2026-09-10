@@ -49,6 +49,8 @@ test("ownership files remain byte-identical", async () => {
 test("public IA, HQ entry, and current Labs positioning are present", async () => {
   const home = await readFile(join(root, "index.html"), "utf8");
   assert.ok(home.includes(`href="${company.hq}/login"`));
+  assert.ok(home.includes(">Founder HQ<span"));
+  assert.ok(!home.includes('class="hq-link"'));
   assert.ok(home.includes("INTELLIGENCE ARCHITECT"));
   assert.ok(home.includes('id="xray-flow"'));
   assert.deepEqual(navigation.map(([label]) => label), ["Capabilities", "Solutions", "Method", "Labs", "About"]);

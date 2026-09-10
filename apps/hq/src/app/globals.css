@@ -41,7 +41,7 @@ body {
   min-height: 100vh;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-geist), Arial, sans-serif;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
 }
 
 a {

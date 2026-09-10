@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -16,6 +17,7 @@ import {
 } from "@/src/lib/calendar";
 import { getGoals } from "@/src/lib/goals";
 import { createClient } from "@/src/lib/supabase/server";
+import naadixLogo from "../../../../../site/assets/naadix-logo.png";
 
 async function getTodaySchedule() {
   try {
@@ -492,13 +494,16 @@ export async function DashboardOverview({
             </div>
           </div>
 
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs text-[var(--hq-muted)] transition hover:text-white"
+          <a
+            href="https://naadix.xyz"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open the NaadiX website"
+            title="Open naadix.xyz"
+            className="inline-flex rounded-lg bg-white p-1 opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hq-accent)]"
           >
-            View public profile
-            <ArrowUpRight size={13} />
-          </Link>
+            <Image src={naadixLogo} alt="NaadiX" className="h-14 w-14 rounded-md object-contain" sizes="56px" />
+          </a>
         </div>
       </section>
     </main>

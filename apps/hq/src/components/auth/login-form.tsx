@@ -8,6 +8,9 @@ import { createClient } from "@/src/lib/supabase/client";
 
 type LoginFormProps = { nextPath: string; configured: boolean };
 
+const FOUNDER_ID = "founder";
+const FOUNDER_EMAIL = "harshitpandey3519@gmail.com";
+
 export function LoginForm({ nextPath, configured }: LoginFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -17,11 +20,12 @@ export function LoginForm({ nextPath, configured }: LoginFormProps) {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") || "").trim();
+    const loginId = String(form.get("login") || "").trim();
+    const email = loginId.toLowerCase() === FOUNDER_ID ? FOUNDER_EMAIL : loginId;
     const password = String(form.get("password") || "");
 
-    if (!email) return setError("Please enter your email.");
-    if (!/^\S+@\S+\.\S+$/.test(email)) return setError("Please enter a valid email address.");
+    if (!loginId) return setError("Please enter your Founder ID or email.");
+    if (!/^\S+@\S+\.\S+$/.test(email)) return setError("Use the Founder ID or a valid email address.");
     if (!password) return setError("Please enter your password.");
     if (!configured) return setError("Personal HQ is not configured yet. Please try again later.");
 
@@ -46,8 +50,8 @@ export function LoginForm({ nextPath, configured }: LoginFormProps) {
   return (
     <form onSubmit={onSubmit} className="mt-10 grid gap-5" noValidate>
       <label className="grid gap-2 text-sm font-medium text-[var(--hq-cream)]">
-        Email
-        <input name="email" type="email" autoComplete="email" className="rounded-lg border border-[var(--hq-line)] bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-[var(--hq-muted)] focus:border-[#8cbde0]" placeholder="you@example.com" />
+        Founder ID or email
+        <input name="login" type="text" autoComplete="username" className="rounded-lg border border-[var(--hq-line)] bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-[var(--hq-muted)] focus:border-[#8cbde0]" placeholder="founder" />
       </label>
       <label className="grid gap-2 text-sm font-medium text-[var(--hq-cream)]">
         Password

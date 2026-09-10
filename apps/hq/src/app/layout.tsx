@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Geist } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-
-const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: { default: "NaadiX Founder HQ", template: "%s | NaadiX Founder HQ" },
@@ -12,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  return <html lang="en" className={geist.variable}><body>{children}</body></html>;
+  return <html lang="en" className={GeistSans.variable}><body>{children}</body></html>;
 }

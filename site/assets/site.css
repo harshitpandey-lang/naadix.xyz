@@ -311,36 +311,6 @@
     align-items: center;
     gap: 14px;
   }
-  .hq-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 36px;
-    padding: 0 10px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text-secondary);
-    font: 10px/1 var(--mono);
-    letter-spacing: .1em;
-    transition: color .2s, border-color .2s, box-shadow .2s;
-    position: relative;
-    overflow: hidden;
-  }
-  .hq-link:before {
-    content: "";
-    position: absolute;
-    inset: 0 auto auto -35%;
-    width: 32%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #b5a4ff, transparent);
-    transition: transform .45s ease;
-  }
-  .hq-link:hover {
-    border-color: var(--accent);
-    box-shadow: var(--glow);
-    color: var(--text-primary);
-  }
-  .hq-link:hover:before { transform: translateX(430%); }
   .command-trigger,
   #menu-toggle {
     background: none;
