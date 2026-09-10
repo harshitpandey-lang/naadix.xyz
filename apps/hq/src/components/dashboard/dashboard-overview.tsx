@@ -17,7 +17,6 @@ import {
 } from "@/src/lib/calendar";
 import { getGoals } from "@/src/lib/goals";
 import { createClient } from "@/src/lib/supabase/server";
-import naadixLogo from "../../../../../site/assets/naadix-logo.png";
 
 async function getTodaySchedule() {
   try {
@@ -502,7 +501,13 @@ export async function DashboardOverview({
             title="Open naadix.xyz"
             className="inline-flex rounded-lg bg-white p-1 opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hq-accent)]"
           >
-            <Image src={naadixLogo} alt="NaadiX" className="h-14 w-14 rounded-md object-contain" sizes="56px" />
+            <Image
+              src="/naadix-logo.png"
+              alt="NaadiX"
+              width={56}
+              height={56}
+              className="h-14 w-14 rounded-md object-contain"
+            />
           </a>
         </div>
       </section>
