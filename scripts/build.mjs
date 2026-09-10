@@ -118,7 +118,7 @@ await emit(
 );
 await emit(
   "_headers",
-  `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://bynkxhfzbityeufqllxi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'\n`,
+  `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://bynkxhfzbityeufqllxi.supabase.co https://cloudflareinsights.com https://*.cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'\n`,
 );
 // Retire only the previous internal PWA. No dashboard content is shipped.
 await emit(
