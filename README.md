@@ -6,7 +6,7 @@ NaadiX is an early, founder-led AI consultancy and intelligent systems company. 
 
 - **NaadiX:** the public business website and its capability demonstrations.
 - **NaadiX Labs:** public AI concepts and experiments in agentic interfaces, research agents, and workflow intelligence, labeled by maturity.
-- **NaadiX HQ:** a private Supabase-authenticated Founder Operating System in `apps/hq`, deployed independently at `hq.naadix.xyz` and entered from the public header.
+- **NaadiX HQ:** a private Supabase-authenticated Founder Operating System generated into `/hq/` and served by the same Cloudflare Worker.
 
 Read [the full repository audit](docs/repository-audit.md) for classification, source evidence and security findings. In particular, the old browser-side dashboard passwords are disclosed credentials, not real authentication. Do not reuse them. Public build exclusion does not erase Git history or clear personal browser storage.
 
@@ -16,7 +16,7 @@ A small dependency-free Node static generator renders semantic HTML from reusabl
 
 Only **dist/** is a deployable website. It is rebuilt from an explicit allowlist. Do not deploy the repository root: it contains archived pages and internal source. Old root index.html/styles.css/script.js/404.html are retained under archive/first-redesign; the new homepage is generated into dist/index.html.
 
-Public routes: /, /capabilities/, /solutions/, /method/, /labs/, /labs/content-agent/, /labs/affiliate-agent/, /labs/workflow-intelligence/, /founder/, /contact/, /faq/, /privacy/. Clean directory URLs work without a SPA fallback. Missing routes return the custom 404. Older public routes get HTML redirects and Cloudflare 301 rules; obsolete courses and internal tools are intentionally not routed into the public experience.
+Public routes: /, /capabilities/, /solutions/, /method/, /labs/, /labs/content-agent/, /labs/affiliate-agent/, /labs/workflow-intelligence/, /founder/, /contact/, /faq/, /privacy/. Private routes: /hq/, /hq/dashboard/, /hq/projects/, /hq/calendar/, /hq/goals/. Clean directory URLs work without a SPA fallback. Missing routes return the custom 404. Older public routes get HTML redirects and Cloudflare 301 rules; obsolete courses and internal tools are intentionally not routed into the public experience.
 
 The Intelligence Network is a perspective-projected 3D topology using Canvas2D. It has labeled system nodes, data pulses, scroll connection states, gentle rotation and pointer response. This avoids a WebGL/runtime dependency and large textures. SVG remains if Canvas or module loading fails. Animation pauses offscreen, on hidden tabs, when manually paused and for reduced motion; mobile caps rendering resolution. No WebGL is required.
 
@@ -52,6 +52,7 @@ No dependency installation is required for these commands. check runs syntax che
 | site/assets/analytics.js       | No-op analytics adapter; no tracking provider or IDs installed                                                           |
 | scripts/build.mjs              | Public allowlist, redirects, SEO, social PNG and verification copies                                                     |
 | scripts/serve.mjs              | Artifact-only local server with real 404 responses                                                                       |
+| site/hq/                       | Static Founder HQ browser client, Supabase Auth/REST adapter and responsive private UI                                  |
 
 Company email and the founder's LinkedIn profile are confirmed. GitHub links to this repository rather than claiming a separately verified profile. Founder links are centralized in `site/data.mjs` and appear in the site footer, founder page and command menu.
 
@@ -81,10 +82,10 @@ CNAME, the Google verification HTML, Bing XML and ownership TXT are copied byte-
 
 webpages/, javascript/, css/, images/, c.html, tution.html and tution files remain source material. They are never copied wholesale. Existing coaching-master deletions are unrelated and were left untouched. The original Lab manifest/service worker remains in source. A narrowly scoped retirement worker is generated at its old URL to delete only naadix-lab-* caches and unregister; it does not publish dashboards or delete localStorage records. Previously installed offline clients may retain cached content until they reconnect and the worker updates.
 
-Founder HQ uses email/password Supabase Auth, server-side session verification, and owner-scoped RLS. Its source may remain public, but private data and credentials must remain in Supabase and deployment environment settings. See `apps/hq/README.md` for database and deployment steps.
+Founder HQ uses browser Supabase Auth with a `founder` login alias, local session persistence, password recovery, direct Supabase REST operations and owner-scoped RLS. Only the Supabase publishable key is shipped. See [the Supabase security audit](docs/supabase-security-audit.md).
 
 ## Verification and remaining decisions
 
 The automated tests and browser smoke tests cover all public routes, mobile overflow/menu, capability expansion, human checkpoint inspection, simulator changes, scanner handoff, inquiry validation, command search, 404 and internal exclusion. Browser scenarios are in tests/browser-home.js and tests/browser-contact.js for use with agent-browser eval --stdin after opening the preview; they do not send mail.
 
-Remaining external actions: configure a real public inquiry backend if desired; confirm the hosting pipeline publishes `dist`; deploy `apps/hq`, apply its migrations, and connect `hq.naadix.xyz`; add case studies only when evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.
+Remaining external actions: configure a real public inquiry backend if desired; enable leaked-password protection in Supabase Auth; deploy the built `dist` artifact to the existing `naadix` Worker; add case studies only when evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.

@@ -35,6 +35,22 @@ for (const [path, title, description, content] of routes) {
   );
 }
 await cp(join(root, "site/assets"), join(out, "assets"), { recursive: true });
+await cp(join(root, "site/hq"), join(out, "assets/hq"), { recursive: true });
+const hqPages = [
+  ["hq/index.html", "login", "Founder HQ | NaadiX", "Sign in to the private Founder HQ."],
+  ["hq/reset-password/index.html", "reset", "Reset password | Founder HQ", "Reset your Founder HQ password."],
+  ["hq/dashboard/index.html", "dashboard", "Today | Founder HQ", "Private Founder HQ dashboard."],
+  ["hq/projects/index.html", "projects", "Projects | Founder HQ", "Private Founder HQ projects."],
+  ["hq/calendar/index.html", "calendar", "Calendar | Founder HQ", "Private Founder HQ calendar."],
+  ["hq/goals/index.html", "goals", "Goals | Founder HQ", "Private Founder HQ goals."],
+];
+for (const [path, page, title, description] of hqPages) {
+  const authPage = page === "login" || page === "reset";
+  const body = authPage
+    ? `<main class="auth-page"><section class="auth-panel"><a class="hq-brand" href="/"><strong>NAADIX</strong><span>FOUNDER HQ</span></a><p class="eyebrow">HQ / PRIVATE NODE</p><h1>${page === "login" ? "Founder system." : "Reset access."}</h1><p class="muted">${description}</p>${page === "login" ? `<form id="login-form"><label>Founder ID or email<input name="login" autocomplete="username" placeholder="founder" required></label><label>Password<input name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></label><button class="hq-action" type="submit">Enter HQ</button></form><p id="message" class="message" hidden></p><a class="back-link" href="/hq/reset-password/">Forgot password?</a>` : `<form id="reset-form"><label>Email<input name="email" type="email" autocomplete="email" required></label><button class="hq-action" type="submit">Send reset link</button></form><form id="update-form" hidden><label>New password<input name="password" type="password" autocomplete="new-password" required></label><label>Confirm password<input name="confirmation" type="password" autocomplete="new-password" required></label><button class="hq-action" type="submit">Update password</button></form><p id="message" class="message" hidden></p><a class="back-link" href="/hq/">Back to sign in</a>`}</section></main>`
+    : `<div id="hq-root"></div>`;
+  await emit(path, `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${title}</title><link rel="stylesheet" href="/assets/hq/hq.css"></head><body data-hq-page="${page}">${body}<script type="module" src="/assets/hq/app.js"></script></body></html>`);
+}
 await emit(
   "assets/config.js",
   `export const company=${JSON.stringify(company)};\nexport const workflows=${JSON.stringify(workflows)};\nexport const architectures=${JSON.stringify(architectures)};\n`,
@@ -102,7 +118,7 @@ await emit(
 );
 await emit(
   "_headers",
-  `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'\n`,
+  `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://bynkxhfzbityeufqllxi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'\n`,
 );
 // Retire only the previous internal PWA. No dashboard content is shipped.
 await emit(

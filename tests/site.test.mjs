@@ -48,7 +48,7 @@ test("ownership files remain byte-identical", async () => {
 });
 test("public IA, HQ entry, and current Labs positioning are present", async () => {
   const home = await readFile(join(root, "index.html"), "utf8");
-  assert.ok(home.includes(`href="${company.hq}/login"`));
+    assert.ok(home.includes(`href="${company.hq}/`));
   assert.ok(home.includes(">Founder HQ<span"));
   assert.ok(!home.includes('class="hq-link"'));
   assert.ok(home.includes("INTELLIGENCE ARCHITECT"));
@@ -60,7 +60,7 @@ test("public IA, HQ entry, and current Labs positioning are present", async () =
   assert.ok(labs.every((lab) => !/rover|robot|hardware/i.test(`${lab.slug} ${lab.title} ${lab.summary}`)));
   for (const [route] of pages()) {
     const path = join(root, route === "/" ? "index.html" : route.slice(1) + "index.html");
-    assert.ok((await readFile(path, "utf8")).includes(`href="${company.hq}/login"`), route);
+      assert.ok((await readFile(path, "utf8")).includes(`href="${company.hq}/`), route);
   }
 });
 
@@ -74,10 +74,10 @@ test("internal systems and credentials are absent from deployment artifact", asy
   for (const path of await all(root)) {
     const normalized = path.replaceAll("\\", "/");
     assert.ok(
-      !/founder-dashboard|family-dashboard|guest-dashboard|auth\.js|tution|coaching-master/.test(
+      !/founder-dashboard|family-dashboard|guest-dashboard|tution|coaching-master/.test(
         normalized,
       ),
-      normalized,
+        normalized,
     );
     if (/\.(html|js|json)$/.test(path)) {
       const text = await readFile(path, "utf8");
