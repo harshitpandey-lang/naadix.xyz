@@ -27,7 +27,7 @@ export function UpdatePasswordForm({ configured }: { configured: boolean }) {
     try {
       const { error: updateError } = await createClient().auth.updateUser({ password });
       if (updateError) setError("This reset link is no longer valid. Please request another one.");
-      else router.replace("/dashboard");
+      else router.replace("/today");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { pages } from "../site/templates.mjs";
+import { architectures, company, labs, navigation } from "../site/data.mjs";
 import { assess } from "../site/assets/assessment.js";
 import { prepareBrief } from "../site/assets/contact-service.js";
 const root = resolve("dist");
@@ -44,6 +45,28 @@ test("ownership files remain byte-identical", async () => {
     "4afff44e0015449b961a3c19974d3e03.txt",
   ])
     assert.deepEqual(await readFile(file), await readFile(join(root, file)));
+});
+test("public IA, HQ entry, and current Labs positioning are present", async () => {
+  const home = await readFile(join(root, "index.html"), "utf8");
+  assert.ok(home.includes(`href="${company.hq}/login"`));
+  assert.ok(home.includes("INTELLIGENCE ARCHITECT"));
+  assert.ok(home.includes('id="xray-flow"'));
+  assert.deepEqual(navigation.map(([label]) => label), ["Capabilities", "Solutions", "Method", "Labs", "About"]);
+  assert.deepEqual(Object.keys(architectures), ["sales", "operations", "knowledge", "support", "research"]);
+  assert.ok(Object.values(architectures).every((item) => item.steps.length === 6));
+  assert.deepEqual(labs.map((lab) => lab.status), ["PROTOTYPE", "EXPERIMENT", "CONCEPT"]);
+  assert.ok(labs.every((lab) => !/rover|robot|hardware/i.test(`${lab.slug} ${lab.title} ${lab.summary}`)));
+  for (const [route] of pages()) {
+    const path = join(root, route === "/" ? "index.html" : route.slice(1) + "index.html");
+    assert.ok((await readFile(path, "utf8")).includes(`href="${company.hq}/login"`), route);
+  }
+});
+
+test("sitemap contains only canonical public routes", async () => {
+  const sitemap = await readFile(join(root, "sitemap.xml"), "utf8");
+  assert.ok(sitemap.includes("/labs/workflow-intelligence/"));
+  assert.ok(!sitemap.includes("/labs/rover/"));
+  assert.ok(!sitemap.includes("hq.naadix.xyz"));
 });
 test("internal systems and credentials are absent from deployment artifact", async () => {
   for (const path of await all(root)) {

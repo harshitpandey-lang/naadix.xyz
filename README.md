@@ -5,8 +5,8 @@ NaadiX is an early, founder-led AI consultancy and intelligent systems company. 
 ## Three distinct layers
 
 - **NaadiX:** the public business website and its capability demonstrations.
-- **NaadiX Labs:** public concepts and experiments. Content Generation Agent, Affiliate Research Agent and Rover Automation are explicitly labeled CONCEPT because the existing source does not demonstrate released systems.
-- **NaadiX HQ:** the old founder, family, guest and tuition dashboards. Preserved as source, excluded from the public artifact, intended for a future private application.
+- **NaadiX Labs:** public AI concepts and experiments in agentic interfaces, research agents, and workflow intelligence, labeled by maturity.
+- **NaadiX HQ:** a private Supabase-authenticated Founder Operating System in `apps/hq`, deployed independently at `hq.naadix.xyz` and entered from the public header.
 
 Read [the full repository audit](docs/repository-audit.md) for classification, source evidence and security findings. In particular, the old browser-side dashboard passwords are disclosed credentials, not real authentication. Do not reuse them. Public build exclusion does not erase Git history or clear personal browser storage.
 
@@ -16,7 +16,7 @@ A small dependency-free Node static generator renders semantic HTML from reusabl
 
 Only **dist/** is a deployable website. It is rebuilt from an explicit allowlist. Do not deploy the repository root: it contains archived pages and internal source. Old root index.html/styles.css/script.js/404.html are retained under archive/first-redesign; the new homepage is generated into dist/index.html.
 
-Public routes: /, /capabilities/, /solutions/, /method/, /labs/, /labs/content-agent/, /labs/affiliate-agent/, /labs/rover/, /founder/, /contact/, /faq/, /privacy/. Clean directory URLs work without a SPA fallback. Missing routes return the custom 404. Older public routes get HTML redirects and Cloudflare 301 rules; obsolete courses and internal tools are intentionally not routed into the public experience.
+Public routes: /, /capabilities/, /solutions/, /method/, /labs/, /labs/content-agent/, /labs/affiliate-agent/, /labs/workflow-intelligence/, /founder/, /contact/, /faq/, /privacy/. Clean directory URLs work without a SPA fallback. Missing routes return the custom 404. Older public routes get HTML redirects and Cloudflare 301 rules; obsolete courses and internal tools are intentionally not routed into the public experience.
 
 The Intelligence Network is a perspective-projected 3D topology using Canvas2D. It has labeled system nodes, data pulses, scroll connection states, gentle rotation and pointer response. This avoids a WebGL/runtime dependency and large textures. SVG remains if Canvas or module loading fails. Animation pauses offscreen, on hidden tabs, when manually paused and for reduced motion; mobile caps rendering resolution. No WebGL is required.
 
@@ -81,10 +81,10 @@ CNAME, the Google verification HTML, Bing XML and ownership TXT are copied byte-
 
 webpages/, javascript/, css/, images/, c.html, tution.html and tution files remain source material. They are never copied wholesale. Existing coaching-master deletions are unrelated and were left untouched. The original Lab manifest/service worker remains in source. A narrowly scoped retirement worker is generated at its old URL to delete only naadix-lab-* caches and unregister; it does not publish dashboards or delete localStorage records. Previously installed offline clients may retain cached content until they reconnect and the worker updates.
 
-A future HQ migration needs a private repo/app, server-side authorization, a storage design and explicit data export/import. Source organization alone does not secure an already public Git history.
+Founder HQ uses email/password Supabase Auth, server-side session verification, and owner-scoped RLS. Its source may remain public, but private data and credentials must remain in Supabase and deployment environment settings. See `apps/hq/README.md` for database and deployment steps.
 
 ## Verification and remaining decisions
 
 The automated tests and browser smoke tests cover all public routes, mobile overflow/menu, capability expansion, human checkpoint inspection, simulator changes, scanner handoff, inquiry validation, command search, 404 and internal exclusion. Browser scenarios are in tests/browser-home.js and tests/browser-contact.js for use with agent-browser eval --stdin after opening the preview; they do not send mail.
 
-Remaining external decisions: configure a real submission backend if desired; confirm the hosting pipeline publishes dist; migrate HQ to a private app; and add case studies only when real evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.
+Remaining external actions: configure a real public inquiry backend if desired; confirm the hosting pipeline publishes `dist`; deploy `apps/hq`, apply its migrations, and connect `hq.naadix.xyz`; add case studies only when evidence exists. No commercial results, client claims or invented credentials are published. No Lighthouse score is claimed without a measured run.

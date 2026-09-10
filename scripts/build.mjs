@@ -2,7 +2,7 @@ import { mkdir, writeFile, cp, rm } from "node:fs/promises";
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
-import { company, workflows } from "../site/data.mjs";
+import { architectures, company, workflows } from "../site/data.mjs";
 import { pages, layout } from "../site/templates.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const out = resolve(root, "dist");
@@ -37,7 +37,7 @@ for (const [path, title, description, content] of routes) {
 await cp(join(root, "site/assets"), join(out, "assets"), { recursive: true });
 await emit(
   "assets/config.js",
-  `export const company=${JSON.stringify(company)};\nexport const workflows=${JSON.stringify(workflows)};\n`,
+  `export const company=${JSON.stringify(company)};\nexport const workflows=${JSON.stringify(workflows)};\nexport const architectures=${JSON.stringify(architectures)};\n`,
 );
 const verification = [
   "CNAME",
@@ -87,7 +87,7 @@ const redirects = {
   "/webpages/founder/projects/contentagent.html": "/labs/content-agent/",
   "/webpages/founder/projects/affiliate-agent.html": "/labs/affiliate-agent/",
   "/webpages/founder/projects/affiliateagent.html": "/labs/affiliate-agent/",
-  "/webpages/founder/projects/rover.html": "/labs/rover/",
+  "/webpages/founder/projects/rover.html": "/labs/",
 };
 for (const [old, target] of Object.entries(redirects))
   await emit(

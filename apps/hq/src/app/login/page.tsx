@@ -26,9 +26,9 @@ export default async function LoginPage({
   }
   return (
     <AuthShell
-      eyebrow="PERSONAL HQ"
-      title="Your private digital workspace."
-      description="Sign in to continue to your personal command center."
+      eyebrow="HQ / PRIVATE NODE"
+      title="Founder system."
+      description="Authentication required. Enter the private NaadiX control room."
     >
       <LoginForm nextPath={nextPath} configured={configured} />
     </AuthShell>

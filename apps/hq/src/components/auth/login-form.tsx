@@ -61,7 +61,7 @@ export function LoginForm({ nextPath, configured }: LoginFormProps) {
       {error && <p role="alert" className="rounded-md border border-red-300/30 bg-red-300/10 px-3 py-2 text-sm text-red-100">{error}</p>}
       <button disabled={pending} className="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[var(--hq-cream)] px-4 font-semibold text-[var(--hq)] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-70">
         {pending && <LoaderCircle size={17} className="animate-spin" />}
-        {pending ? "Signing in..." : "Sign in"}
+        {pending ? "Authenticating…" : "ENTER HQ →"}
       </button>
       <Link href="/forgot-password" className="justify-self-center text-sm text-[#aed2ec] hover:text-white">
         Forgot password?

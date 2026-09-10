@@ -323,12 +323,24 @@
     font: 10px/1 var(--mono);
     letter-spacing: .1em;
     transition: color .2s, border-color .2s, box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .hq-link:before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto -35%;
+    width: 32%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #b5a4ff, transparent);
+    transition: transform .45s ease;
   }
   .hq-link:hover {
     border-color: var(--accent);
     box-shadow: var(--glow);
     color: var(--text-primary);
   }
+  .hq-link:hover:before { transform: translateX(430%); }
   .command-trigger,
   #menu-toggle {
     background: none;
@@ -642,6 +654,28 @@
     border: 1px solid var(--border);
     background: linear-gradient(140deg, #101723, #0a0d12);
   }
+  .architect-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+  }
+  .architect-tabs button {
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font: 10px var(--mono);
+    letter-spacing: .08em;
+  }
+  .architect-tabs button[aria-selected="true"] {
+    border-color: var(--accent);
+    background: #172036;
+    color: var(--text-primary);
+    box-shadow: var(--glow);
+  }
+  .architecture-panel .panel-bar > div { display: flex; gap: 8px; }
   .panel-bar {
     display: flex;
     justify-content: space-between;
@@ -659,7 +693,7 @@
   }
   .flow {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 14px;
     list-style: none;
     padding: 0;
@@ -713,6 +747,11 @@
   .node-type.human {
     color: #d8bc86;
   }
+  .architecture:not(.xray-active) .node-type { opacity: 0; transform: translateY(4px); }
+  .architecture.xray-active .node-type { opacity: 1; transform: none; }
+  .node-type { transition: opacity .2s, transform .2s; }
+  .naadix-signal { transition: transform .25s, filter .25s; }
+  .flow-node[aria-pressed="true"] .naadix-signal { transform: translateX(4px) scale(1.18); filter: drop-shadow(0 0 6px #8faeff); }
   .legend {
     display: flex;
     flex-wrap: wrap;
@@ -1493,6 +1532,10 @@
     .architecture-panel {
       padding: 17px;
     }
+    .architecture-panel .panel-bar { align-items: flex-start; flex-direction: column; }
+    .architecture-panel .panel-bar > div { width: 100%; }
+    .architecture-panel .panel-bar button { flex: 1; padding-inline: 8px; }
+    .architect-tabs { display: grid; grid-template-columns: repeat(2, 1fr); }
     .panel-bar {
       font-size: 8px;
     }

@@ -9,12 +9,13 @@ export function setupNetwork(canvas) {
   button.hidden = false;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)"),
     small = matchMedia("(max-width:800px)");
-  const labels = ["People", "Data", "Tools", "AI", "Decisions", "Workflows"];
+  const labels = ["HUMAN", "DATA", "TOOLS", "MODEL", "MEMORY", "WORKFLOW", "API"];
   const nodes = labels.map((label, i) => ({
     label,
-    x: Math.cos((i * Math.PI) / 3) * 1.1,
-    y: Math.sin((i * Math.PI) / 3) * 0.9,
-    z: (i % 2 ? 1 : -1) * 0.5,
+    x: Math.cos((i * Math.PI * 2) / labels.length) * (0.9 + (i % 3) * 0.13),
+    y: Math.sin((i * Math.PI * 2) / labels.length) * (0.72 + (i % 2) * 0.16),
+    z: [-0.9, 0.15, 0.8][i % 3],
+    layer: i % 3,
   }));
   let w = 500,
     h = 560,
@@ -76,8 +77,9 @@ export function setupNetwork(canvas) {
     const projected = nodes.map(project);
     ctx.setLineDash(connection < 0.5 ? [3, 7] : []);
     projected.forEach((p, i) => {
-      ctx.strokeStyle = `rgba(133,165,229,${0.13 + connection * 0.4})`;
-      ctx.lineWidth = 0.7;
+      const depthAlpha = [0.12, 0.22, 0.34][nodes[i].layer];
+      ctx.strokeStyle = `rgba(133,165,229,${depthAlpha + connection * 0.26})`;
+      ctx.lineWidth = 0.5 + nodes[i].layer * 0.22;
       ctx.beginPath();
       ctx.moveTo(center.x, center.y);
       ctx.lineTo(p.x, p.y);
@@ -91,8 +93,8 @@ export function setupNetwork(canvas) {
         ctx.stroke();
       }
       if (!reduced.matches && !paused) {
-        const t = (angle * 0.45 + i / 6) % 1;
-        ctx.fillStyle = "#a4bcff";
+        const t = (angle * (0.3 + nodes[i].layer * 0.08) + i / nodes.length) % 1;
+        ctx.fillStyle = i % 3 === phase % 3 ? "#cab8ff" : "#a4bcff";
         ctx.beginPath();
         ctx.arc(
           center.x + (p.x - center.x) * t,
@@ -120,6 +122,7 @@ export function setupNetwork(canvas) {
       ctx.stroke();
     }
     projected.forEach((p, i) => {
+      ctx.globalAlpha = [0.48, 0.72, 1][nodes[i].layer];
       ctx.fillStyle = "#0b1220";
       ctx.strokeStyle = "#8fafe0";
       ctx.beginPath();
@@ -129,7 +132,9 @@ export function setupNetwork(canvas) {
       ctx.fillStyle = "#bdcce4";
       ctx.font = `${small.matches ? 10 : 11}px monospace`;
       ctx.textAlign = "center";
-      ctx.fillText(labels[i], p.x, p.y + 25);
+      if (i === phase || i === (phase + 3) % nodes.length || connection > 0.84)
+        ctx.fillText(labels[i], p.x, p.y + 25);
+      ctx.globalAlpha = 1;
     });
     ctx.fillStyle = "#d6e2ff";
     ctx.beginPath();

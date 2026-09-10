@@ -6,6 +6,7 @@ import {
   method,
   labs,
   faq,
+  architectures,
 } from "./data.mjs";
 export const escape = (v) =>
   String(v).replace(
@@ -54,40 +55,8 @@ export function capabilitySection(full = false) {
   return `<section class="section" id="capabilities"><div class="section-heading">${label("02", "CAPABILITIES")}<h2>Useful intelligence.<br><span>Built around you.</span></h2><p>From finding the right opportunity to making a system work in the real world.</p></div><div class="capability-grid">${capabilities.map(([name, tag, desc, output], i) => `<details class="capability"><summary><span class="micro-diagram" aria-hidden="true">${["◎—○", "◇→◇", "○─┬─○", "[ ◇ ]", "⋮─◎", "○⇄○"][i]}</span><span class="number">0${i + 1}</span><h3>${name}</h3><p>${tag}</p><span class="explore">Explore <span aria-hidden="true">+</span></span></summary><div class="detail-copy"><p>${desc}</p><p><strong>What this can include</strong><br>${output}</p>${link("Discuss this capability", `/contact/?interest=${encodeURIComponent(name)}`)}</div></details>`).join("")}</div>${full ? '<p class="note">Scope, tools and delivery approach are agreed after discovery. Capabilities describe what we can design, not a list of past client deployments.</p>' : ""}</section>`;
 }
 export function architecture() {
-  const nodes = [
-    [
-      "Website lead",
-      "TRIGGER",
-      "A new inquiry starts the workflow. Only agreed fields enter the system.",
-    ],
-    [
-      "Qualification",
-      "AI",
-      "Evaluate fit against defined criteria. Uncertain cases go to a person.",
-    ],
-    ["CRM record", "DATA", "Store structured context with a traceable source."],
-    [
-      "Company research",
-      "AI",
-      "Use approved search and website tools to collect evidence.",
-    ],
-    [
-      "Proposal draft",
-      "AI",
-      "Prepare a draft from verified context. It is not sent automatically.",
-    ],
-    [
-      "Human approval",
-      "HUMAN",
-      "A person reviews the evidence, edits the draft and decides whether to proceed.",
-    ],
-    [
-      "Follow-up",
-      "AUTOMATION",
-      "Send only after approval and record the action.",
-    ],
-  ];
-  return `<section class="section architecture" id="architecture">${label("03", "EXAMPLE ARCHITECTURE")}<div class="split-heading"><h2>See the work.<br><span>Then connect it.</span></h2><p>A conceptual sales workflow. Inspect each component to see where AI helps—and where a person decides.</p></div><div class="architecture-panel"><div class="panel-bar"><span>LEAD INTELLIGENCE / SYSTEM EXAMPLE</span><button id="run-flow" type="button">Run example <span aria-hidden="true">→</span></button></div><ol class="flow">${nodes.map(([name, type, detail], i) => `<li><button class="flow-node" data-node="${i}" data-detail="${escape(detail)}" aria-pressed="${i === 0}"><span class="node-type ${type === "HUMAN" ? "human" : ""}">${type}</span><strong>${name}</strong><span aria-hidden="true">${i === 5 ? "◈" : "○"}</span></button></li>`).join("")}</ol><p id="node-detail" role="status">${nodes[0][2]}</p><div class="legend"><span>○ AI / Automation</span><span>◈ Human checkpoint</span><span>CRM + search: integrations</span></div></div></section>`;
+  const first = architectures.sales;
+  return `<section class="section architecture" id="architecture">${label("03", "INTELLIGENCE ARCHITECT")}<div class="split-heading"><h2>Design the system<br><span>around the work.</span></h2><p>Choose a business problem. The architecture assembles deterministically so every trigger, tool and human decision stays visible.</p></div><div class="architect-tabs" role="tablist" aria-label="Business problem">${Object.entries(architectures).map(([key, value], i) => `<button role="tab" data-architecture="${key}" aria-selected="${i === 0}">${value.title}</button>`).join("")}</div><div class="architecture-panel"><div class="panel-bar"><span id="architecture-title">${first.title.toUpperCase()} / SYSTEM MAP</span><div><button id="xray-flow" type="button" aria-pressed="false">View system X-ray <span aria-hidden="true">→</span></button><button id="run-flow" type="button">Run signal <span aria-hidden="true">→</span></button></div></div><ol class="flow" id="architecture-flow">${first.steps.map(([name, type, detail], i) => `<li><button class="flow-node" data-node="${i}" data-type="${type}" data-detail="${escape(detail)}" aria-pressed="${i === 0}"><span class="node-type ${type === "HUMAN" ? "human" : ""}">${type}</span><strong>${name}</strong><span class="naadix-signal" aria-hidden="true">${type === "HUMAN" ? "◈" : "○"}</span></button></li>`).join("")}</ol><p id="node-detail" role="status">${first.steps[0][2]}</p><div class="legend"><span>NORMAL / BUSINESS WORKFLOW</span><span>X-RAY / TRIGGER · DATA · MODEL · MEMORY · TOOLS · DECISION · HUMAN · ACTION</span></div></div></section>`;
 }
 export function solutionSection() {
   return `<section class="section" id="solutions">${label("04", "APPLICATION AREAS")}<h2>Same intelligence.<br><span>Different kinds of work.</span></h2><p class="lede">Examples of where systems could help. Every engagement starts with feasibility.</p><div class="solutions-grid">${solutions.map(([name, tag, desc], i) => `<article><span class="number">0${i + 1}</span><h3>${name}</h3><p>${tag}</p><p class="muted">${desc}</p>${link("Explore the opportunity", `/contact/?area=${encodeURIComponent(name)}`)}</article>`).join("")}</div></section>`;
@@ -102,10 +71,10 @@ export function scanner() {
   return `<section class="section scanner" id="scanner"><div>${label("07", "OPPORTUNITY SCANNER")}<h2>Where could<br><span>intelligence help?</span></h2><p>A short, rule-based starting point. Four answers help surface a workflow worth discussing.</p><p class="note">This is an initial assessment, not an AI analysis or a delivery estimate. Your answers stay in this browser until you choose to share them.</p></div><div class="instrument"><form id="scanner-form"><label for="department">01 / What part of the company?</label><select name="department" id="department" required><option value="">Choose a department</option>${options(["Sales", "Operations", "Customer Support", "Marketing", "Research", "Finance", "HR", "Leadership", "Technology"])}</select><label for="problem">02 / What problem appears most often?</label><select name="problem" id="problem" required><option value="">Choose a problem</option>${options(["Repetitive manual work", "Too much information", "Slow research", "Disconnected tools", "Slow customer responses", "Manual reporting", "Data entry", "Knowledge scattered across documents", "Other"])}</select><label for="size">03 / Company size</label><select id="size" name="size" required><option value="">Choose company size</option>${options(["1–10", "11–50", "51–200", "201+"])}</select><label for="maturity">04 / Current AI use</label><select id="maturity" name="maturity" required><option value="">Choose a stage</option>${options(["No AI currently", "Using AI tools informally", "Running experiments", "Building systems already"])}</select><button class="button primary" type="submit">Find a starting point <span aria-hidden="true">↗</span></button><noscript><p>JavaScript is needed for recommendations. ${link("Discuss your workflow", "/contact/")}</p></noscript></form><div id="scanner-result" hidden tabindex="-1"><p class="eyebrow">INITIAL OPPORTUNITY</p><h3 id="opportunity-title"></h3><p id="opportunity-reason"></p><ul id="opportunity-parts"></ul><p id="opportunity-next"></p>${link("Discuss this opportunity", "/contact/", "button primary scanner-cta")}<button class="text-link" id="scanner-reset">Change answers</button></div></div></section>`;
 }
 export function labsSection() {
-  return `<section class="section labs" id="labs">${label("08", "NAADIX LABS")}<div class="split-heading"><h2>Curiosity,<br><span>with a workbench.</span></h2><p>Public experiments in software, agents and physical systems. Early ideas, clearly labeled. A place to explore what might come next.</p></div><div class="lab-grid">${labs.map((p, i) => `<a class="lab-card" href="/labs/${p.slug}/"><div class="lab-art art-${i}" aria-hidden="true"><span>+ ─ ◇ ─ +</span></div><div class="lab-card-copy"><div class="panel-bar"><span>${p.category}</span><span class="badge">${p.status}</span></div><h3>${p.title} <span aria-hidden="true">↗</span></h3><p>${p.description}</p></div></a>`).join("")}</div><p class="note">Labs is our public technology exploration. Personal workspaces and internal tools are a separate NaadiX HQ initiative.</p></section>`;
+  return `<section class="section labs" id="labs">${label("08", "NAADIX LABS")}<div class="split-heading"><h2>Curiosity,<br><span>with a workbench.</span></h2><p>Public experiments in agentic interfaces, workflow intelligence and research systems. Early ideas, clearly labeled.</p></div><div class="lab-grid">${labs.map((p, i) => `<a class="lab-card" href="/labs/${p.slug}/"><div class="lab-art art-${i}" aria-hidden="true"><span>+ ─ ◇ ─ +</span></div><div class="lab-card-copy"><div class="panel-bar"><span>${p.category}</span><span class="badge">${p.status}</span></div><h3>${p.title} <span aria-hidden="true">↗</span></h3><p>${p.description}</p></div></a>`).join("")}</div><p class="note">Labs is a public technology workbench. Concepts and prototypes are labeled honestly; private founder work stays in HQ.</p></section>`;
 }
 export function founderSection() {
-  return `<section class="section founder" id="founder">${label("09", "FOUNDER")}<div class="founder-grid"><div class="founder-monogram" aria-hidden="true">H<span>P</span><small>BUILDER / NAADIX</small></div><div><h2>Built with curiosity.<br><span>Grounded in engineering.</span></h2><p class="lede">${c.founder}<span class="role">Founder, ${c.name}</span></p><p>NaadiX brings together an interest in AI, automation, software and connected hardware. The focus is on understanding how things work, then building systems that make that understanding useful.</p><p>This is an early company. The public work is a starting point: clear system examples, honest experiments and a practical approach to the work ahead.</p><div class="socials">${link("GitHub", c.github)}${c.linkedin ? link("LinkedIn", c.linkedin) : ""}${link("Email", `mailto:${c.email}`)}</div></div></div></section>`;
+  return `<section class="section founder" id="founder">${label("09", "FOUNDER")}<div class="founder-grid"><div class="founder-monogram" aria-hidden="true">H<span>P</span><small>BUILDER / NAADIX</small></div><div><h2>Built with curiosity.<br><span>Grounded in engineering.</span></h2><p class="lede">${c.founder}<span class="role">Founder, ${c.name}</span></p><p>NaadiX exists to make AI useful inside real work—not to add another disconnected tool. Harshit approaches each system by mapping the workflow, making its constraints explicit and keeping people in control of consequential decisions.</p><p>The company is early by design: honest experiments, clear architecture and a focused path from question to working system.</p><div class="socials">${link("GitHub", c.github)}${c.linkedin ? link("LinkedIn", c.linkedin) : ""}${link("Email", `mailto:${c.email}`)}</div></div></div></section>`;
 }
 export function faqSection() {
   return `<section class="section faq">${label("10", "GOOD QUESTIONS")}<h2>Before we<br><span>build anything.</span></h2><div>${faq.map(([q, a]) => `<details><summary>${q}<span aria-hidden="true">+</span></summary><p>${a}</p></details>`).join("")}</div></section>`;
@@ -165,7 +134,7 @@ export function pages() {
     [
       "/labs/",
       "NaadiX Labs — Experiments & Concepts",
-      "Explore early NaadiX ideas in agents, automation and connected physical systems.",
+      "Explore early NaadiX experiments in agentic interfaces, workflow intelligence and research systems.",
       labsSection() + cta(),
     ],
     [

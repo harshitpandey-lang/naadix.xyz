@@ -4,8 +4,8 @@ import { getSupabaseConfig, isSupabaseConfigured } from "./config";
 
 export async function updateSession(request: NextRequest) {
   const protectedPrefixes = [
-    "/dashboard", "/development", "/calendar", "/goals", "/projects",
-    "/learning", "/notes", "/review",
+    "/today", "/dashboard", "/development", "/calendar", "/goals", "/projects",
+    "/learning", "/notes", "/review", "/naadix", "/pages",
   ];
   const isDashboard = protectedPrefixes.some((prefix) =>
     request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`),
@@ -15,7 +15,7 @@ export async function updateSession(request: NextRequest) {
     if (!isDashboard) return NextResponse.next({ request });
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
-    loginUrl.search = "next=/dashboard";
+    loginUrl.search = `next=${encodeURIComponent(request.nextUrl.pathname)}`;
     return NextResponse.redirect(loginUrl);
   }
 

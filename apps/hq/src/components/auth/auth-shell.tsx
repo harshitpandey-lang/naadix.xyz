@@ -15,11 +15,12 @@ export function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <main className="min-h-screen bg-[var(--hq)] px-5 py-6 text-white sm:grid sm:place-items-center sm:p-8">
+    <main className="auth-stage min-h-screen bg-[var(--hq)] px-5 py-6 text-white sm:grid sm:place-items-center sm:p-8">
+      <div className="auth-topology" aria-hidden="true"><i /><i /><i /><i /><i /></div>
       <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-[var(--hq-panel)] shadow-2xl shadow-black/30 md:grid-cols-[1.05fr_.95fr]">
         <section className="border-b border-white/10 p-7 sm:p-10 md:border-r md:border-b-0">
           <Link
-            href="/"
+            href="https://naadix.xyz/"
             className="text-sm font-black tracking-[.22em] text-[var(--hq-cream)]"
           >
             NAADIX
@@ -43,7 +44,7 @@ export function AuthShell({
           <p className="mt-3 text-sm leading-6 text-[var(--hq-muted)]">{description}</p>
           {children}
           <Link
-            href="/"
+            href="https://naadix.xyz/founder/"
             className="mt-8 inline-block text-sm text-[var(--hq-muted)] hover:text-white"
           >
             ← Back to public profile

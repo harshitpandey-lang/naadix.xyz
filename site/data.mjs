@@ -15,7 +15,7 @@ export const navigation = [
   ["Solutions", "/solutions/"],
   ["Method", "/method/"],
   ["Labs", "/labs/"],
-  ["Founder", "/founder/"],
+  ["About", "/founder/"],
 ];
 export const capabilities = [
   [
@@ -116,44 +116,50 @@ export const method = [
 export const labs = [
   {
     slug: "content-agent",
-    title: "Content Generation Agent",
-    status: "CONCEPT",
-    category: "AGENT SYSTEMS",
+    title: "Agentic Interfaces",
+    status: "PROTOTYPE",
+    category: "HUMAN + AI",
     description:
-      "An idea-to-draft workflow with editorial review before distribution.",
-    why: "Explore how structured briefs, drafting and review could work as one process.",
-    tech: "Workflow design · JavaScript · Prompt design",
+      "Interface patterns that make tool use, evidence and human approval visible.",
+    why: "Explore how people can inspect and direct an agent instead of trusting an opaque chat response.",
+    tech: "Interaction design · JavaScript · Agent architecture",
     state:
-      "The repository contains a descriptive project page and interface scaffolding. No working generation or publishing backend is evidenced.",
+      "A public interaction prototype. It demonstrates interface thinking, not a deployed client system.",
     source: "webpages/founder/projects/content-gen-agent.html",
   },
   {
     slug: "affiliate-agent",
-    title: "Affiliate Research Agent",
-    status: "CONCEPT",
-    category: "AUTOMATION",
+    title: "Research Agents",
+    status: "EXPERIMENT",
+    category: "RESEARCH SYSTEMS",
     description:
-      "A proposed pipeline for partner discovery and evidence-based comparison.",
-    why: "Explore how research can support partner evaluation without hiding the evidence.",
-    tech: "JavaScript · Workflow design · Analytics concepts",
+      "Source-aware research flows that separate collection, comparison and review.",
+    why: "Explore how research agents can preserve evidence and surface uncertainty for a human decision.",
+    tech: "Retrieval concepts · Workflow design · Evaluation",
     state:
-      "The existing pages outline discovery and scoring. They do not establish a released agent or verified commercial results.",
+      "A documented experiment derived from earlier research-agent concepts. No production deployment or commercial result is claimed.",
     source: "webpages/founder/projects/affiliate-agent.html",
   },
   {
-    slug: "rover",
-    title: "Rover Automation",
+    slug: "workflow-intelligence",
+    title: "Workflow Intelligence",
     status: "CONCEPT",
-    category: "PHYSICAL SYSTEMS",
-    description:
-      "An exploration of connected hardware, telemetry and control workflows.",
-    why: "Study the boundary between software decisions and physical systems.",
-    tech: "IoT concepts · JavaScript · Data pipelines",
-    state:
-      "The repository documents a robotics idea and telemetry-style interface. It does not include verifiable firmware or a tested hardware release.",
-    source: "webpages/founder/projects/rover.html",
+    category: "BUSINESS SYSTEMS",
+    description: "A visual model for triggers, tools, decisions, exceptions and human checkpoints.",
+    why: "Make the architecture underneath business automation understandable before anything is built.",
+    tech: "Systems design · Deterministic simulation · Canvas2D",
+    state: "A public concept expressed through the Intelligence Architect. It is not a production automation product.",
+    source: "site/templates.mjs",
   },
 ];
+
+export const architectures = {
+  sales: { title: "Sales", steps: [["Lead arrives","TRIGGER","Inbound form or CRM event"],["Qualification agent","MODEL","Apply explicit fit criteria"],["CRM","DATA","Read and update approved fields"],["Research agent","TOOLS","Collect source-backed context"],["Human approval","HUMAN","Review evidence and decide"],["Follow-up","ACTION","Send only after approval"]] },
+  operations: { title: "Operations", steps: [["Work request","TRIGGER","A request enters the queue"],["Workflow agent","MODEL","Classify and choose an allowed path"],["Operating rules","MEMORY","Retrieve current process guidance"],["Business tools","TOOLS","Coordinate approved systems"],["Exception review","HUMAN","Resolve uncertainty or risk"],["Record outcome","ACTION","Complete and log the handoff"]] },
+  knowledge: { title: "Knowledge", steps: [["Question","TRIGGER","A person asks within their access"],["Retrieval","TOOLS","Search permitted sources"],["Knowledge index","DATA","Return relevant passages"],["Answer model","MODEL","Synthesize with citations"],["Confidence check","DECISION","Test evidence and uncertainty"],["Human use","HUMAN","Inspect sources and act"]] },
+  support: { title: "Support", steps: [["Request","TRIGGER","A customer message arrives"],["Triage agent","MODEL","Classify intent and urgency"],["Knowledge base","MEMORY","Retrieve approved guidance"],["Draft response","ACTION","Prepare a cited response"],["Human review","HUMAN","Edit, approve or escalate"],["Route + record","TOOLS","Send and update the case"]] },
+  research: { title: "Research", steps: [["Research brief","TRIGGER","Define the question and boundaries"],["Planner","MODEL","Break work into evidence tasks"],["Search tools","TOOLS","Collect allowed public sources"],["Evidence store","MEMORY","Preserve claims and provenance"],["Synthesis","DECISION","Compare findings and gaps"],["Analyst review","HUMAN","Challenge and approve conclusions"]] },
+};
 export const faq = [
   [
     "What does NaadiX build?",

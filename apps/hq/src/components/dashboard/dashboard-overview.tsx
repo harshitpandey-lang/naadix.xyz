@@ -15,6 +15,7 @@ import {
   getScheduledGoalsForRange,
 } from "@/src/lib/calendar";
 import { getGoals } from "@/src/lib/goals";
+import { createClient } from "@/src/lib/supabase/server";
 
 async function getTodaySchedule() {
   try {
@@ -133,6 +134,14 @@ export async function DashboardOverview({
   const firstName =
     name.trim().split(" ")[0] || name;
 
+  const supabase = await createClient();
+  const [projectResult, developmentResult, learningResult] = await Promise.all([
+    supabase.from("projects").select("id,name,progress,status").eq("status", "ACTIVE").order("priority", { ascending: false }).limit(4),
+    supabase.from("development_areas").select("id,name,current_focus").eq("status", "active").order("priority", { ascending: false }).limit(3),
+    supabase.from("learning_items").select("id,title,progress").eq("status", "active").order("updated_at", { ascending: false }).limit(4),
+  ]);
+  const priorities = todayGoals.filter((goal) => !goal.completed).slice(0, 3);
+
   return (
     <main className="hq-content">
       {/* ------------------------------------------------
@@ -174,6 +183,11 @@ export async function DashboardOverview({
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="today-priorities" aria-labelledby="today-priorities-title">
+        <div className="section-line"><div><p>FOCUS / MAXIMUM THREE</p><h2 id="today-priorities-title">Today&apos;s priorities</h2></div><Link href="/goals">Manage goals <ArrowUpRight size={13} /></Link></div>
+        <div className="priority-list">{priorities.length ? priorities.map((goal, position) => <article className="hq-panel" key={goal.id}><span>0{position + 1}</span><strong>{goal.title}</strong><small>{goal.due_date}</small></article>) : <div className="hq-panel empty-inline"><span className="signal-dot" /><p>No priorities are due today. Add a real goal when the day needs one.</p></div>}</div>
       </section>
 
       {/* ------------------------------------------------
@@ -281,7 +295,7 @@ export async function DashboardOverview({
           </div>
 
           <Link
-            href="/dashboard/calendar"
+            href="/calendar"
             className="flex items-center gap-1 text-xs text-[var(--hq-muted)] transition hover:text-white"
           >
             Open calendar
@@ -371,7 +385,7 @@ export async function DashboardOverview({
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Link
-            href="/dashboard/calendar"
+            href="/calendar"
             className="hq-panel hq-hover group rounded-lg p-4"
           >
             <CalendarDays
@@ -394,7 +408,7 @@ export async function DashboardOverview({
           </Link>
 
           <Link
-            href="/dashboard/goals"
+            href="/goals"
             className="hq-panel hq-hover group rounded-lg p-4"
           >
             <Goal
@@ -416,7 +430,7 @@ export async function DashboardOverview({
             />
           </Link>
 
-          <div className="hq-panel rounded-lg p-4 opacity-70">
+          <Link href="/projects" className="hq-panel hq-hover group rounded-lg p-4">
             <FolderKanban
               size={18}
               className="text-[var(--hq-muted-strong)]"
@@ -427,26 +441,34 @@ export async function DashboardOverview({
             </p>
 
             <p className="mt-1 text-xs text-[var(--hq-muted)]">
-              Coming to your workspace
+              {projectResult.data?.length ?? 0} active
             </p>
-          </div>
+          </Link>
 
-          <div className="hq-panel rounded-lg p-4 opacity-70">
+          <Link href="/notes" className="hq-panel hq-hover group rounded-lg p-4">
             <NotebookPen
               size={18}
               className="text-[var(--hq-muted-strong)]"
             />
 
             <p className="mt-5 text-sm font-medium text-[var(--hq-cream)]">
-              Journal
+              Notes
             </p>
 
             <p className="mt-1 text-xs text-[var(--hq-muted)]">
-              Coming to your workspace
+              Capture ideas and decisions
             </p>
-          </div>
+          </Link>
         </div>
       </section>
+
+      <section className="today-context-grid">
+        <article className="hq-panel"><div className="section-line"><h2>Active projects</h2><Link href="/projects">Open <ArrowUpRight size={13} /></Link></div>{projectResult.data?.length ? <ul>{projectResult.data.map((project) => <li key={project.id}><span>{project.name}</span><strong>{project.progress ?? 0}%</strong></li>)}</ul> : <p>No active projects yet.</p>}</article>
+        <article className="hq-panel"><div className="section-line"><h2>Development</h2><Link href="/development">Open <ArrowUpRight size={13} /></Link></div>{developmentResult.data?.length ? <ul>{developmentResult.data.map((area) => <li key={area.id}><span>{area.name}</span><small>{area.current_focus || "Focus not set"}</small></li>)}</ul> : <p>No current development focus.</p>}</article>
+        <article className="hq-panel"><div className="section-line"><h2>Learning</h2><Link href="/learning">Open <ArrowUpRight size={13} /></Link></div>{learningResult.data?.length ? <ul>{learningResult.data.map((item) => <li key={item.id}><span>{item.title}</span><strong>{item.progress}%</strong></li>)}</ul> : <p>No learning items in progress.</p>}</article>
+      </section>
+
+      <section className="quick-capture"><p>QUICK CAPTURE</p><div><Link href="/goals?new=1">+ Task</Link><Link href="/goals?new=1">+ Goal</Link><Link href="/notes?new=1">+ Note</Link><Link href="/notes?new=1">+ Idea</Link></div></section>
 
       {/* ------------------------------------------------
           PROFILE

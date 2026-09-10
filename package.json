@@ -6,10 +6,11 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check scripts/build.mjs && node --check site/assets/app.js && node --check site/assets/network.js && node --check site/assets/contact.js",
+    "check": "node --check scripts/build.mjs && node --check scripts/dev-all.mjs && node --check site/assets/app.js && node --check site/assets/network.js && node --check site/assets/contact.js",
     "hq:dev": "npm --prefix apps/hq run dev",
     "hq:build": "npm --prefix apps/hq run build",
-    "hq:lint": "npm --prefix apps/hq run lint"
+    "hq:lint": "npm --prefix apps/hq run lint",
+    "dev:all": "node scripts/dev-all.mjs"
   },
   "engines": {
     "node": ">=20"
