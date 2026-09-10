@@ -46,7 +46,9 @@ test("shared shell includes navigation, mobile controls, and quick actions", asy
   for (const route of ["/hq/dashboard/", "/hq/projects/", "/hq/calendar/", "/hq/goals/"]) assert.ok(source.includes(route), route);
   assert.match(source, /data-open-menu/);
   assert.match(source, /data-open-command/);
+  assert.match(source, /aria-label="Quick actions"/);
   assert.match(source, /event\.key\.toLowerCase\(\) === "k"/);
+  assert.match(source, /event\.key === "Escape"/);
   assert.match(source, /data-action="logout"/);
 });
 

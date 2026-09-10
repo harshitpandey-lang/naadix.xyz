@@ -36,7 +36,7 @@ export async function mountShell({ active, title, description }) {
       <div class="hq-sidebar-foot"><div class="founder-presence"><span class="presence-dot"></span><div><strong>Founder workspace</strong><span>${esc(session.user?.email || "Authenticated")}</span></div></div><button class="quiet-button" type="button" data-action="logout">Log out</button></div>
     </aside>
     <main class="hq-main">
-      <header class="hq-topbar"><button class="icon-button mobile-only" type="button" data-open-menu aria-label="Open navigation">${icon("menu")}</button><div class="hq-crumb"><span>Founder HQ</span><span>/</span><strong>${esc(title)}</strong></div><button class="command-trigger" type="button" data-open-command>${icon("search")}<span>Quick actions</span><kbd>⌘ K</kbd></button></header>
+      <header class="hq-topbar"><button class="icon-button mobile-only" type="button" data-open-menu aria-label="Open navigation">${icon("menu")}</button><div class="hq-crumb"><span>Founder HQ</span><span>/</span><strong>${esc(title)}</strong></div><button class="command-trigger" type="button" data-open-command aria-label="Quick actions">${icon("search")}<span>Quick actions</span><kbd>⌘ K</kbd></button></header>
       <section class="hq-page-heading"><div><p class="eyebrow">${esc(active)} workspace</p><h1>${esc(title)}</h1><p>${esc(description)}</p></div><div class="hq-page-actions" id="hq-page-actions"></div></section>
       <div id="hq-content" aria-live="polite">${skeleton(5)}</div>
     </main>
@@ -89,6 +89,12 @@ export function openDialog({ title, description = "", content, className = "" })
   document.body.append(dialog);
   dialog.querySelector("[data-dialog-close]").addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      dialog.close();
+    }
+  });
   dialog.addEventListener("close", () => dialog.remove(), { once: true });
   dialog.showModal();
   requestAnimationFrame(() => dialog.querySelector("input, select, textarea, button, a")?.focus());

@@ -1029,7 +1029,7 @@ select:focus {
 }
 
 .outside .day-number {
-  color: #595f69;
+  color: var(--hq-muted);
 }
 
 .day-items {
