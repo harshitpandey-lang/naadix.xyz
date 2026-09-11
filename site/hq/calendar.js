@@ -3,7 +3,8 @@ import { confirmAction, emptyState, errorState, formValues, humanError, icon, mo
 import { supabase } from "./supabase.js";
 
 const requestedDate = new URLSearchParams(location.search).get("date");
-const state = { anchor: requestedDate ? new Date(`${requestedDate}T12:00:00`) : new Date(), view: sessionStorage.getItem("hq_calendar_view") || "month", events: [], goals: [] };
+const initialDate = requestedDate === "today" ? dateKey(new Date()) : requestedDate;
+const state = { anchor: initialDate ? new Date(`${initialDate}T12:00:00`) : new Date(), view: sessionStorage.getItem("hq_calendar_view") || "month", events: [], goals: [], projects: [] };
 let shell;
 
 export async function mount() {
@@ -21,9 +22,10 @@ async function load() {
   const rangeStart = startOfDay(days[0].date);
   const rangeEnd = addDays(startOfDay(days.at(-1).date), 1);
   try {
-    [state.events, state.goals] = await Promise.all([
+    [state.events, state.goals, state.projects] = await Promise.all([
       supabase.query("calendar_events", { select: "id,title,description,start_at,end_at,all_day,location,category,created_at,updated_at", filters: { start_at: [`gte.${rangeStart.toISOString()}`, `lt.${rangeEnd.toISOString()}`] }, order: "start_at.asc", limit: 300 }),
       supabase.query("goals", { select: "id,title,description,goal_type,target_value,unit,due_date,scheduled_start,scheduled_end,completed", filters: { scheduled_start: [`gte.${rangeStart.toISOString()}`, `lt.${rangeEnd.toISOString()}`] }, order: "scheduled_start.asc", limit: 200 }),
+      supabase.query("projects", { select: "id,name,deadline,status,priority", filters: { deadline: [`gte.${dateKey(rangeStart)}`, `lte.${dateKey(rangeEnd)}`] }, order: "deadline.asc", limit: 200 }),
     ]);
     renderWorkspace();
   } catch (error) {
@@ -35,14 +37,21 @@ async function load() {
 function renderWorkspace() {
   const days = calendarDays(state.anchor, state.view);
   const label = state.view === "month" ? new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(state.anchor) : `${formatDate(days[0].date, { month: "short", day: "numeric" })} – ${formatDate(days.at(-1).date, { month: "short", day: "numeric", year: "numeric" })}`;
-  shell.content.innerHTML = `<section class="calendar-toolbar"><div class="calendar-navigation"><button class="quiet-button compact" type="button" data-calendar-today>Today</button><div class="button-group"><button class="icon-button" type="button" data-calendar-previous aria-label="Previous ${state.view}">‹</button><button class="icon-button" type="button" data-calendar-next aria-label="Next ${state.view}">›</button></div><h2>${esc(label)}</h2></div><div class="view-switch" role="group" aria-label="Calendar view"><button type="button" data-calendar-view="month" class="${state.view === "month" ? "active" : ""}">Month</button><button type="button" data-calendar-view="week" class="${state.view === "week" ? "active" : ""}">Week</button></div></section>
-    <div class="calendar-layout"><section class="calendar-surface" aria-label="${esc(label)}"><div class="calendar-weekdays">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day) => `<span>${day}</span>`).join("")}</div><div class="calendar-grid ${state.view === "week" ? "week-view" : ""}">${days.map(dayCell).join("")}</div></section>${agenda()}</div>`;
+  shell.content.innerHTML = `<section class="calendar-toolbar"><div class="calendar-navigation"><button class="quiet-button compact" type="button" data-calendar-today>Today</button><div class="button-group"><button class="icon-button" type="button" data-calendar-previous aria-label="Previous ${state.view}">‹</button><button class="icon-button" type="button" data-calendar-next aria-label="Next ${state.view}">›</button></div><h2>${esc(label)}</h2></div><div class="view-switch" role="group" aria-label="Calendar view"><button type="button" data-calendar-view="month" class="${state.view === "month" ? "active" : ""}">Month</button><button type="button" data-calendar-view="week" class="${state.view === "week" ? "active" : ""}">Week</button><button type="button" data-calendar-view="agenda" class="${state.view === "agenda" ? "active" : ""}">Agenda</button></div></section>
+    ${state.view === "agenda" ? agendaList() : `<div class="calendar-layout"><section class="calendar-surface" aria-label="${esc(label)}"><div class="calendar-weekdays">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day) => `<span>${day}</span>`).join("")}</div><div class="calendar-grid ${state.view === "week" ? "week-view" : ""}">${days.map(dayCell).join("")}</div></section>${agenda()}</div>`}`;
   shell.content.querySelector("[data-calendar-today]").addEventListener("click", () => { state.anchor = new Date(); load(); });
   shell.content.querySelector("[data-calendar-previous]").addEventListener("click", () => navigate(-1));
   shell.content.querySelector("[data-calendar-next]").addEventListener("click", () => navigate(1));
   shell.content.querySelectorAll("[data-calendar-view]").forEach((button) => button.addEventListener("click", () => { state.view = button.dataset.calendarView; sessionStorage.setItem("hq_calendar_view", state.view); load(); }));
   shell.content.querySelectorAll("[data-new-date]").forEach((button) => button.addEventListener("click", () => openEventForm(null, button.dataset.newDate)));
   shell.content.querySelectorAll("[data-open-event]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); openEvent(button.dataset.openEvent); }));
+}
+
+function agendaList() {
+  const rows = [...state.events.map((item) => ({ date: new Date(item.start_at), kind: "Event", title: item.title, href: `/hq/calendar/?date=${dateKey(item.start_at)}` })), ...state.goals.filter((item) => item.scheduled_start).map((item) => ({ date: new Date(item.scheduled_start), kind: "Goal", title: item.title, href: `/hq/goals/?goal=${item.id}` })), ...state.projects.filter((item) => item.deadline).map((item) => ({ date: new Date(`${item.deadline}T09:00:00`), kind: "Project deadline", title: item.name, href: `/hq/projects/?project=${item.id}` }))].sort((a, b) => a.date - b.date);
+  const groups = new Map();
+  for (const row of rows) { const key = dateKey(row.date); if (!groups.has(key)) groups.set(key, []); groups.get(key).push(row); }
+  return `<section class="agenda-list">${groups.size ? [...groups.entries()].map(([key, items]) => `<section class="hq-panel"><p class="eyebrow">${formatDate(key, { weekday: "long", month: "short", day: "numeric" })}</p>${items.map((item) => `<a class="agenda-row" href="${item.href}"><span class="calendar-kind">${item.kind}</span><strong>${esc(item.title)}</strong><time>${formatDateTime(item.date)}</time></a>`).join("")}</section>`).join("") : emptyState("No agenda items", "Events, scheduled goals, and project deadlines will appear here.", "New event")}</section>`;
 }
 
 function navigate(direction) {
@@ -56,12 +65,14 @@ function navigate(direction) {
 function dayCell(day) {
   const events = state.events.filter((event) => itemOccursOn(event, day.key, "start_at"));
   const goals = state.goals.filter((goal) => itemOccursOn(goal, day.key, "scheduled_start"));
-  const items = [...events.map((event) => ({ kind: "event", value: event })), ...goals.map((goal) => ({ kind: "goal", value: goal }))];
+  const projects = state.projects.filter((project) => project.deadline === day.key);
+  const items = [...events.map((event) => ({ kind: "event", value: event })), ...goals.map((goal) => ({ kind: "goal", value: goal })), ...projects.map((project) => ({ kind: "project", value: project }))];
   return `<article class="calendar-day ${day.isToday ? "today" : ""} ${!day.isCurrentMonth && state.view === "month" ? "outside" : ""}" data-date="${day.key}"><button class="day-number" type="button" data-new-date="${day.key}" aria-label="Create event on ${formatDate(day.date)}"><time datetime="${day.key}">${day.day}</time>${day.isToday ? "<span>Today</span>" : ""}</button><div class="day-items">${items.slice(0, 3).map(calendarItem).join("")}${items.length > 3 ? `<span class="calendar-overflow">+${items.length - 3} more</span>` : ""}</div></article>`;
 }
 
 function calendarItem(item) {
   if (item.kind === "goal") return `<a class="calendar-item goal-item" href="/hq/goals/?goal=${item.value.id}" title="${esc(item.value.title)}"><span></span>${esc(item.value.title)}</a>`;
+  if (item.kind === "project") return `<a class="calendar-item project-item" href="/hq/projects/?project=${item.value.id}" title="${esc(item.value.name)} deadline"><span></span>${esc(item.value.name)}</a>`;
   return `<button class="calendar-item event-item" type="button" data-category="${esc(item.value.category || "Other")}" data-open-event="${item.value.id}" title="${esc(item.value.title)}"><span></span>${item.value.all_day ? "" : `<time>${new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(new Date(item.value.start_at))}</time>`}${esc(item.value.title)}</button>`;
 }
 

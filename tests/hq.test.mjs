@@ -96,7 +96,9 @@ test("calendar validates events and renders events with scheduled goals", async 
 
 test("goal strategy filters, validation, completion, and dates are deterministic", async () => {
   const source = await readFile(resolve(hq, "goals.js"), "utf8");
-  assert.match(source, /Overall completion/);
+  assert.match(source, /At risk/);
+  assert.match(source, /goalProgress/);
+  assert.match(source, /current_value/);
   assert.match(source, /data-goal-filter/);
   assert.match(source, /View in calendar/);
   const today = new Date(2026, 8, 10);

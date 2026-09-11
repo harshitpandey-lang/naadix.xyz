@@ -2,6 +2,9 @@ export const PROJECT_STATUSES = ["PLANNED", "ACTIVE", "PAUSED", "COMPLETED", "AR
 export const PROJECT_CATEGORIES = ["Company", "Client", "Internal tools", "Research", "AI & Automation"];
 export const GOAL_TYPES = ["task", "duration", "quantity"];
 export const EVENT_CATEGORIES = ["College", "Study", "Project", "Personal", "Other"];
+export const PROJECT_HEALTH = ["ON_TRACK", "AT_RISK", "BLOCKED"];
+export const PROJECT_PRIORITIES = [1, 2, 3, 4];
+export const GOAL_PRIORITIES = [1, 2, 3, 4];
 
 export const esc = (value) => String(value ?? "").replace(/[&<>\"]/g, (character) => ({
   "&": "&amp;",
@@ -99,6 +102,30 @@ export function itemOccursOn(item, key, field) {
   return dateKey(item[field]) === key;
 }
 
+export function projectProgress(project, items = []) {
+  const related = items.filter((item) => item.project_id === project.id);
+  if (!related.length) return Number(project.progress ?? 0);
+  return Math.round((related.filter((item) => item.status === "DONE" || item.section === "completed_work").length / related.length) * 100);
+}
+
+export function isStaleProject(project, today = new Date()) {
+  if (project.status !== "ACTIVE") return false;
+  const updated = new Date(project.updated_at || project.created_at);
+  return !Number.isNaN(updated.getTime()) && updated < addDays(startOfDay(today), -7);
+}
+
+export function goalProgress(goal, milestones = []) {
+  if (Number.isFinite(Number(goal.target_value)) && Number(goal.target_value) > 0 && goal.current_value != null) return Math.max(0, Math.min(100, Math.round((Number(goal.current_value) / Number(goal.target_value)) * 100)));
+  const related = milestones.filter((milestone) => milestone.goal_id === goal.id);
+  return related.length ? Math.round((related.filter((milestone) => milestone.completed).length / related.length) * 100) : 0;
+}
+
+export function isGoalAtRisk(goal, progress = 0, today = new Date()) {
+  if (goal.completed || !goal.due_date) return false;
+  const due = parseDateKey(goal.due_date);
+  return due < addDays(startOfDay(today), 7) && progress < 50;
+}
+
 const text = (values, name) => String(values[name] ?? "").trim();
 const numberOrNull = (value) => value === "" || value == null ? null : Number(value);
 
@@ -114,12 +141,16 @@ export function validateProject(values) {
     github_url: text(values, "github_url") || null,
     notes: text(values, "notes") || null,
     overview: text(values, "overview") || null,
+    health: text(values, "health") || "ON_TRACK",
+    next_action: text(values, "next_action") || null,
+    blocker: text(values, "blocker") || null,
   };
   const errors = [];
   if (!cleaned.name) errors.push("Project name is required.");
   if (!cleaned.category) errors.push("Choose a project category.");
   if (!PROJECT_STATUSES.includes(cleaned.status)) errors.push("Choose a supported project status.");
   if (!Number.isInteger(cleaned.priority) || cleaned.priority < 1 || cleaned.priority > 5) errors.push("Priority must be from 1 to 5.");
+  if (!PROJECT_HEALTH.includes(cleaned.health)) errors.push("Choose a supported project health.");
   if (!Number.isFinite(cleaned.progress) || cleaned.progress < 0 || cleaned.progress > 100) errors.push("Progress must be from 0 to 100.");
   if (cleaned.github_url) {
     try { new URL(cleaned.github_url); } catch { errors.push("Primary link must be a valid URL."); }
@@ -139,6 +170,10 @@ export function validateGoal(values) {
     due_date: text(values, "due_date"),
     scheduled_start: text(values, "scheduled_start") || null,
     scheduled_end: text(values, "scheduled_end") || null,
+    priority: numberOrNull(values.priority) ?? 3,
+    current_value: numberOrNull(values.current_value),
+    next_step: text(values, "next_step") || null,
+    project_id: text(values, "project_id") || null,
   };
   const errors = [];
   if (!cleaned.title) errors.push("Goal title is required.");
@@ -146,6 +181,7 @@ export function validateGoal(values) {
   if (!cleaned.due_date || Number.isNaN(parseDateKey(cleaned.due_date).getTime())) errors.push("A valid due date is required.");
   if (type !== "task" && (!Number.isFinite(target) || target <= 0)) errors.push("A positive target is required for measurable goals.");
   if (type !== "task" && !cleaned.unit) errors.push("Add a unit for the target.");
+  if (!Number.isInteger(cleaned.priority) || cleaned.priority < 1 || cleaned.priority > 4) errors.push("Priority must be from 1 to 4.");
   if (cleaned.scheduled_start && Number.isNaN(new Date(cleaned.scheduled_start).getTime())) errors.push("Scheduled start is invalid.");
   if (cleaned.scheduled_end && Number.isNaN(new Date(cleaned.scheduled_end).getTime())) errors.push("Scheduled end is invalid.");
   if (cleaned.scheduled_start && cleaned.scheduled_end && new Date(cleaned.scheduled_end) <= new Date(cleaned.scheduled_start)) errors.push("Scheduled end must be after the start.");

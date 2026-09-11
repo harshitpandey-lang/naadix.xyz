@@ -71,6 +71,9 @@ function openCommandPalette() {
     ["Projects", "Go to projects", "/hq/projects/", "projects"],
     ["Calendar", "Go to calendar", "/hq/calendar/", "calendar"],
     ["Goals", "Go to goals", "/hq/goals/", "goals"],
+    ["Today", "Go to today's calendar", "/hq/calendar/?date=today", "calendar"],
+    ["Blocked projects", "Show blocked projects", "/hq/projects/?status=BLOCKED", "projects"],
+    ["Goals at risk", "Show goals at risk", "/hq/goals/?filter=AT_RISK", "goals"],
   ];
   const dialog = openDialog({
     title: "Quick actions",
