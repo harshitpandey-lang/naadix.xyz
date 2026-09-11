@@ -19,8 +19,8 @@ import {
 } from "../site/hq/core.js";
 
 const hq = resolve("site/hq");
-const routes = ["hq/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/decisions/index.html", "hq/review/index.html"];
-const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "decisions.js", "review.js", "hq.css"];
+const routes = ["hq/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/review/index.html"];
+const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "meetings.js", "finances.js", "decisions.js", "review.js", "hq.css"];
 
 test("static Founder HQ routes and page-specific modules exist", async () => {
   for (const route of routes) assert.ok((await stat(resolve("dist", route))).isFile(), route);
@@ -36,6 +36,8 @@ test("private pages redirect through the shared authentication guard", async () 
   assert.match(app, /import\("\.\/projects\.js"\)/);
   assert.match(app, /import\("\.\/calendar\.js"\)/);
   assert.match(app, /import\("\.\/goals\.js"\)/);
+  assert.match(app, /import\("\.\/meetings\.js"\)/);
+  assert.match(app, /import\("\.\/finances\.js"\)/);
   assert.match(app, /import\("\.\/inbox\.js"\)/);
   assert.match(app, /import\("\.\/decisions\.js"\)/);
   assert.match(app, /import\("\.\/review\.js"\)/);
@@ -50,13 +52,36 @@ test("HQ uses browser Supabase auth without a privileged browser secret", async 
 
 test("shared shell includes navigation, mobile controls, and quick actions", async () => {
   const source = await readFile(resolve(hq, "ui.js"), "utf8");
-  for (const route of ["/hq/dashboard/", "/hq/inbox/", "/hq/projects/", "/hq/calendar/", "/hq/goals/", "/hq/decisions/", "/hq/review/"]) assert.ok(source.includes(route), route);
+  for (const route of ["/hq/dashboard/", "/hq/inbox/", "/hq/projects/", "/hq/calendar/", "/hq/goals/", "/hq/meetings/", "/hq/finances/", "/hq/decisions/", "/hq/review/"]) assert.ok(source.includes(route), route);
   assert.match(source, /data-open-menu/);
   assert.match(source, /data-open-command/);
   assert.match(source, /aria-label="Quick actions"/);
   assert.match(source, /event\.key\.toLowerCase\(\) === "k"/);
   assert.match(source, /event\.key === "Escape"/);
   assert.match(source, /data-action="logout"/);
+});
+
+test("Founder momentum uses bounded operational records without a chart dependency", async () => {
+  const source = await readFile(resolve(hq, "dashboard.js"), "utf8");
+  assert.match(source, /Founder momentum/i);
+  assert.match(source, /Array\.from\(\{ length: 30 \}/);
+  assert.match(source, /completed_at: \[`gte\./);
+  assert.match(source, /<svg class="momentum-chart"/);
+  assert.doesNotMatch(source, /Chart\.js|d3|ApexCharts|ECharts/i);
+});
+
+test("Meetings and finances are private owner-scoped workspaces", async () => {
+  const meetings = await readFile(resolve(hq, "meetings.js"), "utf8");
+  const finances = await readFile(resolve(hq, "finances.js"), "utf8");
+  const migration = await readFile(resolve("supabase/migrations/20260911053622_founder_hq_meetings_finances.sql"), "utf8");
+  assert.match(meetings, /SpeechRecognition|webkitSpeechRecognition/);
+  assert.match(meetings, /transcript/);
+  assert.match(finances, /finance_transactions/);
+  assert.match(finances, /Net cash flow/);
+  assert.match(migration, /alter table public\.meetings enable row level security/);
+  assert.match(migration, /alter table public\.finance_transactions enable row level security/);
+  assert.match(migration, /auth\.uid\(\)\) = user_id/);
+  assert.match(migration, /grant select, insert, update, delete on table public\.meetings, public\.finance_transactions to authenticated/);
 });
 
 test("Inbox conversion creates the destination payload and preserves the source", async () => {

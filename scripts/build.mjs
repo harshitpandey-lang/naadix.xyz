@@ -44,6 +44,8 @@ const hqPages = [
   ["hq/projects/index.html", "projects", "Projects | Founder HQ", "Private Founder HQ projects."],
   ["hq/calendar/index.html", "calendar", "Calendar | Founder HQ", "Private Founder HQ calendar."],
   ["hq/goals/index.html", "goals", "Goals | Founder HQ", "Private Founder HQ goals."],
+  ["hq/meetings/index.html", "meetings", "Meetings | Founder HQ", "Private Founder HQ meetings and live transcripts."],
+  ["hq/finances/index.html", "finances", "Finances | Founder HQ", "Private Founder HQ financial operating view."],
   ["hq/decisions/index.html", "decisions", "Decisions | Founder HQ", "Private Founder HQ decision log."],
   ["hq/review/index.html", "review", "Weekly Review | Founder HQ", "Private Founder HQ weekly review."],
 ];

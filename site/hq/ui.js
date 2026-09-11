@@ -8,6 +8,8 @@ const icons = {
   projects: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h5l1.5 2H17v8.5H3z"/></svg>',
   calendar: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4.5h12v12H4zM4 8h12M7 2.5v4M13 2.5v4"/></svg>',
   goals: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3"/></svg>',
+  meetings: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="10" rx="2"/><path d="M7 17h6M10 14v3M6.5 8.5h7M6.5 11h4"/></svg>',
+  finances: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6.5h14v10H3zM5 6.5V4h10v2.5M6.5 11.5h3M14 10v3"/></svg>',
   decisions: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3h10v14H5zM8 7h4M8 10h4M8 13h3"/></svg>',
   review: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5M4 3v4h4"/></svg>',
   search: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>',
@@ -26,6 +28,8 @@ function navigation(active) {
     ["projects", "Projects", "/hq/projects/"],
     ["calendar", "Calendar", "/hq/calendar/"],
     ["goals", "Goals", "/hq/goals/"],
+    ["meetings", "Meetings", "/hq/meetings/"],
+    ["finances", "Finances", "/hq/finances/"],
   ].map(([key, label, href]) => `<a href="${href}" ${key === active ? 'aria-current="page" class="active"' : ""}>${icon(key)}<span>${label}</span></a>`).join("");
 }
 
@@ -91,11 +95,15 @@ function openCommandPalette() {
     ["Projects", "Open projects", "/hq/projects/", "projects"],
     ["Calendar", "Open calendar", "/hq/calendar/", "calendar"],
     ["Goals", "Open goals", "/hq/goals/", "goals"],
+    ["Meetings", "Open meetings and live transcripts", "/hq/meetings/", "meetings"],
+    ["Finances", "Open the financial operating view", "/hq/finances/", "finances"],
     ["Decisions", "Open the decision log", "/hq/decisions/", "decisions"],
     ["Weekly Review", "Start the guided review", "/hq/review/", "review"],
     ["New Project", "Create a project", "/hq/projects/?new=1", "projects"],
     ["New Goal", "Create a goal", "/hq/goals/?new=1", "goals"],
     ["New Event", "Create a calendar event", "/hq/calendar/?new=1", "calendar"],
+    ["New Meeting", "Start a meeting record", "/hq/meetings/?new=1", "meetings"],
+    ["New Transaction", "Record income or an expense", "/hq/finances/?new=1", "finances"],
     ["New Waiting Item", "Track an external dependency", "/hq/dashboard/?waiting=new#waiting", "inbox"],
     ["Record Decision", "Capture context for a choice", "/hq/decisions/?new=1", "decisions"],
     ["Blocked projects", "Filter urgent project blockers", "/hq/projects/?status=BLOCKED", "projects"],

@@ -3,7 +3,7 @@ import { errorState, formValues, humanError, icon, mountShell, openDialog, openQ
 import { supabase } from "./supabase.js";
 
 let shell;
-const state = { projects: [], goals: [], events: [], actions: [], waiting: [], inbox: [], focus: null, focusMode: false };
+const state = { projects: [], goals: [], events: [], actions: [], waiting: [], inbox: [], focus: null, momentum: { days: [], series: [] }, focusMode: false };
 
 export async function mount() {
   const hour = new Date().getHours();
@@ -21,8 +21,9 @@ async function load() {
   shell.content.innerHTML = skeleton(7);
   const today = startOfDay();
   const tomorrow = addDays(today, 1);
+  const momentumStart = addDays(today, -29);
   try {
-    const [projects, goals, events, actions, waiting, inbox, focus] = await Promise.all([
+    const [projects, goals, events, actions, waiting, inbox, focus, momentumRecords] = await Promise.all([
       supabase.query("projects", { select: "id,name,status,priority,health,deadline,next_action,blocker,progress,updated_at", order: "updated_at.desc", limit: 200 }),
       supabase.query("goals", { select: "id,title,due_date,scheduled_start,scheduled_end,completed,completed_at,target_value,current_value,project_id,priority,next_step", order: "due_date.asc", limit: 200 }),
       supabase.query("calendar_events", { select: "id,title,start_at,end_at,all_day,category", filters: { start_at: [`gte.${today.toISOString()}`, `lt.${tomorrow.toISOString()}`] }, order: "start_at.asc", limit: 100 }),
@@ -30,8 +31,15 @@ async function load() {
       supabase.query("waiting_items", { select: "id,title,waiting_for,related_project_id,follow_up_at,status,notes,created_at,updated_at,resolved_at", filters: { status: "eq.WAITING" }, order: "created_at.asc", limit: 200 }),
       supabase.query("inbox_items", { select: "id,status", filters: { status: "eq.INBOX" }, limit: 1000 }),
       supabase.query("daily_focus", { select: "id,focus_date,entity_type,entity_id,label,completed", filters: { focus_date: `eq.${dateKey(today)}` }, limit: 1 }),
+      Promise.allSettled([
+        supabase.query("project_actions", { select: "id,completed_at", filters: { status: "eq.DONE", completed_at: [`gte.${momentumStart.toISOString()}`, `lt.${tomorrow.toISOString()}`] }, order: "completed_at.asc", limit: 1000 }),
+        supabase.query("project_items", { select: "id,completed_at", filters: { completed_at: [`gte.${momentumStart.toISOString()}`, `lt.${tomorrow.toISOString()}`] }, order: "completed_at.asc", limit: 1000 }),
+        supabase.query("goals", { select: "id,completed_at", filters: { completed: "eq.true", completed_at: [`gte.${momentumStart.toISOString()}`, `lt.${tomorrow.toISOString()}`] }, order: "completed_at.asc", limit: 1000 }),
+        supabase.query("calendar_events", { select: "id,start_at", filters: { start_at: [`gte.${momentumStart.toISOString()}`, `lt.${tomorrow.toISOString()}`] }, order: "start_at.asc", limit: 1000 }),
+        supabase.query("meetings", { select: "id,scheduled_at", filters: { scheduled_at: [`gte.${momentumStart.toISOString()}`, `lt.${tomorrow.toISOString()}`] }, order: "scheduled_at.asc", limit: 1000 }),
+      ]),
     ]);
-    Object.assign(state, { projects, goals, events, actions, waiting, inbox, focus: focus[0] || null });
+    Object.assign(state, { projects, goals, events, actions, waiting, inbox, focus: focus[0] || null, momentum: buildMomentum(momentumStart, momentumRecords) });
     if (state.focusMode) renderFocus(today); else renderOverview(today);
     handleRequestedWaiting();
   } catch (error) {
@@ -43,6 +51,21 @@ async function load() {
 function projectName(id) { return state.projects.find((project) => project.id === id)?.name || "Project"; }
 function goalsToday(today) { return state.goals.filter((goal) => !goal.completed && goal.scheduled_start && dateKey(goal.scheduled_start) === dateKey(today)); }
 function urgentBlockers(today) { return state.projects.filter((project) => project.status === "ACTIVE" && project.health === "BLOCKED" && (Number(project.priority) >= 3 || (project.deadline && project.deadline <= dateKey(today)))); }
+
+function buildMomentum(start, results) {
+  const values = results.map((result) => result.status === "fulfilled" ? result.value : []);
+  const [actions, items, goals, events, meetings] = values;
+  const days = Array.from({ length: 30 }, (_, index) => ({ date: dateKey(addDays(start, index)), projectActivity: 0, goalsCompleted: 0, meetings: 0 }));
+  const byDate = new Map(days.map((day) => [day.date, day]));
+  for (const item of [...actions, ...items]) { const day = byDate.get(dateKey(item.completed_at)); if (day) day.projectActivity += 1; }
+  for (const goal of goals) { const day = byDate.get(dateKey(goal.completed_at)); if (day) day.goalsCompleted += 1; }
+  for (const item of [...events, ...meetings]) { const day = byDate.get(dateKey(item.start_at || item.scheduled_at)); if (day) day.meetings += 1; }
+  const series = [];
+  if (results[0].status === "fulfilled" && results[1].status === "fulfilled") series.push({ key: "projectActivity", label: "Project completions", className: "projects" });
+  if (results[2].status === "fulfilled") series.push({ key: "goalsCompleted", label: "Goals completed", className: "goals" });
+  if (results[3].status === "fulfilled") series.push({ key: "meetings", label: results[4].status === "fulfilled" ? "Meetings & events" : "Calendar events", className: "meetings" });
+  return { days, series };
+}
 
 function renderOverview(today) {
   const openGoals = state.goals.filter((goal) => !goal.completed);
@@ -59,6 +82,7 @@ function renderOverview(today) {
     ...state.projects.filter((project) => project.deadline && project.deadline <= weekEnd && !attentionKeys.has(`project-${project.id}`)).map((project) => ({ title: project.name, meta: `Project due ${formatDate(project.deadline)}`, href: `/hq/projects/?project=${project.id}` })),
   ];
   shell.content.innerHTML = `<section class="summary-grid dashboard-summary" aria-label="Workspace summary"><a href="/hq/inbox/"><span>Inbox</span><strong>${state.inbox.length}</strong><small>${state.inbox.length ? "Ready to clarify" : "Capture is clear"}</small></a><a href="/hq/calendar/"><span>Today's schedule</span><strong>${state.events.length}</strong><small>${state.events[0] ? `Next ${formatDateTime(state.events[0].start_at)}` : "Calendar is clear"}</small></a><a href="/hq/review/"><span>Weekly Review</span><strong>Open</strong><small>Close loops and set direction</small></a></section>
+    ${momentumChart(state.momentum)}
     <div class="dashboard-grid"><section class="dashboard-panel span-2"><header><div><p class="eyebrow">Attention</p><h2>What needs you now</h2></div></header>${list(attention.slice(0, 7), "Nothing urgent.")}</section>
       <section class="dashboard-panel"><header><div><p class="eyebrow">Today</p><h2>Schedule</h2></div><a href="/hq/calendar/">Calendar</a></header>${list(state.events.slice(0, 5).map((event) => ({ title: event.title, meta: event.all_day ? "All day" : formatDateTime(event.start_at), href: `/hq/calendar/?date=${dateKey(event.start_at)}` })), "No events today.")}</section>
       <section class="dashboard-panel"><header><div><p class="eyebrow">Today</p><h2>Scheduled goals</h2></div><a href="/hq/dashboard/?focus=1">Focus</a></header>${list(goalsToday(today).slice(0, 5).map((goal) => ({ title: goal.title, meta: goal.next_step || "Scheduled goal", href: `/hq/goals/?goal=${goal.id}` })), "No goals scheduled today.")}</section>
@@ -67,6 +91,32 @@ function renderOverview(today) {
       <section class="dashboard-panel span-2"><header><div><p class="eyebrow">This week</p><h2>Upcoming commitments</h2></div><a href="/hq/review/">Weekly Review</a></header>${list(thisWeek.slice(0, 7), "No additional commitments this week.")}</section></div>`;
   shell.content.querySelector("[data-new-waiting]").addEventListener("click", () => openWaitingForm());
   bindWaiting();
+}
+
+function momentumChart({ days, series }) {
+  if (!days.length || !series.length) return "";
+  const width = 900;
+  const height = 240;
+  const padding = { top: 20, right: 16, bottom: 34, left: 34 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const maximum = Math.max(1, ...days.flatMap((day) => series.map((item) => day[item.key])));
+  const x = (index) => padding.left + (index / Math.max(1, days.length - 1)) * plotWidth;
+  const y = (value) => padding.top + plotHeight - (value / maximum) * plotHeight;
+  const paths = series.map((item) => {
+    const points = days.map((day, index) => `${x(index).toFixed(1)},${y(day[item.key]).toFixed(1)}`).join(" ");
+    const dots = days.map((day, index) => `<circle cx="${x(index).toFixed(1)}" cy="${y(day[item.key]).toFixed(1)}" r="3"><title>${formatDate(day.date)} · ${item.label}: ${day[item.key]}</title></circle>`).join("");
+    return `<g class="momentum-series ${item.className}"><polyline points="${points}"/>${dots}</g>`;
+  }).join("");
+  const tickCount = Math.min(maximum, 5);
+  const grid = Array.from({ length: tickCount + 1 }, (_, index) => {
+    const value = (maximum / tickCount) * index;
+    const gridY = y(value);
+    return `<g class="momentum-gridline"><line x1="${padding.left}" y1="${gridY}" x2="${width - padding.right}" y2="${gridY}"/><text x="${padding.left - 9}" y="${gridY + 4}">${Number.isInteger(value) ? value : value.toFixed(1)}</text></g>`;
+  }).join("");
+  const labels = days.map((day, index) => index % 7 === 0 || index === days.length - 1 ? `<text class="momentum-date" x="${x(index)}" y="${height - 7}" text-anchor="middle">${formatDate(day.date, { month: "short", day: "numeric" })}</text>` : "").join("");
+  const total = (key) => days.reduce((sum, day) => sum + day[key], 0);
+  return `<section class="dashboard-panel momentum-panel"><header><div><h2>Founder momentum</h2><p class="subtle">Last 30 days</p></div><div class="momentum-legend">${series.map((item) => `<span class="${item.className}"><i></i>${item.label}<strong>${total(item.key)}</strong></span>`).join("")}</div></header><div class="momentum-chart-scroll"><svg class="momentum-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Daily project completions, completed goals, and meetings or events during the last 30 days">${grid}${paths}${labels}</svg></div></section>`;
 }
 
 function list(items, empty) {

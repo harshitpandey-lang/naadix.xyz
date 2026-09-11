@@ -76,6 +76,8 @@ const privatePages = {
   projects: () => import("./projects.js"),
   calendar: () => import("./calendar.js"),
   goals: () => import("./goals.js"),
+  meetings: () => import("./meetings.js"),
+  finances: () => import("./finances.js"),
   decisions: () => import("./decisions.js"),
   review: () => import("./review.js"),
 };

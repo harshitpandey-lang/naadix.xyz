@@ -6,7 +6,7 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check scripts/build.mjs && node --check site/assets/app.js && node --check site/assets/network.js && node --check site/assets/contact.js && node --check site/hq/app.js && node --check site/hq/auth.js && node --check site/hq/core.js && node --check site/hq/ui.js && node --check site/hq/dashboard.js && node --check site/hq/inbox.js && node --check site/hq/decisions.js && node --check site/hq/review.js && node --check site/hq/projects.js && node --check site/hq/calendar.js && node --check site/hq/goals.js && node --check site/hq/supabase.js"
+    "check": "node --check scripts/build.mjs && node --check site/assets/app.js && node --check site/assets/network.js && node --check site/assets/contact.js && node --check site/hq/app.js && node --check site/hq/auth.js && node --check site/hq/core.js && node --check site/hq/ui.js && node --check site/hq/dashboard.js && node --check site/hq/inbox.js && node --check site/hq/decisions.js && node --check site/hq/review.js && node --check site/hq/projects.js && node --check site/hq/calendar.js && node --check site/hq/goals.js && node --check site/hq/meetings.js && node --check site/hq/finances.js && node --check site/hq/supabase.js"
   },
   "engines": {
     "node": ">=20"
