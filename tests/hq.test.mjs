@@ -17,6 +17,7 @@ import {
   waitingIsOverdue,
   weeklyReviewSummary,
 } from "../site/hq/core.js";
+import { applyRecognitionResults } from "../site/hq/meetings.js";
 
 const hq = resolve("site/hq");
 const routes = ["hq/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/review/index.html"];
@@ -82,6 +83,45 @@ test("Meetings and finances are private owner-scoped workspaces", async () => {
   assert.match(migration, /alter table public\.finance_transactions enable row level security/);
   assert.match(migration, /auth\.uid\(\)\) = user_id/);
   assert.match(migration, /grant select, insert, update, delete on table public\.meetings, public\.finance_transactions to authenticated/);
+});
+
+test("live meeting transcription owns and safely restarts its microphone session", async () => {
+  const source = await readFile(resolve(hq, "meetings.js"), "utf8");
+  const start = source.indexOf("const startListening = async");
+  const request = source.indexOf("navigator.mediaDevices.getUserMedia");
+  assert.ok(start > 0 && request > start, "microphone permission is requested only inside startListening");
+  assert.match(source, /echoCancellation:\s*true, noiseSuppression:\s*true, autoGainControl:\s*true/);
+  assert.match(source, /recognition\.lang = "en-IN"/);
+  assert.match(source, /recognition\.maxAlternatives = 1/);
+  assert.match(source, /if \(result\.isFinal\)[\s\S]*transcript\.dispatchEvent\(new Event\("input", \{ bubbles: true \}\)\)/);
+  assert.match(source, /interim\.textContent = interimChunk/);
+  assert.match(source, /recognition\.onend = \(\) => \{[\s\S]*scheduleRecognitionRestart\(\)/);
+  assert.match(source, /if \(!shouldListen \|\| manuallyStopped \|\| disposed\)/);
+  assert.match(source, /if \(error === "no-speech"\) return/);
+  assert.match(source, /error === "not-allowed" \|\| error === "service-not-allowed"[\s\S]*stopMicrophone\(\)/);
+  assert.match(source, /dialog\.addEventListener\("close", async \(\) => \{[\s\S]*await stopListening\(\)/);
+  assert.match(source, /data-complete-meeting[\s\S]*await stopListening\(\)/);
+  assert.match(source, /const restartDelays = \[300, 500, 1000, 1500, 2000\]/);
+  assert.match(source, /consecutiveRestartFailures >= restartDelays\.length/);
+});
+
+test("final recognition text appends once while interim text stays transient", () => {
+  const dispatched = [];
+  const transcript = { value: "Existing sentence.", dispatchEvent: (event) => dispatched.push(event) };
+  const interim = { textContent: "" };
+  const processed = new Set();
+  const finalResult = Object.assign([{ transcript: "Final phrase" }], { isFinal: true });
+  const interimResult = Object.assign([{ transcript: "still speaking" }], { isFinal: false });
+  const event = { resultIndex: 0, results: [finalResult, interimResult] };
+  applyRecognitionResults(event, transcript, interim, processed);
+  assert.equal(transcript.value, "Existing sentence.\nFinal phrase");
+  assert.equal(interim.textContent, "still speaking");
+  assert.equal(dispatched.length, 1);
+  assert.equal(dispatched[0].type, "input");
+  assert.equal(dispatched[0].bubbles, true);
+  applyRecognitionResults(event, transcript, interim, processed);
+  assert.equal(transcript.value, "Existing sentence.\nFinal phrase");
+  assert.equal(dispatched.length, 1);
 });
 
 test("Inbox conversion creates the destination payload and preserves the source", async () => {
