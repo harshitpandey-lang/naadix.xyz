@@ -1,12 +1,15 @@
-import { esc } from "./core.js";
+import { esc, isFormField } from "./core.js";
 import { requireSession } from "./auth.js";
 import { supabase } from "./supabase.js";
 
 const icons = {
   dashboard: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 3h5v5H3zM12 3h5v5h-5zM3 12h5v5H3zM12 12h5v5h-5z"/></svg>',
+  inbox: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14v12H3zM3 11h4l2 2h2l2-2h4"/></svg>',
   projects: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h5l1.5 2H17v8.5H3z"/></svg>',
   calendar: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4.5h12v12H4zM4 8h12M7 2.5v4M13 2.5v4"/></svg>',
   goals: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3"/></svg>',
+  decisions: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3h10v14H5zM8 7h4M8 10h4M8 13h3"/></svg>',
+  review: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5M4 3v4h4"/></svg>',
   search: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>',
   plus: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>',
   menu: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg>',
@@ -19,6 +22,7 @@ export const icon = (name) => `<span class="hq-icon">${icons[name] || ""}</span>
 function navigation(active) {
   return [
     ["dashboard", "Overview", "/hq/dashboard/"],
+    ["inbox", "Inbox", "/hq/inbox/"],
     ["projects", "Projects", "/hq/projects/"],
     ["calendar", "Calendar", "/hq/calendar/"],
     ["goals", "Goals", "/hq/goals/"],
@@ -43,6 +47,7 @@ export async function mountShell({ active, title, description }) {
     <div class="toast-region" aria-live="polite" aria-atomic="true"></div>
   </div>`;
   bindShell();
+  updateInboxCount();
   return { session, content: document.querySelector("#hq-content"), actions: document.querySelector("#hq-page-actions") };
 }
 
@@ -57,7 +62,20 @@ function bindShell() {
       event.preventDefault();
       openCommandPalette();
     }
+    if (!event.ctrlKey && !event.metaKey && !event.altKey && event.key.toLowerCase() === "c" && !isFormField(event.target) && !document.querySelector("dialog[open]")) {
+      event.preventDefault();
+      openQuickCapture();
+    }
   });
+}
+
+async function updateInboxCount() {
+  try {
+    const items = await supabase.query("inbox_items", { select: "id", filters: { status: "eq.INBOX" }, limit: 1000 });
+    if (!items.length) return;
+    const link = document.querySelector('.hq-sidebar nav a[href="/hq/inbox/"]');
+    if (link) link.insertAdjacentHTML("beforeend", `<span class="nav-count">${items.length}</span>`);
+  } catch {}
 }
 
 async function logout() {
@@ -67,22 +85,59 @@ async function logout() {
 
 function openCommandPalette() {
   const commands = [
-    ["Overview", "Go to dashboard", "/hq/dashboard/", "dashboard"],
-    ["Projects", "Go to projects", "/hq/projects/", "projects"],
-    ["Calendar", "Go to calendar", "/hq/calendar/", "calendar"],
-    ["Goals", "Go to goals", "/hq/goals/", "goals"],
-    ["Today", "Go to today's calendar", "/hq/calendar/?date=today", "calendar"],
-    ["Blocked projects", "Show blocked projects", "/hq/projects/?status=BLOCKED", "projects"],
-    ["Goals at risk", "Show goals at risk", "/hq/goals/?filter=AT_RISK", "goals"],
+    ["Overview", "Open the operating dashboard", "/hq/dashboard/", "dashboard"],
+    ["Inbox", "Open unprocessed capture", "/hq/inbox/", "inbox"],
+    ["Focus Mode", "Show only today's execution view", "/hq/dashboard/?focus=1", "dashboard"],
+    ["Projects", "Open projects", "/hq/projects/", "projects"],
+    ["Calendar", "Open calendar", "/hq/calendar/", "calendar"],
+    ["Goals", "Open goals", "/hq/goals/", "goals"],
+    ["Decisions", "Open the decision log", "/hq/decisions/", "decisions"],
+    ["Weekly Review", "Start the guided review", "/hq/review/", "review"],
+    ["New Project", "Create a project", "/hq/projects/?new=1", "projects"],
+    ["New Goal", "Create a goal", "/hq/goals/?new=1", "goals"],
+    ["New Event", "Create a calendar event", "/hq/calendar/?new=1", "calendar"],
+    ["New Waiting Item", "Track an external dependency", "/hq/dashboard/?waiting=new#waiting", "inbox"],
+    ["Record Decision", "Capture context for a choice", "/hq/decisions/?new=1", "decisions"],
+    ["Blocked projects", "Filter urgent project blockers", "/hq/projects/?status=BLOCKED", "projects"],
+    ["At-risk goals", "Filter outcomes at risk", "/hq/goals/?filter=AT_RISK", "goals"],
+    ["Waiting items", "Show unresolved dependencies", "/hq/dashboard/?waiting=show#waiting", "inbox"],
+    ["Unprocessed inbox", "Clarify captured thoughts", "/hq/inbox/", "inbox"],
   ];
   const dialog = openDialog({
     title: "Quick actions",
     description: "Navigate or create without leaving the keyboard.",
     className: "command-dialog",
-    content: `<div class="command-list">${commands.map(([label, hint, href, name]) => `<a href="${href}">${icon(name)}<span><strong>${label}</strong><small>${hint}</small></span></a>`).join("")}<button type="button" data-command-new>${icon("plus")}<span><strong>New item</strong><small>Create on the current page</small></span></button><button type="button" data-command-logout>${icon("close")}<span><strong>Log out</strong><small>End this session</small></span></button></div>`,
+    content: `<div class="command-list"><button type="button" data-command-capture>${icon("plus")}<span><strong>Quick capture</strong><small>Send a thought to Inbox</small></span><kbd>C</kbd></button>${commands.map(([label, hint, href, name]) => `<a href="${href}">${icon(name)}<span><strong>${label}</strong><small>${hint}</small></span></a>`).join("")}<button type="button" data-command-logout>${icon("close")}<span><strong>Log out</strong><small>End this session</small></span></button></div>`,
   });
-  dialog.querySelector("[data-command-new]").addEventListener("click", () => { dialog.close(); window.dispatchEvent(new CustomEvent("hq:new")); });
+  dialog.querySelector("[data-command-capture]").addEventListener("click", () => { dialog.close(); openQuickCapture(); });
   dialog.querySelector("[data-command-logout]").addEventListener("click", logout);
+}
+
+export function openQuickCapture() {
+  const dialog = openDialog({ title: "Quick capture", description: "Capture now. Clarify later.", className: "quick-capture-dialog", content: `<form data-quick-capture><label><span class="sr-only">What's on your mind?</span><textarea name="content" rows="4" maxlength="4000" placeholder="What's on your mind?" required></textarea></label><p class="form-error" data-form-error hidden></p><div class="dialog-actions"><span class="subtle">Enter to capture · Shift+Enter for a new line</span><button class="hq-action" type="submit">Capture</button></div></form>` });
+  const form = dialog.querySelector("[data-quick-capture]");
+  const textarea = form.querySelector("textarea");
+  textarea.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); form.requestSubmit(); }
+  });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const content = textarea.value.trim();
+    const error = form.querySelector("[data-form-error]");
+    if (!content) return showFormErrors(error, ["Write something to capture."]);
+    const button = form.querySelector('[type="submit"]');
+    setButtonBusy(button, true, "Capturing...");
+    try {
+      await supabase.insert("inbox_items", { content, source: "quick_capture", status: "INBOX" });
+      dialog.close();
+      toast("Captured to Inbox.");
+      window.dispatchEvent(new CustomEvent("hq:captured"));
+    } catch (requestError) {
+      showFormErrors(error, [humanError(requestError)]);
+      setButtonBusy(button, false);
+    }
+  });
+  return dialog;
 }
 
 export function openDialog({ title, description = "", content, className = "" }) {

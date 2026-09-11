@@ -40,9 +40,12 @@ const hqPages = [
   ["hq/index.html", "login", "Founder HQ | NaadiX", "Sign in to the private Founder HQ."],
   ["hq/reset-password/index.html", "reset", "Reset password | Founder HQ", "Reset your Founder HQ password."],
   ["hq/dashboard/index.html", "dashboard", "Today | Founder HQ", "Private Founder HQ dashboard."],
+  ["hq/inbox/index.html", "inbox", "Inbox | Founder HQ", "Private Founder HQ capture inbox."],
   ["hq/projects/index.html", "projects", "Projects | Founder HQ", "Private Founder HQ projects."],
   ["hq/calendar/index.html", "calendar", "Calendar | Founder HQ", "Private Founder HQ calendar."],
   ["hq/goals/index.html", "goals", "Goals | Founder HQ", "Private Founder HQ goals."],
+  ["hq/decisions/index.html", "decisions", "Decisions | Founder HQ", "Private Founder HQ decision log."],
+  ["hq/review/index.html", "review", "Weekly Review | Founder HQ", "Private Founder HQ weekly review."],
 ];
 for (const [path, page, title, description] of hqPages) {
   const authPage = page === "login" || page === "reset";

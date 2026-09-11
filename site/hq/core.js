@@ -21,7 +21,7 @@ export function slugify(value) {
 }
 
 export function projectMatches(project, { query = "", status = "ALL" } = {}) {
-  const statusMatch = status === "ALL" || project.status === status;
+  const statusMatch = status === "ALL" || (status === "BLOCKED" ? project.health === "BLOCKED" : project.status === status);
   const haystack = normalize([project.name, project.short_description, project.category, project.notes].join(" "));
   return statusMatch && (!normalize(query) || haystack.includes(normalize(query)));
 }
@@ -217,4 +217,55 @@ export function validateEvent(values) {
 
 export function completionPayload(completed, now = new Date()) {
   return { completed: Boolean(completed), completed_at: completed ? now.toISOString() : null };
+}
+
+export function isFormField(target) {
+  return Boolean(target?.closest?.("input, textarea, select, [contenteditable='true']"));
+}
+
+export function waitingIsOverdue(item, today = new Date()) {
+  return item.status === "WAITING" && Boolean(item.follow_up_at) && new Date(item.follow_up_at) < startOfDay(today);
+}
+
+export function inboxConversionPayload(type, item, values = {}, now = new Date()) {
+  const content = String(values.title || item.content || "").trim();
+  const notes = [item.notes, values.notes].filter(Boolean).join("\n\n") || null;
+  if (type === "PROJECT") return { table: "projects", values: { name: content, short_description: item.content, category: values.category || "Company", status: "PLANNED", priority: 3, progress: 0, health: "ON_TRACK", notes } };
+  if (type === "GOAL") return { table: "goals", values: { title: content, description: [item.content, notes].filter(Boolean).join("\n\n"), goal_type: "task", due_date: values.due_date, priority: 3 } };
+  if (type === "EVENT") return { table: "calendar_events", values: { title: content, description: item.content, start_at: new Date(values.start_at).toISOString(), end_at: new Date(values.end_at).toISOString(), all_day: false, category: values.category || "Other" } };
+  if (type === "WAITING") return { table: "waiting_items", values: { title: content, waiting_for: String(values.waiting_for || "").trim(), related_project_id: values.related_project_id || null, follow_up_at: values.follow_up_at ? new Date(values.follow_up_at).toISOString() : null, status: "WAITING", notes } };
+  throw new Error("Unsupported inbox conversion.");
+}
+
+export function suggestNextAction({ projects = [], goals = [], actions = [] }, today = new Date()) {
+  const projectById = new Map(projects.map((project) => [project.id, project]));
+  const candidates = [];
+  for (const action of actions.filter((item) => item.status !== "DONE")) {
+    const project = projectById.get(action.project_id);
+    candidates.push({ entity_type: "PROJECT_ACTION", entity_id: action.id, label: action.task, priority: Number(project?.priority || 0), deadline: action.due_date || project?.deadline || null, stale: project ? isStaleProject(project, today) : false, href: project ? `/hq/projects/?project=${project.id}` : "/hq/projects/" });
+  }
+  for (const project of projects.filter((item) => item.status === "ACTIVE" && item.next_action)) candidates.push({ entity_type: "PROJECT", entity_id: project.id, label: project.next_action, priority: Number(project.priority || 0), deadline: project.deadline, stale: isStaleProject(project, today), href: `/hq/projects/?project=${project.id}` });
+  for (const goal of goals.filter((item) => !item.completed)) candidates.push({ entity_type: "GOAL", entity_id: goal.id, label: goal.next_step || goal.title, priority: Number(goal.priority || 0), deadline: goal.due_date, stale: false, href: `/hq/goals/?goal=${goal.id}` });
+  const deadlineValue = (value) => value ? new Date(value).getTime() : Number.POSITIVE_INFINITY;
+  return candidates.sort((a, b) => (b.priority - a.priority) || (deadlineValue(a.deadline) - deadlineValue(b.deadline)) || (Number(b.stale) - Number(a.stale)) || a.label.localeCompare(b.label))[0] || null;
+}
+
+export function weeklyReviewSummary({ projects = [], goals = [], events = [], waiting = [], inbox = [], decisions = [] }, now = new Date()) {
+  const weekStart = startOfWeek(now);
+  const nextWeek = addDays(weekStart, 7);
+  const inWeek = (value) => { const date = new Date(value); return !Number.isNaN(date.getTime()) && date >= weekStart && date < nextWeek; };
+  const today = startOfDay(now);
+  return {
+    projectsAdvanced: projects.filter((item) => inWeek(item.updated_at) && item.status !== "ARCHIVED").length,
+    projectsStale: projects.filter((item) => isStaleProject(item, now)).length,
+    projectsBlocked: projects.filter((item) => item.status === "ACTIVE" && item.health === "BLOCKED").length,
+    goalsCompleted: goals.filter((item) => item.completed && inWeek(item.completed_at)).length,
+    goalsAtRisk: goals.filter((item) => isGoalAtRisk(item, goalProgress(item), now)).length,
+    goalsOverdue: goals.filter((item) => !item.completed && item.due_date && parseDateKey(item.due_date) < today).length,
+    eventsPast: events.filter((item) => inWeek(item.start_at) && new Date(item.end_at || item.start_at) < now).length,
+    upcomingEvents: events.filter((item) => new Date(item.start_at) >= now && new Date(item.start_at) < addDays(now, 7)).length,
+    waitingUnresolved: waiting.filter((item) => item.status === "WAITING").length,
+    inboxUnprocessed: inbox.filter((item) => item.status === "INBOX").length,
+    decisionsMade: decisions.filter((item) => inWeek(item.decided_at)).length,
+  };
 }

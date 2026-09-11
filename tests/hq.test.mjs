@@ -8,15 +8,19 @@ import {
   dateKey,
   formatDate,
   goalMatches,
+  inboxConversionPayload,
   projectMatches,
+  suggestNextAction,
   validateEvent,
   validateGoal,
   validateProject,
+  waitingIsOverdue,
+  weeklyReviewSummary,
 } from "../site/hq/core.js";
 
 const hq = resolve("site/hq");
-const routes = ["hq/index.html", "hq/dashboard/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html"];
-const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "projects.js", "calendar.js", "goals.js", "hq.css"];
+const routes = ["hq/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/decisions/index.html", "hq/review/index.html"];
+const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "decisions.js", "review.js", "hq.css"];
 
 test("static Founder HQ routes and page-specific modules exist", async () => {
   for (const route of routes) assert.ok((await stat(resolve("dist", route))).isFile(), route);
@@ -32,6 +36,9 @@ test("private pages redirect through the shared authentication guard", async () 
   assert.match(app, /import\("\.\/projects\.js"\)/);
   assert.match(app, /import\("\.\/calendar\.js"\)/);
   assert.match(app, /import\("\.\/goals\.js"\)/);
+  assert.match(app, /import\("\.\/inbox\.js"\)/);
+  assert.match(app, /import\("\.\/decisions\.js"\)/);
+  assert.match(app, /import\("\.\/review\.js"\)/);
 });
 
 test("HQ uses browser Supabase auth without a privileged browser secret", async () => {
@@ -43,13 +50,89 @@ test("HQ uses browser Supabase auth without a privileged browser secret", async 
 
 test("shared shell includes navigation, mobile controls, and quick actions", async () => {
   const source = await readFile(resolve(hq, "ui.js"), "utf8");
-  for (const route of ["/hq/dashboard/", "/hq/projects/", "/hq/calendar/", "/hq/goals/"]) assert.ok(source.includes(route), route);
+  for (const route of ["/hq/dashboard/", "/hq/inbox/", "/hq/projects/", "/hq/calendar/", "/hq/goals/", "/hq/decisions/", "/hq/review/"]) assert.ok(source.includes(route), route);
   assert.match(source, /data-open-menu/);
   assert.match(source, /data-open-command/);
   assert.match(source, /aria-label="Quick actions"/);
   assert.match(source, /event\.key\.toLowerCase\(\) === "k"/);
   assert.match(source, /event\.key === "Escape"/);
   assert.match(source, /data-action="logout"/);
+});
+
+test("Inbox conversion creates the destination payload and preserves the source", async () => {
+  const item = { id: "inbox-1", content: "Ship founder workflow", notes: "Captured in a meeting" };
+  const project = inboxConversionPayload("PROJECT", item, { title: "Founder workflow", category: "Company" });
+  assert.equal(project.table, "projects");
+  assert.equal(project.values.name, "Founder workflow");
+  assert.match(project.values.notes, /Captured in a meeting/);
+  const waiting = inboxConversionPayload("WAITING", item, { waiting_for: "Client", related_project_id: "project-1" });
+  assert.equal(waiting.table, "waiting_items");
+  assert.equal(waiting.values.related_project_id, "project-1");
+  const source = await readFile(resolve(hq, "inbox.js"), "utf8");
+  assert.match(source, /status:\s*"PROCESSED"/);
+  assert.match(source, /processed_at/);
+  assert.doesNotMatch(source, /remove\("inbox_items"/);
+});
+
+test("Focus suggestion prioritizes critical work and stores one daily selection", async () => {
+  const today = new Date(2026, 8, 11);
+  const result = suggestNextAction({
+    projects: [{ id: "p1", name: "High", status: "ACTIVE", priority: 3, next_action: "Do high", updated_at: today }, { id: "p2", name: "Critical", status: "ACTIVE", priority: 4, next_action: "Do critical", updated_at: today }],
+    goals: [{ id: "g1", title: "Later goal", priority: 2, due_date: "2026-09-12", completed: false }],
+    actions: [],
+  }, today);
+  assert.equal(result.label, "Do critical");
+  const dashboard = await readFile(resolve(hq, "dashboard.js"), "utf8");
+  assert.match(dashboard, /daily_focus/);
+  assert.match(dashboard, /Focus on this/);
+  assert.match(dashboard, /Mark focus complete/);
+});
+
+test("Waiting overdue derivation is status and date sensitive", () => {
+  const today = new Date(2026, 8, 11, 12);
+  assert.equal(waitingIsOverdue({ status: "WAITING", follow_up_at: "2026-09-10T12:00:00Z" }, today), true);
+  assert.equal(waitingIsOverdue({ status: "RESOLVED", follow_up_at: "2026-09-10T12:00:00Z" }, today), false);
+  assert.equal(waitingIsOverdue({ status: "WAITING", follow_up_at: "2026-09-12T12:00:00Z" }, today), false);
+});
+
+test("Decision relationships and new Phase 3 tables are owner secured", async () => {
+  const migration = await readFile(resolve("supabase/migrations/20260911010000_founder_hq_phase3.sql"), "utf8");
+  for (const table of ["inbox_items", "daily_focus", "waiting_items", "decisions"]) {
+    assert.match(migration, new RegExp(`alter table public\\.${table} enable row level security`, "i"));
+    assert.match(migration, new RegExp(`${table}[\\s\\S]+auth\\.uid\\(\\)`, "i"));
+  }
+  assert.match(migration, /project_id uuid references public\.projects\(id\) on delete set null/);
+  assert.match(migration, /related_project_id is null or exists/);
+  assert.match(migration, /project_id is null or exists/);
+  const project = await readFile(resolve(hq, "projects.js"), "utf8");
+  assert.match(project, /Record decision/);
+  assert.match(project, /decisions\/\?new=1&project=/);
+});
+
+test("Weekly Review summary derives real operational counts", () => {
+  const now = new Date(2026, 8, 11, 12);
+  const summary = weeklyReviewSummary({
+    projects: [{ status: "ACTIVE", health: "BLOCKED", updated_at: "2026-09-10T10:00:00Z" }],
+    goals: [{ completed: true, completed_at: "2026-09-09T10:00:00Z" }, { completed: false, due_date: "2026-09-01", target_value: 10, current_value: 0 }],
+    events: [{ start_at: "2026-09-10T10:00:00Z", end_at: "2026-09-10T11:00:00Z" }, { start_at: "2026-09-12T10:00:00Z", end_at: "2026-09-12T11:00:00Z" }],
+    waiting: [{ status: "WAITING" }], inbox: [{ status: "INBOX" }], decisions: [{ decided_at: "2026-09-11T09:00:00Z" }],
+  }, now);
+  assert.equal(summary.projectsAdvanced, 1);
+  assert.equal(summary.projectsBlocked, 1);
+  assert.equal(summary.goalsCompleted, 1);
+  assert.equal(summary.goalsOverdue, 1);
+  assert.equal(summary.eventsPast, 1);
+  assert.equal(summary.upcomingEvents, 1);
+  assert.equal(summary.waitingUnresolved, 1);
+  assert.equal(summary.inboxUnprocessed, 1);
+  assert.equal(summary.decisionsMade, 1);
+});
+
+test("Command palette exposes Phase 3 capture and operating routes safely", async () => {
+  const source = await readFile(resolve(hq, "ui.js"), "utf8");
+  for (const label of ["Quick capture", "Focus Mode", "New Waiting Item", "Record Decision", "Weekly Review", "Unprocessed inbox"]) assert.ok(source.includes(label), label);
+  assert.match(source, /isFormField\(event\.target\)/);
+  assert.match(source, /event\.key\.toLowerCase\(\) === "c"/);
 });
 
 test("project workspace supports empty state, validated creation, search, and status filters", async () => {

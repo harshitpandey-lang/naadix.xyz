@@ -28,6 +28,8 @@ async function load() {
       supabase.query("projects", { select: "id,name,deadline,status,priority", filters: { deadline: [`gte.${dateKey(rangeStart)}`, `lte.${dateKey(rangeEnd)}`] }, order: "deadline.asc", limit: 200 }),
     ]);
     renderWorkspace();
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") { history.replaceState(null, "", "/hq/calendar/"); openEventForm(); }
   } catch (error) {
     shell.content.innerHTML = errorState(error);
     shell.content.querySelector("[data-retry]")?.addEventListener("click", load);

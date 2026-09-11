@@ -72,9 +72,12 @@ async function resetPassword() {
 
 const privatePages = {
   dashboard: () => import("./dashboard.js"),
+  inbox: () => import("./inbox.js"),
   projects: () => import("./projects.js"),
   calendar: () => import("./calendar.js"),
   goals: () => import("./goals.js"),
+  decisions: () => import("./decisions.js"),
+  review: () => import("./review.js"),
 };
 
 if (page === "login") login();
