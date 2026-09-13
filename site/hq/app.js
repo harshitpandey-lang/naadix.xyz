@@ -87,8 +87,12 @@ async function mountPrivatePage() {
     const module = await privatePages[page]();
     await module.mount();
     if (page === "inbox") {
-      const voice = await import("./inbox-voice.js");
+      const [voice, intelligence] = await Promise.all([
+        import("./inbox-voice.js"),
+        import("./inbox-intelligence.js"),
+      ]);
       voice.setupVoiceCapture();
+      intelligence.setupInboxIntelligence();
     }
   } catch (error) {
     console.error("Founder HQ boot error:", error);
