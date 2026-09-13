@@ -26,10 +26,10 @@ function writeSession(session) {
   for (const listener of listeners) listener(session ? "SIGNED_IN" : "SIGNED_OUT", session);
 }
 
-async function authRequest(path, body, method = "POST") {
+async function authRequest(path, body, method = "POST", session = null) {
   const response = await fetch(`${HQ_CONFIG.supabaseUrl}/auth/v1/${path}`, {
     method,
-    headers: headers(null),
+    headers: headers(session),
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const payload = await response.json().catch(() => ({}));
@@ -78,9 +78,9 @@ export const supabase = {
     },
     async updateUser(attributes) {
       const session = readSession();
-      if (!session) return { data: { user: null }, error: new Error("Your session has expired.") };
+      if (!session?.access_token) return { data: { user: null }, error: new Error("Your session has expired.") };
       try {
-        const user = await authRequest("user", attributes, "PUT");
+        const user = await authRequest("user", attributes, "PUT", session);
         return { data: { user }, error: null };
       } catch (error) {
         return { data: { user: null }, error };
@@ -106,6 +106,17 @@ export const supabase = {
     const session = readSession();
     if (!session) throw new Error("Your session has expired.");
     const response = await fetch(`${HQ_CONFIG.supabaseUrl}/rest/v1/${table}`, { method: "POST", headers: headers(session, { Prefer: "return=representation" }), body: JSON.stringify(values) });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || data.error || "Unable to save record.");
+    return Array.isArray(data) ? data[0] : data;
+  },
+  async upsert(table, values, onConflict) {
+    const session = readSession();
+    if (!session) throw new Error("Your session has expired.");
+    const params = new URLSearchParams();
+    if (onConflict) params.set("on_conflict", onConflict);
+    const suffix = params.toString() ? `?${params}` : "";
+    const response = await fetch(`${HQ_CONFIG.supabaseUrl}/rest/v1/${table}${suffix}`, { method: "POST", headers: headers(session, { Prefer: "resolution=merge-duplicates,return=representation" }), body: JSON.stringify(values) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.message || data.error || "Unable to save record.");
     return Array.isArray(data) ? data[0] : data;
