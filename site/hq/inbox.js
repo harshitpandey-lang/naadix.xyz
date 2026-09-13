@@ -180,7 +180,7 @@ async function openFounderBrief() {
         noActionCount: analyzed.filter((item) => item.ai_priority === "low").length,
       };
     }
-    try { await supabase.insert("inbox_briefs", { user_id: shell.session.user.id, brief_date: dateKey(new Date()), content: brief, item_count: analyzed.length, model }); } catch {}
+    await supabase.upsert("inbox_briefs", { user_id: shell.session.user.id, brief_date: dateKey(new Date()), content: brief, item_count: analyzed.length, model }, "user_id,brief_date");
     const section = (title, entries) => `<section><p class="eyebrow">${title}</p>${entries?.length ? `<ol>${entries.map((entry) => `<li>${esc(entry)}</li>`).join("")}</ol>` : '<p class="subtle">Nothing here.</p>'}</section>`;
     openDialog({ title: "Founder brief", description: "A concise view of what deserves attention.", className: "brief-dialog", content: `<div class="founder-brief">${section("Needs attention", brief.needsAttention)}${section("Important, not urgent", brief.importantNotUrgent)}${section("Waiting / follow-up", brief.waitingFollowUp)}<p class="subtle">${Number(brief.noActionCount || 0)} items need no action · ${esc(model)}</p></div>` });
   } catch (error) { toast(humanError(error), "error"); }
