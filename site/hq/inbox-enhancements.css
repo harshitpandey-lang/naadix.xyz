@@ -1,0 +1,13 @@
+.nx-capture{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(18,22,31,.92),rgba(12,15,21,.9));border-color:rgba(143,175,224,.22)}
+.nx-capture::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 82% 8%,rgba(112,157,255,.09),transparent 34%)}
+.capture-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.8rem}
+.capture-topline .eyebrow{margin:0 0 .2rem}.capture-actions{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;justify-content:flex-end}
+.voice-state{min-height:1.2em;font:600 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--hq-muted,#8b95a7)}
+.voice-state[data-state="listening"],.voice-state[data-state="reconnecting"]{color:#a8c1ff}.voice-state[data-state="denied"],.voice-state[data-state="error"]{color:#e7a1a6}
+.voice-toggle{position:relative;overflow:hidden}.voice-toggle::before{content:"";width:6px;height:6px;border-radius:50%;background:#73839a;box-shadow:0 0 0 0 rgba(135,165,229,0);transition:.2s ease}
+.voice-toggle.is-listening::before{background:#a9c1ff;box-shadow:0 0 0 6px rgba(135,165,229,.10);animation:nx-voice-pulse 1.5s ease-in-out infinite}
+.voice-interim{min-height:1.2rem;margin:.45rem 0 0;color:#8090a7;font-size:.75rem;font-style:italic}
+.nx-capture textarea{min-height:96px;transition:min-height .25s ease,border-color .2s ease,box-shadow .2s ease}.nx-capture textarea:focus{min-height:132px;box-shadow:0 0 0 1px rgba(130,166,255,.18),0 18px 42px rgba(0,0,0,.18)}
+@keyframes nx-voice-pulse{0%,100%{box-shadow:0 0 0 0 rgba(135,165,229,.18)}50%{box-shadow:0 0 0 7px rgba(135,165,229,0)}}
+@media (max-width:720px){.capture-topline,.capture-footer{align-items:stretch}.capture-topline{flex-direction:column}.capture-actions{justify-content:space-between;width:100%}.capture-actions .hq-action{margin-left:auto}}
+@media (prefers-reduced-motion:reduce){.voice-toggle.is-listening::before{animation:none}.nx-capture textarea{transition:none}}
