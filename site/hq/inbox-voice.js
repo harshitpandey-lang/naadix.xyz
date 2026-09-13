@@ -7,7 +7,7 @@ function ensureStyles() {
   if (document.querySelector('link[data-inbox-enhancements]')) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = '/assets/hq/inbox-enhancements.css';
+  link.href = '/hq/inbox-enhancements.css';
   link.dataset.inboxEnhancements = 'true';
   document.head.append(link);
 }
@@ -114,6 +114,7 @@ function decorate(form) {
         setUi('error', 'No usable microphone detected');
         return;
       }
+      shouldListen = false;
       setUi('error', 'Voice service unavailable · text capture still works');
     };
     recognition.onend = () => {
@@ -122,7 +123,7 @@ function decorate(form) {
       clearTimeout(restartTimer);
       restartTimer = setTimeout(() => {
         if (!shouldListen) return;
-        try { start(); activeRecognition.start(); }
+        try { start(); }
         catch { shouldListen = false; setUi('error', 'Voice capture stopped · press Start dictation to retry'); }
       }, 250);
     };
