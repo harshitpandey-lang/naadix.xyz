@@ -82,10 +82,20 @@ const privatePages = {
   review: () => import("./review.js"),
 };
 
+async function mountPrivatePage() {
+  try {
+    const module = await privatePages[page]();
+    await module.mount();
+    if (page === "inbox") {
+      const voice = await import("./inbox-voice.js");
+      voice.setupVoiceCapture();
+    }
+  } catch (error) {
+    console.error("Founder HQ boot error:", error);
+    document.body.innerHTML = '<main class="fatal-state"><h1>Founder HQ could not start.</h1><p>Reload the page or return to the HQ sign-in.</p><a class="hq-action" href="/hq/">Return to HQ</a></main>';
+  }
+}
+
 if (page === "login") login();
 else if (page === "reset") resetPassword();
-else if (privatePages[page]) {
-  privatePages[page]().then((module) => module.mount()).catch(() => {
-    document.body.innerHTML = '<main class="fatal-state"><h1>Founder HQ could not start.</h1><p>Reload the page or return to the HQ sign-in.</p><a class="hq-action" href="/hq/">Return to HQ</a></main>';
-  });
-}
+else if (privatePages[page]) mountPrivatePage();
