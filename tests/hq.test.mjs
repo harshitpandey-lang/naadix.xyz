@@ -20,7 +20,7 @@ import {
 import { applyRecognitionResults } from "../site/hq/meetings.js";
 
 const hq = resolve("site/hq");
-const routes = ["hq/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/review/index.html"];
+const routes = ["hq/index.html", "hq/login/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/review/index.html"];
 const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "meetings.js", "finances.js", "decisions.js", "review.js", "hq.css"];
 
 test("static Founder HQ routes and page-specific modules exist", async () => {

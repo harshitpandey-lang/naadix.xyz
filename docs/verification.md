@@ -35,4 +35,4 @@ Production authentication had already been verified before cleanup. The static H
 
 The Vercel project inspected as `naadix/naadix-hq` with project ID `prj_bLLmbSf5RAhXiSiNUCQyz3bl9UYd`. It was permanently removed, and a scoped project listing then returned no projects under `naadix`.
 
-The inactive Supabase project `pzgmgxsszcuikhtomtcu` was not modified because the local CLI had no authenticated access token. The active project `bynkxhfzbityeufqllxi` was not modified.
+The inactive Supabase project `pzgmgxsszcuikhtomtcu` was not modified because the local CLI had no authenticated access token. The active project is `oruezuyfjavhjnadullk`.

@@ -2,7 +2,7 @@
 
 ## Active project
 
-The static Founder HQ uses only the publishable browser key for project `bynkxhfzbityeufqllxi`. No service-role key, secret key, database password, connection string, or server credential is shipped in `dist/`.
+The static Founder HQ uses only the publishable browser key for project `oruezuyfjavhjnadullk`. No service-role key, secret key, database password, connection string, or server credential is shipped in `dist/`.
 
 The inactive legacy project is `pzgmgxsszcuikhtomtcu`. The local Supabase CLI exposes a supported `projects delete` command, but no Supabase account access token is available in this environment. No deletion was attempted and the active project was not modified. Permanent removal of the inactive project must be completed from an authenticated Supabase dashboard or CLI session after re-verifying its project reference.
 

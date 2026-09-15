@@ -28,6 +28,7 @@ await cp(join(root, "site/assets"), join(out, "assets"), { recursive: true });
 await cp(join(root, "site/hq"), join(out, "assets/hq"), { recursive: true });
 const hqPages = [
   ["hq/index.html", "login", "Founder HQ | NaadiX", "Sign in to the private Founder HQ."],
+  ["hq/login/index.html", "login", "Founder HQ | NaadiX", "Sign in to the private Founder HQ."],
   ["hq/reset-password/index.html", "reset", "Reset password | Founder HQ", "Reset your Founder HQ password."],
   ["hq/dashboard/index.html", "dashboard", "Today | Founder HQ", "Private Founder HQ dashboard."],
   ["hq/inbox/index.html", "inbox", "Inbox | Founder HQ", "Private Founder HQ capture inbox."],

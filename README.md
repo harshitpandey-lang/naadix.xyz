@@ -10,7 +10,7 @@ NaadiX is a founder-led AI consultancy and intelligent systems company. This rep
 | Frontend hosting | Cloudflare Worker `naadix` serving the generated `dist/` directory |
 | Public site | `https://naadix.xyz/` |
 | Private HQ | `https://naadix.xyz/hq/` |
-| Authentication and database | Supabase project `bynkxhfzbityeufqllxi` |
+| Authentication and database | Supabase project `oruezuyfjavhjnadullk` |
 
 Vercel is no longer part of the production architecture. The former `naadix-hq` Vercel project and the obsolete Next.js HQ source have been removed.
 
@@ -85,7 +85,7 @@ The Worker name and static asset directory are defined in `wrangler.jsonc`. Keep
 
 ## Supabase
 
-The active project is `bynkxhfzbityeufqllxi`. Its browser-safe configuration is in `site/hq/config.js`; privileged keys must never be added there.
+The active project is `oruezuyfjavhjnadullk`. Its browser-safe configuration is in `site/hq/config.js`; privileged keys must never be added there.
 
 Schema history is preserved under `supabase/migrations/`. These migrations define the HQ tables, grants, triggers, and owner-scoped RLS policies. Review and link the CLI to the active project before applying any future migration.
 
