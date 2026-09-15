@@ -59,7 +59,7 @@ export function applyRecognitionResults(event, transcript, interim, processedFin
   let finalChunk = "", interimChunk = "";
   for (let index = event.resultIndex; index < event.results.length; index += 1) {
     const result = event.results[index]; const text = result[0]?.transcript?.trim(); if (!text) continue;
-    if (result.isFinal) { const signature = `${index}:${text}`; if (!processedFinalResults.has(signature)) { processedFinalResults.add(signature); finalChunk += `${finalChunk ? " " : ""}${text}`; } }
+    if (result.isFinal) { const signature = text.toLowerCase().replace(/\s+/g, " "); if (!processedFinalResults.has(signature)) { processedFinalResults.add(signature); finalChunk += `${finalChunk ? " " : ""}${text}`; } }
     else interimChunk += `${interimChunk ? " " : ""}${text}`;
   }
   if (finalChunk) { const current = transcript.value.trimEnd(); if (!current.endsWith(finalChunk)) { const separator = current ? (/[.!?]["']?$/.test(current) ? "\n" : " ") : ""; transcript.value = `${current}${separator}${finalChunk}`; transcript.dispatchEvent(new Event("input", { bubbles: true })); } }

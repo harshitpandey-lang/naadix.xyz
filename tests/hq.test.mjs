@@ -87,22 +87,29 @@ test("Meetings and finances are private owner-scoped workspaces", async () => {
 
 test("live meeting transcription owns and safely restarts its microphone session", async () => {
   const source = await readFile(resolve(hq, "meetings.js"), "utf8");
-  const start = source.indexOf("const startListening = async");
+  const start = source.indexOf("const startRecording = async");
   const request = source.indexOf("navigator.mediaDevices.getUserMedia");
-  assert.ok(start > 0 && request > start, "microphone permission is requested only inside startListening");
+  assert.ok(start > 0 && request > start, "microphone permission is requested only inside startRecording");
+  assert.match(source, /window\.MediaRecorder/);
+  assert.match(source, /new MediaRecorder\(stream\)/);
+  assert.match(source, /data-start-recording>Start recording/);
+  assert.match(source, /data-pause-recording[\s\S]*>Pause/);
+  assert.match(source, /data-resume-recording[\s\S]*>Resume/);
+  assert.match(source, /data-stop-recording[\s\S]*>Stop recording/);
   assert.match(source, /echoCancellation:\s*true, noiseSuppression:\s*true, autoGainControl:\s*true/);
-  assert.match(source, /recognition\.lang = "en-IN"/);
-  assert.match(source, /recognition\.maxAlternatives = 1/);
+  assert.match(source, /\.lang="en-IN"/);
+  assert.match(source, /\.maxAlternatives=1/);
   assert.match(source, /if \(result\.isFinal\)[\s\S]*transcript\.dispatchEvent\(new Event\("input", \{ bubbles: true \}\)\)/);
   assert.match(source, /interim\.textContent = interimChunk/);
-  assert.match(source, /recognition\.onend = \(\) => \{[\s\S]*scheduleRecognitionRestart\(\)/);
-  assert.match(source, /if \(!shouldListen \|\| manuallyStopped \|\| disposed\)/);
-  assert.match(source, /if \(error === "no-speech"\) return/);
-  assert.match(source, /error === "not-allowed" \|\| error === "service-not-allowed"[\s\S]*stopMicrophone\(\)/);
-  assert.match(source, /dialog\.addEventListener\("close", async \(\) => \{[\s\S]*await stopListening\(\)/);
-  assert.match(source, /data-complete-meeting[\s\S]*await stopListening\(\)/);
-  assert.match(source, /const restartDelays = \[300, 500, 1000, 1500, 2000\]/);
-  assert.match(source, /consecutiveRestartFailures >= restartDelays\.length/);
+  assert.match(source, /r\.onend=\(\)=>\{[\s\S]*scheduleRestart\(\)/);
+  assert.match(source, /if\(!wantsRecognition \|\| disposed \|\| recordingState!=="recording"\) return/);
+  assert.match(source, /event\.error==="not-allowed"\|\|event\.error==="service-not-allowed"[\s\S]*speech recognition permission denied/i);
+  assert.match(source, /stopButton\.addEventListener\("click",stopRecording\)/);
+  assert.match(source, /data-complete-meeting[\s\S]*stopRecording\(\)/);
+  assert.match(source, /setUi\("starting","Requesting microphone permission/);
+  assert.match(source, /recorder\.onstart=\(\)=>\{ setUi\("recording"\)/);
+  const build = await readFile(resolve("dist/_headers"), "utf8");
+  assert.match(build, /Permissions-Policy: camera=\(\), microphone=\(self\), geolocation=\(\)/);
 });
 
 test("final recognition text appends once while interim text stays transient", () => {

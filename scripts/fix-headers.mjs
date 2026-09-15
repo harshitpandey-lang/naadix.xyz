@@ -4,8 +4,8 @@ import { resolve, join } from "node:path";
 const out = resolve("dist");
 const headersPath = resolve(out, "_headers");
 const source = await readFile(headersPath, "utf8");
-const next = source.replace("microphone=()", "microphone=(self)");
-if (next === source) throw new Error("Expected microphone Permissions-Policy entry was not found in dist/_headers");
+const next = source.includes("microphone=()") ? source.replace("microphone=()", "microphone=(self)") : source;
+if (!next.includes("microphone=(self)")) throw new Error("Expected same-origin microphone Permissions-Policy entry was not found in dist/_headers");
 await writeFile(headersPath, next);
 
 const files = await readdir(out, { recursive: true });
