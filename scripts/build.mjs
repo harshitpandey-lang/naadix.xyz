@@ -38,6 +38,9 @@ const hqPages = [
   ["hq/meetings/index.html", "meetings", "Meetings | Founder HQ", "Private Founder HQ meetings and live transcripts."],
   ["hq/finances/index.html", "finances", "Finances | Founder HQ", "Private Founder HQ financial operating view."],
   ["hq/decisions/index.html", "decisions", "Decisions | Founder HQ", "Private Founder HQ decision log."],
+  ["hq/development/index.html", "development", "Development | Founder HQ", "Private Founder HQ development system."],
+  ["hq/learning/index.html", "learning", "Learning | Founder HQ", "Private Founder HQ learning queue."],
+  ["hq/notes/index.html", "notes", "Notes | Founder HQ", "Private Founder HQ notes."],
   ["hq/review/index.html", "review", "Weekly Review | Founder HQ", "Private Founder HQ weekly review."],
 ];
 for (const [path, page, title, description] of hqPages) {

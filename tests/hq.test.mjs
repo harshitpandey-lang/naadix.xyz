@@ -20,8 +20,8 @@ import {
 import { applyRecognitionResults } from "../site/hq/meetings.js";
 
 const hq = resolve("site/hq");
-const routes = ["hq/index.html", "hq/login/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/review/index.html"];
-const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "meetings.js", "finances.js", "decisions.js", "review.js", "hq.css"];
+const routes = ["hq/index.html", "hq/login/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/development/index.html", "hq/learning/index.html", "hq/notes/index.html", "hq/review/index.html"];
+const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "meetings.js", "finances.js", "decisions.js", "development.js", "learning.js", "notes.js", "review.js", "hq.css"];
 
 test("static Founder HQ routes and page-specific modules exist", async () => {
   for (const route of routes) assert.ok((await stat(resolve("dist", route))).isFile(), route);
@@ -41,6 +41,9 @@ test("private pages redirect through the shared authentication guard", async () 
   assert.match(app, /import\("\.\/finances\.js"\)/);
   assert.match(app, /import\("\.\/inbox\.js"\)/);
   assert.match(app, /import\("\.\/decisions\.js"\)/);
+  assert.match(app, /import\("\.\/development\.js"\)/);
+  assert.match(app, /import\("\.\/learning\.js"\)/);
+  assert.match(app, /import\("\.\/notes\.js"\)/);
   assert.match(app, /import\("\.\/review\.js"\)/);
 });
 
@@ -53,7 +56,7 @@ test("HQ uses browser Supabase auth without a privileged browser secret", async 
 
 test("shared shell includes navigation, mobile controls, and quick actions", async () => {
   const source = await readFile(resolve(hq, "ui.js"), "utf8");
-  for (const route of ["/hq/dashboard/", "/hq/inbox/", "/hq/projects/", "/hq/calendar/", "/hq/goals/", "/hq/meetings/", "/hq/finances/", "/hq/decisions/", "/hq/review/"]) assert.ok(source.includes(route), route);
+  for (const route of ["/hq/dashboard/", "/hq/inbox/", "/hq/projects/", "/hq/calendar/", "/hq/goals/", "/hq/meetings/", "/hq/finances/", "/hq/decisions/", "/hq/development/", "/hq/learning/", "/hq/notes/", "/hq/review/"]) assert.ok(source.includes(route), route);
   assert.match(source, /data-open-menu/);
   assert.match(source, /data-open-command/);
   assert.match(source, /aria-label="Quick actions"/);
@@ -202,9 +205,30 @@ test("Weekly Review summary derives real operational counts", () => {
 
 test("Command palette exposes Phase 3 capture and operating routes safely", async () => {
   const source = await readFile(resolve(hq, "ui.js"), "utf8");
-  for (const label of ["Quick capture", "Focus Mode", "New Waiting Item", "Record Decision", "Weekly Review", "Unprocessed inbox"]) assert.ok(source.includes(label), label);
+  for (const label of ["Quick capture", "Focus Mode", "New Waiting Item", "Record Decision", "Development", "New Learning Item", "New Note", "Weekly Review", "Unprocessed inbox"]) assert.ok(source.includes(label), label);
   assert.match(source, /isFormField\(event\.target\)/);
   assert.match(source, /event\.key\.toLowerCase\(\) === "c"/);
+});
+
+test("development, learning, and notes modules persist owner-scoped records", async () => {
+  const development = await readFile(resolve(hq, "development.js"), "utf8");
+  const learning = await readFile(resolve(hq, "learning.js"), "utf8");
+  const notes = await readFile(resolve(hq, "notes.js"), "utf8");
+  assert.match(development, /development_areas/);
+  assert.match(development, /skills/);
+  assert.match(development, /development_milestones/);
+  assert.match(development, /development_reflections/);
+  assert.match(development, /user_id: shell\.session\.user\.id/);
+  assert.match(learning, /learning_items/);
+  assert.match(learning, /skill_id/);
+  assert.match(learning, /project_id/);
+  assert.match(learning, /data-learning-search/);
+  assert.match(notes, /notes/);
+  assert.match(notes, /data-notes-search/);
+  assert.match(notes, /pinned/);
+  assert.match(notes, /tags/);
+  const migration = await readFile(resolve("supabase/migrations/20260910012141_founder_system_completion.sql"), "utf8");
+  for (const table of ["development_milestones", "development_reflections", "company_items"]) assert.match(migration, new RegExp(`${table}[\\s\\S]+auth\\.uid\\(\\)`, "i"));
 });
 
 test("project workspace supports empty state, validated creation, search, and status filters", async () => {

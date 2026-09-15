@@ -2744,6 +2744,125 @@ select:focus {
   resize: vertical;
 }
 
+.entity-list,
+.notes-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.notes-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.notes-toolbar {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.compact-row,
+.note-card {
+  min-width: 0;
+  border: 1px solid var(--hq-border);
+  border-radius: var(--hq-radius);
+  background: var(--hq-surface);
+}
+
+.compact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.compact-row span,
+.compact-row small {
+  min-width: 0;
+}
+
+.compact-row strong,
+.compact-row small,
+.note-card h2,
+.note-card p,
+.note-card small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.compact-row small {
+  margin-top: 4px;
+  color: var(--hq-muted);
+  font-size: 12px;
+}
+
+.note-card {
+  display: grid;
+  min-height: 190px;
+  gap: 10px;
+  padding: 18px;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.note-card:hover {
+  background: var(--hq-surface-hover);
+}
+
+.note-card h2,
+.note-card p {
+  margin: 0;
+}
+
+.note-card h2 {
+  font-size: 17px;
+}
+
+.note-card p,
+.note-card small {
+  color: var(--hq-muted);
+  font-size: 13px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag-row span {
+  padding: 4px 8px;
+  border: 1px solid var(--hq-border);
+  border-radius: 999px;
+  color: var(--hq-muted);
+  font-size: 11px;
+}
+
+.progress-track {
+  overflow: hidden;
+  height: 6px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--hq-accent);
+}
+
+.checkbox-line {
+  align-content: center;
+}
+
+.checkbox-line input {
+  width: auto;
+  margin-right: 8px;
+}
+
 .focus-view {
   max-width: 1050px;
   margin: 0 auto;
@@ -2799,7 +2918,8 @@ select:focus {
   }
 
   .review-metrics,
-  .focus-grid {
+  .focus-grid,
+  .notes-grid {
     grid-template-columns: 1fr;
   }
 }
