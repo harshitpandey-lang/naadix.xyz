@@ -47,11 +47,10 @@ async function load() {
 
 function render() {
   const now = new Date();
-  const live = state.meetings.find((meeting) => meeting.status === "LIVE");
-  const upcoming = state.meetings.filter((meeting) => meeting.status === "PLANNED" && new Date(meetingTime(meeting)) >= now).sort((a, b) => new Date(meetingTime(a)) - new Date(meetingTime(b)));
+  const upcoming = state.meetings.filter((meeting) => meeting.status === "SCHEDULED" && new Date(meetingTime(meeting)) >= now).sort((a, b) => new Date(meetingTime(a)) - new Date(meetingTime(b)));
   const completed = state.meetings.filter((meeting) => meeting.status === "COMPLETED");
   const withTranscript = state.meetings.filter((meeting) => (meeting.transcript || "").trim()).length;
-  shell.content.innerHTML = `<section class="summary-grid" aria-label="Meeting summary"><article><span>Upcoming</span><strong>${upcoming.length}</strong><small>${upcoming[0] ? formatDateTime(meetingTime(upcoming[0])) : "Nothing scheduled"}</small></article><article><span>Live now</span><strong>${live ? "Active" : "Clear"}</strong><small>${live ? esc(live.title) : "No active meeting"}</small></article><article><span>Working records</span><strong>${withTranscript}</strong><small>${completed.length} completed meetings</small></article></section><section class="workspace-panel meeting-index"><header class="workspace-panel-head"><div><p class="eyebrow">Meeting log</p><h2>Conversations and transcripts</h2></div></header>${state.meetings.length ? `<div class="meeting-list">${state.meetings.map(meetingRow).join("")}</div>` : emptyState("No meetings yet", "Create a meeting to capture its transcript, notes, outcome, and actions.", "New meeting")}</section>`;
+  shell.content.innerHTML = `<section class="summary-grid" aria-label="Meeting summary"><article><span>Upcoming</span><strong>${upcoming.length}</strong><small>${upcoming[0] ? formatDateTime(meetingTime(upcoming[0])) : "Nothing scheduled"}</small></article><article><span>Recorder</span><strong>Ready</strong><small>Start inside a meeting</small></article><article><span>Working records</span><strong>${withTranscript}</strong><small>${completed.length} completed meetings</small></article></section><section class="workspace-panel meeting-index"><header class="workspace-panel-head"><div><p class="eyebrow">Meeting log</p><h2>Conversations and transcripts</h2></div></header>${state.meetings.length ? `<div class="meeting-list">${state.meetings.map(meetingRow).join("")}</div>` : emptyState("No meetings yet", "Create a meeting to capture its transcript, notes, outcome, and actions.", "New meeting")}</section>`;
   shell.content.querySelector("[data-empty-action]")?.addEventListener("click", () => openMeetingForm());
   shell.content.querySelectorAll("[data-open-meeting]").forEach((button) => button.addEventListener("click", () => openMeetingWorkspace(state.meetings.find((meeting) => meeting.id === button.dataset.openMeeting))));
 }
@@ -86,7 +85,7 @@ function openMeetingForm(meeting = null) {
       starts_at: timestamp,
       scheduled_at: timestamp,
       attendees: attendeesValue(values.attendees),
-      status: meeting?.status || "PLANNED",
+      status: meeting?.status || "SCHEDULED",
     };
     const button = form.querySelector('[type="submit"]');
     setButtonBusy(button, true, meeting ? "Saving..." : "Creating...");
@@ -238,7 +237,7 @@ function openMeetingWorkspace(meeting) {
     if (!window.MediaRecorder) { stopTracks(); setUi("idle", "Audio recording unsupported in this browser"); toast("This browser cannot create an audio recording. You can still type the transcript.", "error"); return; }
     try {
       recorder = new MediaRecorder(stream);
-      recorder.onstart=()=>{ setUi("recording"); wantsRecognition = speechSupported; if (wantsRecognition) startRecognition(); supabase.update("meetings", meeting.id, { status: "LIVE", ended_at: null, ends_at: null }).catch(() => {}); updateMeetingStatus(dialog, "LIVE"); };
+      recorder.onstart=()=>{ setUi("recording"); wantsRecognition = speechSupported; if (wantsRecognition) startRecognition(); supabase.update("meetings", meeting.id, { ended_at: null, ends_at: null }).catch(() => {}); updateMeetingStatus(dialog, "LIVE"); };
       recorder.onpause = () => setUi("paused");
       recorder.onresume = () => { setUi("recording"); wantsRecognition = speechSupported; startRecognition(); };
       recorder.onerror = () => { toast("Browser audio recording encountered an error.", "error"); };
@@ -291,7 +290,7 @@ function openMeetingWorkspace(meeting) {
     stopRecording();
     const reopening = meeting.status === "COMPLETED";
     const endedAt = reopening ? null : new Date().toISOString();
-    await supabase.update("meetings", meeting.id, { status: reopening ? "PLANNED" : "COMPLETED", ended_at: endedAt, ends_at: endedAt, transcript: transcript.value.trim() });
+    await supabase.update("meetings", meeting.id, { status: reopening ? "SCHEDULED" : "COMPLETED", ended_at: endedAt, ends_at: endedAt, transcript: transcript.value.trim() });
     dialog.close();
     toast(reopening ? "Meeting reopened." : "Meeting completed.");
     await load();

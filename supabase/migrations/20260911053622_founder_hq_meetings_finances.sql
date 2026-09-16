@@ -48,7 +48,7 @@ create table if not exists public.meetings (
   scheduled_at timestamptz not null default now(),
   ended_at timestamptz,
   attendees text[] not null default '{}',
-  status text not null default 'PLANNED' check (status in ('PLANNED', 'LIVE', 'COMPLETED')),
+  status text not null default 'SCHEDULED' check (status in ('SCHEDULED', 'COMPLETED', 'CANCELLED')),
   transcript text not null default '',
   notes text not null default '',
   outcome text,
