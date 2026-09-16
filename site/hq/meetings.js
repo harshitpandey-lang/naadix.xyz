@@ -148,7 +148,8 @@ function openMeetingWorkspace(meeting) {
   const pauseButton = dialog.querySelector("[data-pause-recording]");
   const resumeButton = dialog.querySelector("[data-resume-recording]");
   const stopButton = dialog.querySelector("[data-stop-recording]");
-  let stream = null, recorder = null, recognition = null, restartTimer = null, disposed = false, wantsRecognition = false, recognitionRunning = false, recordingState = "idle";
+  let stream = null, recorder = null, recognition = null, restartTimer = null, transcriptionWatchTimer = null, disposed = false, wantsRecognition = false, recognitionRunning = false, recordingState = "idle";
+  let recognitionRetryDelay = 350, hasSpeechResult = false;
   const recentFinals = new Map();
 
   const setUi = (mode, message = "") => {
@@ -160,10 +161,19 @@ function openMeetingWorkspace(meeting) {
     pauseButton.disabled = !active;
     resumeButton.disabled = !paused;
     stopButton.disabled = !(active || paused || starting);
-    micState.textContent = message || (active ? (speechSupported ? "Microphone active - transcribing" : "Microphone active - transcription unavailable") : paused ? "Recording paused" : "Ready");
+    micState.textContent = message || (active ? (speechSupported ? "Microphone active - listening for speech" : "Microphone active - transcription unavailable") : paused ? "Recording paused" : "Ready");
   };
   const stopTracks = () => { if (stream) for (const track of stream.getTracks()) track.stop(); stream = null; };
-  const stopRecognition = () => { wantsRecognition = false; clearTimeout(restartTimer); restartTimer = null; const r = recognition; recognition = null; recognitionRunning = false; if (r) { r.onend = null; try { r.stop(); } catch {} } interim.textContent = ""; };
+  const clearTranscriptionTimers = () => { clearTimeout(restartTimer); clearTimeout(transcriptionWatchTimer); restartTimer = null; transcriptionWatchTimer = null; };
+  const armTranscriptionWatch = () => {
+    clearTimeout(transcriptionWatchTimer);
+    transcriptionWatchTimer = setTimeout(() => {
+      if (wantsRecognition && recognitionRunning && !hasSpeechResult && recordingState === "recording") {
+        micState.textContent = "Listening - speak clearly and keep this tab open";
+      }
+    }, 7000);
+  };
+  const stopRecognition = () => { wantsRecognition = false; clearTranscriptionTimers(); const r = recognition; recognition = null; recognitionRunning = false; if (r) { r.onend = null; r.onerror = null; r.onresult = null; try { r.stop(); } catch {} } interim.textContent = ""; };
   const appendResults = (event) => {
     let finals = "", live = "";
     const now = Date.now();
@@ -182,14 +192,21 @@ function openMeetingWorkspace(meeting) {
       transcript.dispatchEvent(new Event("input", { bubbles: true }));
     }
     interim.textContent = live;
+    if (finals || live) {
+      hasSpeechResult = true;
+      recognitionRetryDelay = 350;
+      micState.textContent = finals ? "Transcription captured" : "Hearing speech...";
+      armTranscriptionWatch();
+    }
   };
-  const scheduleRestart = () => {
+  const scheduleRestart = (delay = recognitionRetryDelay) => {
     if(!wantsRecognition || disposed || recordingState!=="recording") return;
     clearTimeout(restartTimer);
+    micState.textContent = "Reconnecting live transcription...";
     restartTimer = setTimeout(() => {
       if(!wantsRecognition || disposed || recordingState!=="recording") return;
       startRecognition();
-    }, 350);
+    }, delay);
   };
   const startRecognition = () => {
     if (!speechSupported || !wantsRecognition || disposed || recordingState !== "recording" || recognitionRunning) return;
@@ -197,7 +214,7 @@ function openMeetingWorkspace(meeting) {
       const r = new SpeechRecognition();
       recognition = r;
       r.continuous=true; r.interimResults=true; r.maxAlternatives=1; r.lang="en-IN";
-      r.onstart = () => { if (recognition !== r) return; recognitionRunning = true; micState.textContent = "Microphone active - transcribing"; };
+      r.onstart = () => { if (recognition !== r) return; recognitionRunning = true; micState.textContent = "Microphone active - listening for speech"; armTranscriptionWatch(); };
       r.onresult = appendResults;
       r.onerror = (event) => {
         if (recognition !== r) return;
@@ -208,9 +225,14 @@ function openMeetingWorkspace(meeting) {
         } else if (event.error === "audio-capture") {
           wantsRecognition = false;
           micState.textContent = "Recording audio - transcription unavailable";
-        } else if (event.error !== "aborted" && event.error !== "no-speech" && event.error !== "network") console.error("Speech recognition error:", event.error);
+        } else if (event.error === "no-speech") {
+          micState.textContent = "Listening - no speech detected yet";
+        } else if (event.error === "network") {
+          recognitionRetryDelay = Math.min(Math.round(recognitionRetryDelay * 1.7), 2500);
+          micState.textContent = "Speech recognition reconnecting - audio still recording";
+        } else if (event.error !== "aborted") console.error("Speech recognition error:", event.error);
       };
-      r.onend=()=>{ if (recognition !== r) return; recognitionRunning = false; recognition = null; interim.textContent = ""; scheduleRestart(); };
+      r.onend=()=>{ if (recognition !== r) return; recognitionRunning = false; recognition = null; interim.textContent = ""; clearTimeout(transcriptionWatchTimer); scheduleRestart(); };
       r.start();
     } catch (error) {
       recognitionRunning = false;
@@ -237,9 +259,9 @@ function openMeetingWorkspace(meeting) {
     if (!window.MediaRecorder) { stopTracks(); setUi("idle", "Audio recording unsupported in this browser"); toast("This browser cannot create an audio recording. You can still type the transcript.", "error"); return; }
     try {
       recorder = new MediaRecorder(stream);
-      recorder.onstart=()=>{ setUi("recording"); wantsRecognition = speechSupported; if (wantsRecognition) startRecognition(); supabase.update("meetings", meeting.id, { ended_at: null, ends_at: null }).catch(() => {}); updateMeetingStatus(dialog, "LIVE"); };
+      recorder.onstart=()=>{ setUi("recording"); micState.textContent = speechSupported ? "Microphone active - starting live transcription" : "Microphone active - transcription unavailable"; wantsRecognition = speechSupported; hasSpeechResult = false; recognitionRetryDelay = 350; if (wantsRecognition) startRecognition(); supabase.update("meetings", meeting.id, { ended_at: null, ends_at: null }).catch(() => {}); updateMeetingStatus(dialog, "LIVE"); };
       recorder.onpause = () => setUi("paused");
-      recorder.onresume = () => { setUi("recording"); wantsRecognition = speechSupported; startRecognition(); };
+      recorder.onresume = () => { setUi("recording", speechSupported ? "Microphone active - restarting live transcription" : "Microphone active - transcription unavailable"); wantsRecognition = speechSupported; if (wantsRecognition) startRecognition(); };
       recorder.onerror = () => { toast("Browser audio recording encountered an error.", "error"); };
       recorder.onstop = () => { stopRecognition(); stopTracks(); recorder = null; setUi("idle", "Recording stopped - transcript preserved"); void saveTranscript().catch(() => {}); };
       track.addEventListener("ended", () => { if (recordingState !== "idle") { stopRecognition(); recorder = null; stopTracks(); setUi("idle", "Microphone access ended"); toast("Microphone access ended.", "error"); } }, { once: true });
