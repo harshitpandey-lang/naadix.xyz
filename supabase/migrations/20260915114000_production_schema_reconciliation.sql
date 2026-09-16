@@ -210,10 +210,15 @@ create table if not exists public.decisions (
 );
 
 alter table public.meetings add column if not exists scheduled_at timestamptz;
+alter table public.meetings add column if not exists starts_at timestamptz;
+update public.meetings set starts_at = scheduled_at where starts_at is null and scheduled_at is not null;
 update public.meetings set scheduled_at = starts_at where scheduled_at is null and starts_at is not null;
+alter table public.meetings alter column starts_at set not null;
 alter table public.meetings alter column scheduled_at set default now();
 alter table public.meetings alter column scheduled_at set not null;
 alter table public.meetings add column if not exists ended_at timestamptz;
+alter table public.meetings add column if not exists ends_at timestamptz;
+update public.meetings set ends_at = ended_at where ends_at is null and ended_at is not null;
 update public.meetings set ended_at = ends_at where ended_at is null and ends_at is not null;
 alter table public.meetings add column if not exists transcript text not null default '';
 alter table public.meetings add column if not exists outcome text;

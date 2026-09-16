@@ -80,6 +80,9 @@ test("Meetings and finances are private owner-scoped workspaces", async () => {
   const migration = await readFile(resolve("supabase/migrations/20260911053622_founder_hq_meetings_finances.sql"), "utf8");
   assert.match(meetings, /SpeechRecognition|webkitSpeechRecognition/);
   assert.match(meetings, /transcript/);
+  assert.match(meetings, /starts_at: timestamp/);
+  assert.match(meetings, /scheduled_at: timestamp/);
+  assert.match(meetings, /Choose a valid meeting date and time/);
   assert.match(finances, /finance_transactions/);
   assert.match(finances, /Net cash flow/);
   assert.match(migration, /alter table public\.meetings enable row level security/);
