@@ -2388,7 +2388,22 @@ select:focus {
 .transcript-controls {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
+}
+.transcription-state {
+  color: var(--hq-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.transcription-state[data-state="listening"],
+.transcription-state[data-state="transcribing"] { color: var(--hq-accent); }
+.transcription-state[data-state="error"] { color: var(--hq-danger); }
+.local-transcription-note {
+  margin: 4px 0 0;
+  color: var(--hq-muted);
+  font-size: 10px;
 }
 .recording-indicator {
   display: flex;
@@ -2417,7 +2432,30 @@ select:focus {
   color: var(--hq-muted);
   font-size: 11px;
 }
-.interim-transcript:not(:empty)::before { content: "Hearing: "; color: var(--hq-accent); }
+.interim-transcript:not(:empty)::before { content: "Current: "; color: var(--hq-accent); }
+.transcript-segments {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hq-border);
+}
+.transcript-segments[hidden] { display: none; }
+.transcript-segments [data-transcript-segment-list] { display: grid; gap: 6px; }
+.transcript-segment {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 100px;
+  align-items: center;
+  gap: 10px;
+  color: var(--hq-muted);
+  font-size: 10px;
+}
+.transcript-segment span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.transcript-segment select { min-height: 30px; padding: 4px 7px; }
 .meeting-notes { display: grid; gap: 10px; }
 
 /* Finances */
@@ -2944,3 +2982,4 @@ select:focus {
     justify-content: center;
   }
 }
+

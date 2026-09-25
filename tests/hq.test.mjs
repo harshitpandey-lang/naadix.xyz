@@ -17,11 +17,11 @@ import {
   waitingIsOverdue,
   weeklyReviewSummary,
 } from "../site/hq/core.js";
-import { applyRecognitionResults } from "../site/hq/meetings.js";
+import { applyRecognitionResults, dedupeWhisperSegment } from "../site/hq/meetings.js";
 
 const hq = resolve("site/hq");
 const routes = ["hq/index.html", "hq/login/index.html", "hq/dashboard/index.html", "hq/inbox/index.html", "hq/projects/index.html", "hq/calendar/index.html", "hq/goals/index.html", "hq/meetings/index.html", "hq/finances/index.html", "hq/decisions/index.html", "hq/development/index.html", "hq/learning/index.html", "hq/notes/index.html", "hq/review/index.html"];
-const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "meetings.js", "finances.js", "decisions.js", "development.js", "learning.js", "notes.js", "review.js", "hq.css"];
+const modules = ["config.js", "supabase.js", "auth.js", "core.js", "ui.js", "app.js", "dashboard.js", "inbox.js", "projects.js", "calendar.js", "goals.js", "meetings.js", "whisper-local.js", "whisper-audio-worker.js", "whisper-audio-worklet.js", "finances.js", "decisions.js", "development.js", "learning.js", "notes.js", "review.js", "hq.css"];
 
 test("static Founder HQ routes and page-specific modules exist", async () => {
   for (const route of routes) assert.ok((await stat(resolve("dist", route))).isFile(), route);
@@ -91,8 +91,10 @@ test("Meetings and finances are private owner-scoped workspaces", async () => {
   assert.match(migration, /grant select, insert, update, delete on table public\.meetings, public\.finance_transactions to authenticated/);
 });
 
-test("live meeting transcription owns and safely restarts its microphone session", async () => {
+test("live meeting transcription uses local Whisper while retaining optional browser recognition", async () => {
   const source = await readFile(resolve(hq, "meetings.js"), "utf8");
+  const local = await readFile(resolve(hq, "whisper-local.js"), "utf8");
+  const audioWorker = await readFile(resolve(hq, "whisper-audio-worker.js"), "utf8");
   const start = source.indexOf("const startRecording = async");
   const request = source.indexOf("navigator.mediaDevices.getUserMedia");
   assert.ok(start > 0 && request > start, "microphone permission is requested only inside startRecording");
@@ -109,13 +111,28 @@ test("live meeting transcription owns and safely restarts its microphone session
   assert.match(source, /interim\.textContent = interimChunk/);
   assert.match(source, /r\.onend=\(\)=>\{[\s\S]*scheduleRestart\(\)/);
   assert.match(source, /if\(!wantsRecognition \|\| disposed \|\| recordingState!=="recording"\) return/);
-  assert.match(source, /event\.error==="not-allowed"\|\|event\.error==="service-not-allowed"[\s\S]*speech recognition permission denied/i);
   assert.match(source, /stopButton\.addEventListener\("click",stopRecording\)/);
-  assert.match(source, /data-complete-meeting[\s\S]*stopRecording\(\)/);
-  assert.match(source, /setUi\("starting","Requesting microphone permission/);
+  assert.match(source, /data-complete-meeting[\s\S]*await stopRecording\(\)/);
   assert.match(source, /recorder\.onstart=\(\)=>\{ setUi\("recording"\)/);
+  assert.match(source, /import\("\.\/whisper-local\.js"\)/);
+  assert.match(source, /Transcription runs locally on this device/);
+  assert.match(source, /Preparing transcriptionâ€¦/);
+  assert.match(source, /Downloading local speech modelâ€¦/);
+  assert.match(source, /data-retry-transcription/);
+  assert.match(source, /\["Me", "Client", "Other"\]/);
+  assert.match(local, /ggml-tiny\.en-q5_1\.bin/);
+  assert.match(local, /32166155/);
+  assert.match(local, /indexedDB\.open/);
+  assert.match(local, /new Worker/);
+  assert.match(local, /module\.set_audio/);
+  assert.match(audioWorker, /TARGET_RATE = 16000/);
+  assert.match(audioWorker, /OVERLAP_SAMPLES/);
   const build = await readFile(resolve("dist/_headers"), "utf8");
   assert.match(build, /Permissions-Policy: camera=\(\), microphone=\(self\), geolocation=\(\)/);
+  assert.match(build, /Cross-Origin-Embedder-Policy: require-corp/);
+  assert.ok((await stat(resolve("dist/assets/hq/whisper/libstream.js"))).size > 1_000_000);
+  const homepage = await readFile(resolve("dist/index.html"), "utf8");
+  assert.doesNotMatch(homepage, /whisper|ggml-tiny/i);
 });
 
 test("final recognition text appends once while interim text stays transient", () => {
@@ -135,6 +152,16 @@ test("final recognition text appends once while interim text stays transient", (
   applyRecognitionResults(event, transcript, interim, processed);
   assert.equal(transcript.value, "Existing sentence.\nFinal phrase");
   assert.equal(dispatched.length, 1);
+});
+
+test("overlapping local Whisper windows append only new finalized words", () => {
+  const first = "What your country can do for you, ask what you can do.";
+  assert.equal(dedupeWhisperSegment("Existing text.", first, []), first);
+  assert.equal(dedupeWhisperSegment(first, "ask what you can do for your country.", [first]), "for your country.");
+  assert.equal(dedupeWhisperSegment(first, first, [first]), "");
+  assert.equal(dedupeWhisperSegment(`${first}\nfor your country.`, "can do for your country.", [first, "for your country."]), "");
+  assert.equal(dedupeWhisperSegment(first, "Like your country can do for you.", [first]), "");
+  assert.equal(dedupeWhisperSegment("Existing text must remain.", "A new finalized segment.", []), "A new finalized segment.");
 });
 
 test("Inbox conversion creates the destination payload and preserves the source", async () => {
@@ -293,7 +320,7 @@ test("goal strategy filters, validation, completion, and dates are deterministic
   assert.deepEqual(completionPayload(true, completedAt), { completed: true, completed_at: completedAt.toISOString() });
   assert.equal(completionPayload(false, completedAt).completed_at, null);
   assert.equal(dateKey(new Date(2026, 8, 10)), "2026-09-10");
-  assert.notEqual(formatDate("2026-09-10"), "—");
+  assert.notEqual(formatDate("2026-09-10"), "â€”");
 });
 
 test("Supabase list queries support bounded repeated filters", async () => {
@@ -309,3 +336,4 @@ test("generated HQ contains protected pages and no Vercel dependency", async () 
   assert.match(source, /data-hq-page/);
   assert.doesNotMatch(source, /vercel\.app|service_role|sb_secret_/i);
 });
+

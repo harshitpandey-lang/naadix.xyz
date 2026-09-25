@@ -36,9 +36,14 @@ createServer(async (req, res) => {
         file = resolve(file, "index.html");
       }
       const body = await readFile(file);
+      const isolated = path.startsWith("/hq/meetings/") || path.startsWith("/assets/hq/whisper") || path === "/whisper-test.html";
       res.writeHead(200, {
         "Content-Type": types[extname(file)] || "application/octet-stream",
         "Cache-Control": "no-store",
+        ...(isolated ? {
+          "Cross-Origin-Opener-Policy": "same-origin",
+          "Cross-Origin-Embedder-Policy": "require-corp",
+        } : {}),
       });
       res.end(body);
     } catch {
@@ -54,3 +59,4 @@ createServer(async (req, res) => {
     `NaadiX preview: http://127.0.0.1:${port}/ (serving public artifact only)`,
   ),
 );
+
