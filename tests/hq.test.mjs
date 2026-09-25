@@ -130,6 +130,7 @@ test("live meeting transcription uses local Whisper while retaining optional bro
   const build = await readFile(resolve("dist/_headers"), "utf8");
   assert.match(build, /Permissions-Policy: camera=\(\), microphone=\(self\), geolocation=\(\)/);
   assert.match(build, /Cross-Origin-Embedder-Policy: require-corp/);
+  assert.match(build, /\/hq\/meetings\/\*[\s\S]*script-src 'self' 'unsafe-eval'/);
   assert.ok((await stat(resolve("dist/assets/hq/whisper/libstream.js"))).size > 1_000_000);
   const homepage = await readFile(resolve("dist/index.html"), "utf8");
   assert.doesNotMatch(homepage, /whisper|ggml-tiny/i);
