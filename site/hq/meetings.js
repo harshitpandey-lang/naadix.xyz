@@ -187,6 +187,7 @@ function openMeetingWorkspace(meeting) {
   let stream = null, recorder = null, recognition = null, restartTimer = null, transcriptionWatchTimer = null, disposed = false, wantsRecognition = false, recognitionRunning = false, recordingState = "idle";
   let recognitionRetryDelay = 350, hasSpeechResult = false;
   let localEngine = null, localReady = false, stopPromise = null;
+  let lastTranscriptionError = "", lastTranscriptionErrorAt = 0;
   const recentFinals = new Map();
   const transcriptSegments = parseSpeakerSegments(transcript.value);
   const recentLocalSegments = [];
@@ -206,6 +207,19 @@ function openMeetingWorkspace(meeting) {
     micState.textContent = transcriptStateLabel(mode, progress);
     micState.dataset.state = mode;
     retryButton.hidden = mode !== "error";
+  };
+
+  const reportTranscriptionError = (error, fallback) => {
+    const message = error?.message || fallback;
+    console.error("Local transcription failed:", error);
+    localReady = false;
+    setTranscriptionState("error");
+    const now = Date.now();
+    if (message !== lastTranscriptionError || now - lastTranscriptionErrorAt > 10000) {
+      lastTranscriptionError = message;
+      lastTranscriptionErrorAt = now;
+      toast(message, "error");
+    }
   };
 
   const dispatchTranscriptInput = () => transcript.dispatchEvent(new Event("input", { bubbles: true }));
@@ -342,12 +356,7 @@ function openMeetingWorkspace(meeting) {
       onState: setTranscriptionState,
       onTemporary: (text) => { if (text) interim.textContent = text; },
       onSegment: appendFinalSegment,
-      onError: (error) => {
-        console.error("Local transcription failed:", error);
-        localReady = false;
-        setTranscriptionState("error");
-        toast(error?.message || "Local transcription failed. Press Retry.", "error");
-      },
+      onError: (error) => reportTranscriptionError(error, "Local transcription failed. Press Retry."),
     });
     await localEngine.prepare();
     localReady = true;
@@ -370,13 +379,10 @@ function openMeetingWorkspace(meeting) {
     try {
       await createLocalEngine();
     } catch (error) {
-      console.error("Local transcription initialization failed:", error);
-      localReady = false;
       stopTracks();
       setUi("idle");
-      setTranscriptionState("error");
       retryButton.hidden = false;
-      toast(error?.message || "Local transcription could not be prepared on this device.", "error");
+      reportTranscriptionError(error, "Local transcription could not be prepared on this device.");
       return;
     }
     const track = stream.getAudioTracks()[0];
@@ -448,8 +454,7 @@ function openMeetingWorkspace(meeting) {
         if (recordingState === "paused") await localEngine.pause();
       }
     } catch (error) {
-      setTranscriptionState("error");
-      toast(error?.message || "Local transcription retry failed.", "error");
+      reportTranscriptionError(error, "Local transcription retry failed.");
     }
   });
   pauseButton.addEventListener("click", pauseRecording);

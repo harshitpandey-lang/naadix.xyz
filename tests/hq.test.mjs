@@ -122,6 +122,8 @@ test("live meeting transcription uses local Whisper while retaining optional bro
   assert.match(source, /\["Me", "Client", "Other"\]/);
   assert.match(local, /ggml-tiny\.en-q5_1\.bin/);
   assert.match(local, /32166155/);
+  assert.match(local, /RUNTIME_INIT_TIMEOUT_MS = 180000/);
+  assert.doesNotMatch(local, /took too long to initialize/);
   assert.match(local, /indexedDB\.open/);
   assert.match(local, /new Worker/);
   assert.match(local, /module\.set_audio/);

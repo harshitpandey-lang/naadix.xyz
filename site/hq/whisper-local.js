@@ -10,7 +10,9 @@ const DB_NAME = "naadix-local-whisper";
 const DB_VERSION = 1;
 const STORE_NAME = "models";
 let runtimePromise = null;
+let runtimeModule = null;
 let modelPromise = null;
+const RUNTIME_INIT_TIMEOUT_MS = 180000;
 
 export const LOCAL_WHISPER_MODEL = Object.freeze({ ...MODEL });
 
@@ -112,9 +114,8 @@ async function loadModel(onState) {
 }
 
 function loadRuntime() {
-  if (runtimePromise) return runtimePromise;
-  runtimePromise = new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error("Local Whisper took too long to initialize.")), 30000);
+  if (runtimeModule) return Promise.resolve(runtimeModule);
+  if (!runtimePromise) runtimePromise = new Promise((resolve, reject) => {
     const previous = globalThis.Module;
     globalThis.Module = {
       locateFile: (path) => `${ASSET_ROOT}${path}`,
@@ -122,15 +123,14 @@ function loadRuntime() {
       printErr: (message) => { if (/error|failed|abort/i.test(String(message))) console.error("Local Whisper:", message); },
       onAbort: (message) => reject(new Error(`Local Whisper could not start: ${message}`)),
       onRuntimeInitialized() {
-        clearTimeout(timeout);
-        resolve(globalThis.Module);
+        runtimeModule = globalThis.Module;
+        resolve(runtimeModule);
       },
     };
     const script = document.createElement("script");
     script.src = `${ASSET_ROOT}libstream.js`;
     script.async = true;
     script.onerror = () => {
-      clearTimeout(timeout);
       globalThis.Module = previous;
       reject(new Error("The local Whisper WebAssembly runtime could not be loaded."));
     };
@@ -139,7 +139,12 @@ function loadRuntime() {
     runtimePromise = null;
     throw error;
   });
-  return runtimePromise;
+
+  let timeout;
+  const deadline = new Promise((_, reject) => {
+    timeout = setTimeout(() => reject(new Error("Local Whisper is still initializing. Keep this tab open, then press Retry.")), RUNTIME_INIT_TIMEOUT_MS);
+  });
+  return Promise.race([runtimePromise, deadline]).finally(() => clearTimeout(timeout));
 }
 
 export class LocalWhisperTranscriber {
