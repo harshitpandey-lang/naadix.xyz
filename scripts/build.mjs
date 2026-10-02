@@ -16,7 +16,13 @@ const emit = async (path, body) => {
   await writeFile(target, body);
 };
 const routes = pages();
+routes.push(["/web/", "Website Design & Development | NaadiX", "Custom mobile-friendly websites by NaadiX", ""]);
 for (const [path, title, description, content] of routes) {
+  if (path === "/web/") {
+    const { webPage } = await import("../site/web.mjs");
+    await emit("web/index.html", webPage());
+    continue;
+  }
   let body = content;
   if (path !== "/" && !body.includes("<h1>")) body = body.replace("<h2>", "<h1>").replace("</h2>", "</h1>");
   body = body.replace('id="contact-submit"', 'id="contact-submit" disabled');
