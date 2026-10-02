@@ -1,0 +1,16 @@
+{
+  "git.decorations.enabled": false,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.wrangler": true,
+    "**/node_modules": true,
+    "dist": true,
+    "docs/previews": true
+  },
+  "search.exclude": {
+    "**/.wrangler": true,
+    "**/node_modules": true,
+    "dist": true,
+    "docs/previews": true
+  }
+}
