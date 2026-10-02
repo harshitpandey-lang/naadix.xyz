@@ -280,6 +280,7 @@
   .brand-mark img {
     position: absolute;
     width: 88px;
+    height: auto;
     max-width: none;
     left: 50%;
     top: 50%;

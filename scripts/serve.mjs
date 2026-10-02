@@ -19,7 +19,12 @@ createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
     const path = decodeURIComponent(url.pathname);
-    let file = resolve(root, "." + path);
+    if (path === "/api/location") {
+      res.writeHead(200, {"Content-Type": "application/json", "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex"});
+      res.end(JSON.stringify({city:null,country:null}));
+      return;
+    }
+    let file = resolve(root, path === "/web" || path === "/web/" ? "web.html" : "." + path);
     if (
       file !== root &&
       !file.startsWith(root + "/") &&

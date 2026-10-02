@@ -1,3 +1,4 @@
+import { optimizePublicAssets } from './optimize-assets.mjs';
 import { mkdir, writeFile, cp, rm } from "node:fs/promises";
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,7 +23,7 @@ for (const [path, title, description, content] of routes) {
   body = body.replace('id="contact-submit"', 'id="contact-submit" disabled');
   body = body.replace('id="motion-toggle"', 'id="motion-toggle" hidden');
   body = body.replace('class="network-stage" role="img"', 'class="network-stage" role="group"');
-  await emit(path === "/" ? "index.html" : path.slice(1) + "index.html", layout(path, title, description, body));
+  await emit(path === "/web/" ? "web.html" : path === "/" ? "index.html" : path.slice(1) + "index.html", layout(path, title, description, body));
 }
 await cp(join(root, "site/assets"), join(out, "assets"), { recursive: true });
 await cp(join(root, "site/hq"), join(out, "assets/hq"), { recursive: true });
@@ -55,11 +56,12 @@ for (const [path, page, title, description] of hqPages) {
     : `<div id="hq-root"></div>`;
   await emit(path, `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${title}</title><link rel="stylesheet" href="/assets/hq/hq.css"></head><body data-hq-page="${page}">${body}<script type="module" src="/assets/hq/app.js"></script></body></html>`);
 }
-await emit("assets/config.js", `export const company=${JSON.stringify(company)};\nexport const workflows=${JSON.stringify(workflows)};\nexport const architectures=${JSON.stringify(architectures)};\n`);
+await emit("assets/config.js", `export const company=${JSON.stringify(company)};\n`);
+await emit("assets/system-data.js", `export const workflows=${JSON.stringify(workflows)};\nexport const architectures=${JSON.stringify(architectures)};\n`);
 const verification = ["CNAME", "google1677bfbddc336616.html", "BingSiteAuth (1).xml", "4afff44e0015449b961a3c19974d3e03.txt"];
 for (const file of verification) await cp(join(root, file), join(out, file));
 await emit("404.html", layout("/404.html", "Signal Lost â€” NaadiX", "The system you are looking for is not connected here.", `<section class="section prose"><p class="eyebrow">404 / SIGNAL LOST</p><h1>Signal<br><span>lost.</span></h1><p class="lede">The system you're looking for isn't connected here.</p><div class="hero-actions"><a class="button primary" href="/">Return Home â†—</a><a class="text-link" href="/labs/">Explore NaadiX Labs â†—</a></div></section>`).replace("</head>", '<meta name="robots" content="noindex"></head>'));
-await emit("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map(([p]) => `<url><loc>${company.domain}${p}</loc></url>`).join("\n")}\n</urlset>\n`);
+await emit("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map(([p]) => `<url><loc>${company.domain}${p === "/web/" ? "/web" : p}</loc></url>`).join("\n")}\n</urlset>\n`);
 await emit("robots.txt", `User-agent: *\nDisallow: /hq/\nAllow: /\nSitemap: ${company.domain}/sitemap.xml\n`);
 await emit(".nojekyll", "");
 const redirects = {
@@ -79,3 +81,5 @@ const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(width); ihdr.writeUInt32BE(hei
 await emit("assets/social-card.png", Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw)), chunk("IEND", Buffer.alloc(0))]));
 console.log(`Built ${routes.length} public pages, ${Object.keys(redirects).length} compatibility redirects, and verified ownership files into dist.`);
 
+
+await optimizePublicAssets(join(out, "assets"));

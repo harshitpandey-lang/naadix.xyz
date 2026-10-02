@@ -11,7 +11,6 @@ The Cloudflare migration and final cleanup were reviewed against the tracked tre
 | `tests/` | Active automated and browser verification. |
 | `supabase/migrations/` | Retained schema, grants, triggers, and owner-scoped RLS history moved from the retired HQ app. |
 | `docs/` | Current architecture/security notes and inert historical project data. |
-| `images/` | Retained because these are unique original source images, not generated duplicates. They are outside the deployment allowlist. |
 | ownership verification files | Retained and copied byte-for-byte into `dist/`. |
 | `apps/hq/` | Removed after its unique migrations and corrected project facts were preserved. |
 | `archive/`, `css/`, `javascript/`, `webpages/`, tuition files | Removed as obsolete pre-migration source that is not used by the build. |

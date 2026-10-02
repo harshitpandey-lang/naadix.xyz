@@ -3,6 +3,9 @@ export const company = {
   domain: "https://naadix.xyz",
   founder: "Harshit Pandey",
   email: "harshitpandey3519@gmail.com",
+  phone: "+917392863010",
+  phoneDisplay: "+91 73928 63010",
+  whatsapp: "https://wa.me/917392863010",
   github: "https://github.com/harshitpandey-lang/naadix.xyz",
   linkedin: "https://www.linkedin.com/in/harshit-pandey-digital/",
   hq: "/hq",
@@ -11,6 +14,7 @@ export const company = {
     "NaadiX designs AI agents, automations and intelligent systems that help businesses improve operations and build AI-native workflows.",
 };
 export const navigation = [
+  ["Website Development", "/web"],
   ["Capabilities", "/capabilities/"],
   ["Solutions", "/solutions/"],
   ["Method", "/method/"],

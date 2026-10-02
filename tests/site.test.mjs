@@ -20,7 +20,7 @@ test("all public routes have metadata, one h1, and local links/assets that resol
   for (const [route] of pages()) {
     const path = join(
       root,
-      route === "/" ? "index.html" : route.slice(1) + "index.html",
+      route === "/web/" ? "web.html" : route === "/" ? "index.html" : route.slice(1) + "index.html",
     );
     const html = await readFile(path, "utf8");
     assert.equal((html.match(/<h1>/g) || []).length, 1, route);
@@ -31,7 +31,7 @@ test("all public routes have metadata, one h1, and local links/assets that resol
     )) {
       const target = join(
         root,
-        href.endsWith("/") ? href.slice(1) + "index.html" : href.slice(1),
+        href === "/web" ? "web.html" : href.endsWith("/") ? href.slice(1) + "index.html" : href.slice(1),
       );
       assert.ok((await stat(target)).isFile(), `${route}: ${href}`);
     }
@@ -53,13 +53,13 @@ test("public IA, HQ entry, and current Labs positioning are present", async () =
   assert.ok(!home.includes('class="hq-link"'));
   assert.ok(home.includes("INTELLIGENCE ARCHITECT"));
   assert.ok(home.includes('id="xray-flow"'));
-  assert.deepEqual(navigation.map(([label]) => label), ["Capabilities", "Solutions", "Method", "Labs", "About"]);
+  assert.deepEqual(navigation.map(([label]) => label), ["Website Development", "Capabilities", "Solutions", "Method", "Labs", "About"]);
   assert.deepEqual(Object.keys(architectures), ["sales", "operations", "knowledge", "support", "research"]);
   assert.ok(Object.values(architectures).every((item) => item.steps.length === 6));
   assert.deepEqual(labs.map((lab) => lab.status), ["PROTOTYPE", "EXPERIMENT", "CONCEPT"]);
   assert.ok(labs.every((lab) => !/rover|robot|hardware/i.test(`${lab.slug} ${lab.title} ${lab.summary}`)));
   for (const [route] of pages()) {
-    const path = join(root, route === "/" ? "index.html" : route.slice(1) + "index.html");
+    const path = join(root, route === "/web/" ? "web.html" : route === "/" ? "index.html" : route.slice(1) + "index.html");
       assert.ok((await readFile(path, "utf8")).includes(`href="${company.hq}/`), route);
   }
 });

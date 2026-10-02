@@ -21,7 +21,6 @@ The HQ is a static browser client under `site/hq/`. It uses Supabase email/passw
 ```text
 .
 ├── docs/                 Architecture, audits, verification, and retained data notes
-├── images/               Unique original legacy source images; not deployed
 ├── scripts/              Static build and local artifact server
 ├── site/
 │   ├── assets/           Shared public assets
@@ -49,16 +48,16 @@ Run the full local verification sequence with:
 
 ```sh
 npm run check
-npm test
 npm run build
+npm test
 git diff --check
 ```
 
-No dependency installation is currently required. The project uses Node's standard library for generation and tests.
+Run `npm ci` after cloning. Generation uses Node.js and esbuild to minify public assets; private transcription uses whisper-web-transcriber.
 
 ## Production routes
 
-Public routes include `/`, `/capabilities/`, `/solutions/`, `/method/`, `/labs/`, `/founder/`, `/contact/`, `/faq/`, and `/privacy/`.
+Public routes include `/`, `/web`, `/capabilities/`, `/solutions/`, `/method/`, `/labs/`, `/founder/`, `/contact/`, `/faq/`, and `/privacy/`.
 
 Private routes are:
 
@@ -76,8 +75,8 @@ Verify, build, and deploy to the existing Cloudflare Worker:
 
 ```sh
 npm run check
-npm test
 npm run build
+npm test
 npx wrangler deploy
 ```
 

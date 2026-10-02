@@ -7,7 +7,7 @@ function ensureStyles() {
   if (document.querySelector('link[data-inbox-enhancements]')) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = '/hq/inbox-enhancements.css';
+  link.href = '/assets/hq/inbox-enhancements.css';
   link.dataset.inboxEnhancements = 'true';
   document.head.append(link);
 }
